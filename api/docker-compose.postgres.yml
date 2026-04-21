@@ -1,0 +1,16 @@
+services:
+  travel-postgres:
+    image: postgres:16-alpine
+    container_name: travel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: travel_app
+      POSTGRES_USER: travel_app
+      POSTGRES_PASSWORD: travel_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - travel_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  travel_postgres_data:

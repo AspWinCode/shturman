@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx expo:*)",
+      "Bash(npm install:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:v for k,v in d.get\\('dependencies',{}\\).items\\(\\) if 'font' in k.lower\\(\\) or 'expo-font' in k.lower\\(\\) or 'icon' in k.lower\\(\\)}, indent=2\\)\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('dependencies',{}\\).get\\('expo-router',''\\)\\)\")",
+      "Bash(python -c ':*)",
+      "Bash(python -c \" import sys, json d = json.load\\(sys.stdin\\) d.setdefault\\('scripts', {}\\) d['scripts']['build:web'] = 'expo export --platform web && node scripts/patch-dist.js' d['scripts']['patch'] = 'node scripts/patch-dist.js' print\\(json.dumps\\(d, indent=2, ensure_ascii=False\\)\\) \")",
+      "Bash(node scripts/patch-dist.js)",
+      "Bash(npm run:*)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const fs=require\\('fs'\\),path=require\\('path'\\);function scan\\(dir\\){try{const e=fs.readdirSync\\(dir\\);for\\(const f of e\\){const p=path.join\\(dir,f\\);try{const s=fs.statSync\\(p\\);if\\(s.isDirectory\\(\\)&&!f.startsWith\\('node_modules'\\)&&!f.startsWith\\('.'\\)\\){scan\\(p\\)}else if\\(f.endsWith\\('.tsx'\\)||f.endsWith\\('.ts'\\)\\){const c=fs.readFileSync\\(p,'utf8'\\);if\\(c.includes\\('\\\\u0420\\\\u044f'\\)||c.includes\\('\\\\u0420\\\\u0441'\\)||c.includes\\('\\\\u0432\\\\u201a'\\)||c.includes\\('\\\\u0432\\\\u2014'\\)\\){console.log\\('BAD:'+p\\)}}}catch\\(e\\){}}}}catch\\(e\\){}}scan\\('D:/travel_app/app'\\);scan\\('D:/travel_app/store'\\);scan\\('D:/travel_app/constants'\\);\")",
+      "Bash(node scripts/patch-dist.js --dry-run)",
+      "Bash(npx tsc *)",
+      "WebSearch",
+      "Bash(find \"D:/travel_app/api\" -type f \\\\\\( -name \"*.js\" -o -name \"*.ts\" \\\\\\) -exec grep -l \"postgres\\\\|database\\\\|db\\\\|DATABASE_URL\" {} \\\\;)",
+      "Bash(npm list *)",
+      "Bash(node -e \"const fs=require\\('fs'\\); const buf=fs.readFileSync\\('D:/travel_app/assets/icon.png'\\); console.log\\('PNG signature OK:', buf.slice\\(0,4\\).toString\\('hex'\\) === '89504e47'\\);\")",
+      "Bash(eas whoami *)",
+      "Bash(node scripts/generate-feature-graphic.js)"
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "cli": {
+    "version": ">= 10.0.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleDebug"
+      },
+      "env": {
+        "EXPO_PUBLIC_SHOW_DEMO_CREDENTIALS": "true",
+        "EXPO_PUBLIC_ENABLE_DEMO_RESET": "true"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_SHOW_DEMO_CREDENTIALS": "true"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_SHOW_DEMO_CREDENTIALS": "false",
+        "EXPO_PUBLIC_ENABLE_DEMO_RESET": "false"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

@@ -1,0 +1,948 @@
+{
+  "users": [
+    {
+      "id": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "name": "Demo",
+      "email": "demo@travelai.app",
+      "passwordHash": "b60f09d39799401b97f84130ff85b8ff849079905294c070598725871d893c429eb00cfed36a60d81572fdaa173da1ea2e908d6b14e79bf750abc124d76157ce",
+      "passwordSalt": "e89493f17844badada2d45daa43a9313",
+      "createdAt": "2026-04-14T03:48:14.085Z",
+      "updatedAt": "2026-04-14T03:48:14.086Z"
+    },
+    {
+      "id": "72a24285-5f6c-4640-8293-10f72a034642",
+      "name": "Sprint2B",
+      "email": "sprint2b@travelai.app",
+      "passwordHash": "c16c7ccfcc9f59c263a60f9cbea7d6c0ab0652ae0e8b583f0b2cb4fff0e997aaaea59fcf6c11781ac876df1177054eb0ebfc825773f7e47491a1396dc0a5f18b",
+      "passwordSalt": "c73349918305f2db43c42445d90f3590",
+      "createdAt": "2026-04-14T03:48:17.861Z",
+      "updatedAt": "2026-04-14T03:48:17.861Z"
+    },
+    {
+      "id": "2ad8edd9-af70-4a2d-8d69-fdbc5e08d7e5",
+      "name": "Sprint2C",
+      "email": "sprint2c@travelai.app",
+      "passwordHash": "0ff4deeeb2a2e8d07b2d7052420ddb4f8821b5900535091339c6a020e9c67ed281404e09a6c843a8663230a8a3a6277f2e1817f57b352aad528834c971c78cfc",
+      "passwordSalt": "f130e3a531b8dca027e3c53c5e2a9b75",
+      "createdAt": "2026-04-14T03:49:05.976Z",
+      "updatedAt": "2026-04-14T03:49:05.977Z"
+    },
+    {
+      "id": "64149d47-fffa-459d-87cd-dd18d67291ff",
+      "name": "Sprint2D",
+      "email": "sprint2d@travelai.app",
+      "passwordHash": "f7475ff2fd890f1ac479001bee5a8ce3ded15d07e8fcc71511631b63fb2c5b7427da8695f554ca02165133d1c45cdbb30aa442ffabcaa4f9e05e9fe53c3cbeff",
+      "passwordSalt": "8c9246b1159a9c9d4240fb1756dc3f90",
+      "createdAt": "2026-04-14T04:02:04.737Z",
+      "updatedAt": "2026-04-14T04:02:04.737Z"
+    },
+    {
+      "id": "d476a044-03ea-4b06-b8ae-477e70539e12",
+      "name": "Sprint2E",
+      "email": "sprint2e@travelai.app",
+      "passwordHash": "39645c550ce53fcf3be81b2a4e4e84dae0e6ec53c63f20be342759af12717698a39c93cbe87c9868f002f5fd29c289f39515f0ca42805b71d49ad4f822629d49",
+      "passwordSalt": "66a5a597774521ca5490edf99e0660fc",
+      "createdAt": "2026-04-14T04:32:12.252Z",
+      "updatedAt": "2026-04-14T04:32:12.252Z"
+    },
+    {
+      "id": "c3f5d9a6-5462-4e6e-b5ed-a3d00608d5a0",
+      "name": "Sprint2F",
+      "email": "sprint2f@travelai.app",
+      "passwordHash": "b0b70f69f8a1e49de933c4d95b57cc38d31f11a3af271c92e44fa136c072a43006975c310f0657b1acbbcb9f79a9e2c5fa0252b39724dc314b83c6db2d8559b2",
+      "passwordSalt": "5bb50265d2816aed1ef0413b0c64d025",
+      "createdAt": "2026-04-14T04:41:02.102Z",
+      "updatedAt": "2026-04-14T04:41:02.102Z"
+    },
+    {
+      "id": "05051dbe-c2b5-4051-b35a-0900558003d3",
+      "name": "Sprint2G",
+      "email": "sprint2g@travelai.app",
+      "passwordHash": "c88925c17bcfb9043f673b7a274424d8bfa3c5ecb5fc31b50428345b73bbd58df572168bd0315b688829daa4f1ab2c0c513ce7f6baa53954b77207ab40943643",
+      "passwordSalt": "e802ab3a4c60fe8b5ba53ef6c43a8cb9",
+      "createdAt": "2026-04-14T04:44:13.350Z",
+      "updatedAt": "2026-04-14T04:44:13.350Z"
+    },
+    {
+      "id": "c87aad68-1f52-48ad-816e-318a08ed288a",
+      "name": "Sprint2H",
+      "email": "sprint2h@travelai.app",
+      "passwordHash": "2a1729539e37b9f947603b8594a0879b6ea14b0caa3121f1a2a261630b8c5eec7450e3b0dcc0e19530e01b40c0c2dcb348e9afccae2577df502144d62da1a628",
+      "passwordSalt": "1fb1402488c1174bf6182a4deba5c942",
+      "createdAt": "2026-04-14T04:45:01.264Z",
+      "updatedAt": "2026-04-14T04:45:01.265Z"
+    },
+    {
+      "id": "c43a3e08-2108-4760-ae7a-3528eb1d9e77",
+      "name": "Smoke User",
+      "email": "smoke_1776674467401_26682@travelai.app",
+      "passwordHash": "920a1e2863ecdf92838e4f39ce1129346e0f95ba1320b36a4a93d82dae85637bb17005d97d5a9d276e170522500b2866ff1387683e17fcf75d38c6ecf6920679",
+      "passwordSalt": "33623c02243101f8845756fca21a471a",
+      "createdAt": "2026-04-20T08:41:07.538Z",
+      "updatedAt": "2026-04-20T08:41:07.538Z"
+    },
+    {
+      "id": "1a4d4411-eeb0-4ddc-bf45-e1b93b83340a",
+      "name": "Smoke User",
+      "email": "smoke_1776675215025_67002@travelai.app",
+      "passwordHash": "13c93fef9f791655a772d60e68631c4ea6d2675340bd624ed1d87045bea6e7cdcfdc797866ca3a240406fcf1448d939b971bfb720bd692efae349776a5da2672",
+      "passwordSalt": "109787dd44c2b506e9770626bb7075d9",
+      "createdAt": "2026-04-20T08:53:35.113Z",
+      "updatedAt": "2026-04-20T08:53:35.113Z"
+    },
+    {
+      "id": "4255ad5e-443b-48e6-a886-e1628314f05c",
+      "name": "Smoke User",
+      "email": "smoke_1776675424370_58779@travelai.app",
+      "passwordHash": "0d29fb61f7027f42343d4f4e6bbcb5c2bf4c4b94f6ec10a3ba2e6bfac12c60ce82f8c2874211bfe22dda7fa27a689c7b560e1313ff8275227b70e0ae1758c14a",
+      "passwordSalt": "82d338d197d4262acd16956eea63386b",
+      "createdAt": "2026-04-20T08:57:04.486Z",
+      "updatedAt": "2026-04-20T08:57:04.486Z"
+    },
+    {
+      "id": "78da554f-562c-41eb-9799-f5c5dd1579b1",
+      "name": "Smoke User",
+      "email": "smoke_1776675915744_6743@travelai.app",
+      "passwordHash": "ac155bac40f631a17089595064f6f620c0795339b761434f2986bf7d8a20f135fec835844f1792abd3418fa2517fc243109634310945f6eebd0cd3c9f08650aa",
+      "passwordSalt": "f2d2f2428ded1e97b38c39db0bc18c6d",
+      "createdAt": "2026-04-20T09:05:15.835Z",
+      "updatedAt": "2026-04-20T09:05:15.835Z"
+    },
+    {
+      "id": "0aee11c3-27b6-42e7-9e18-be0441a01e9e",
+      "name": "Smoke User",
+      "email": "smoke_1776676210665_20568@travelai.app",
+      "passwordHash": "b2e2e5c449e1ea1678cded7956c3a381982499af1c434fc83953c4e8de2bce75e85d0ddb10022ef53ec21deba57ffb2f514e8f5bfa605c2da3f980b18cd3a17c",
+      "passwordSalt": "f7c677ed8f2bab9f12f6ede888f61ef6",
+      "createdAt": "2026-04-20T09:10:10.763Z",
+      "updatedAt": "2026-04-20T09:10:10.763Z"
+    }
+  ],
+  "refreshTokens": [
+    {
+      "userId": "72a24285-5f6c-4640-8293-10f72a034642",
+      "tokenHash": "86c8b361a4d501fa5cbf58984dd9bdc1e609e76c52504d505574bd3df23c245c",
+      "exp": 1778730497
+    },
+    {
+      "userId": "2ad8edd9-af70-4a2d-8d69-fdbc5e08d7e5",
+      "tokenHash": "a8885e8902ce41f34a7035129ac5423f135e5fe9b69446b0570a7c852548eb66",
+      "exp": 1778730546
+    },
+    {
+      "tokenHash": "388d91fe4b356b3f7b061976d1702db9aa2b38601d3b53e164756c33f0651a52",
+      "userId": "05051dbe-c2b5-4051-b35a-0900558003d3",
+      "exp": 1778733853
+    },
+    {
+      "tokenHash": "ccc254117de8a9fa66fcf706aad6a1962c9f90d70a35cbaa703ada77cf141e5a",
+      "userId": "c87aad68-1f52-48ad-816e-318a08ed288a",
+      "exp": 1778733901
+    },
+    {
+      "tokenHash": "71fcc315d3420c9a046d001a7f6d70faae5954a7041999aed87b5af9ed1335f2",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779265926
+    },
+    {
+      "tokenHash": "ce7e67448cb39eeaf7b704bcec6eecba5c721e491e53ec7a3e79baf4faa76852",
+      "userId": "c43a3e08-2108-4760-ae7a-3528eb1d9e77",
+      "exp": 1779266467
+    },
+    {
+      "tokenHash": "2246781821a02f13e0760785ea6c25cb691e1e8ebf3853d7dc73765ccab3f8ec",
+      "userId": "1a4d4411-eeb0-4ddc-bf45-e1b93b83340a",
+      "exp": 1779267215
+    },
+    {
+      "tokenHash": "9777bd9d16f0f1873b75553c24694fad35a1bbe20ac29d7bfd606c447e1c08c0",
+      "userId": "4255ad5e-443b-48e6-a886-e1628314f05c",
+      "exp": 1779267424
+    },
+    {
+      "tokenHash": "f5dc4a2107c8780dd202579afc214b255b61c43c49344542ab61ecb24ed42e31",
+      "userId": "78da554f-562c-41eb-9799-f5c5dd1579b1",
+      "exp": 1779267915
+    },
+    {
+      "tokenHash": "20fee3bd4ce9d290880b7c2d33c2863d496b625e67c2abbbf7c5ec76a5bc4ffb",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779267915
+    },
+    {
+      "tokenHash": "a90e6c9fb313b2d026fce58be2d4e10701ad88f6df3b9aff9a28e4d88c672a01",
+      "userId": "0aee11c3-27b6-42e7-9e18-be0441a01e9e",
+      "exp": 1779268210
+    },
+    {
+      "tokenHash": "fc69558bc47c69d485d0a00c34414e0a8c8f7f464f699197d2acc0fa161386ce",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779268210
+    }
+  ],
+  "trips": [
+    {
+      "id": "api-seed-spb-1",
+      "payload": "{\"id\":\"api-seed-spb-1\",\"from\":\"Москва\",\"to\":\"Санкт-Петербург\",\"toCountry\":\"Россия\",\"startDate\":\"2026-05-10\",\"endDate\":\"2026-05-13\",\"budget\":52000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"museums\",\"food\"],\"travelStyle\":\"standard\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1548834925-e48f8a27d7b2?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Эрмитаж\",\"category\":\"Музей\",\"emoji\":\"🏛️\",\"description\":\"Крупнейший музейный комплекс России.\",\"duration\":\"3-4 часа\",\"time\":\"10:00\",\"rating\":4.9,\"address\":\"Дворцовая площадь, 2\",\"price\":\"500 ₽\"},{\"id\":\"p2\",\"name\":\"Разводные мосты\",\"category\":\"Вечерняя программа\",\"emoji\":\"🌉\",\"description\":\"Ночная прогулка по Неве.\",\"duration\":\"2 часа\",\"time\":\"21:00\",\"rating\":4.8,\"address\":\"Дворцовая набережная\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-spb-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Санкт-Петербург\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":5720,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-spb-1-t2\",\"type\":\"train\",\"from\":\"Санкт-Петербург\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":4680,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-spb-1-h1\",\"name\":\"Nevsky Grand Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":7200,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Санкт-Петербург, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":10400,\"totalHotel\":21600,\"totalActivities\":10400,\"totalFood\":9360}",
+      "status": "upcoming",
+      "start_date": "2026-05-10",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    },
+    {
+      "id": "api-seed-kzn-1",
+      "payload": "{\"id\":\"api-seed-kzn-1\",\"from\":\"Москва\",\"to\":\"Казань\",\"toCountry\":\"Россия\",\"startDate\":\"2026-05-22\",\"endDate\":\"2026-05-25\",\"budget\":48000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"history\",\"food\"],\"travelStyle\":\"standard\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1595218699680-e9c3acba6e91?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Казанский Кремль\",\"category\":\"История\",\"emoji\":\"🏰\",\"description\":\"Исторический центр Казани.\",\"duration\":\"2-3 часа\",\"time\":\"10:30\",\"rating\":4.8,\"address\":\"Кремль\",\"price\":\"200 ₽\"},{\"id\":\"p2\",\"name\":\"Улица Баумана\",\"category\":\"Прогулка\",\"emoji\":\"🛍️\",\"description\":\"Пешеходная улица с кафе и сувенирами.\",\"duration\":\"2 часа\",\"time\":\"15:00\",\"rating\":4.6,\"address\":\"ул. Баумана\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-kzn-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Казань\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":5280,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-kzn-1-t2\",\"type\":\"train\",\"from\":\"Казань\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":4320,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-kzn-1-h1\",\"name\":\"Korston Kazan\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":6800,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Казань, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":9600,\"totalHotel\":20400,\"totalActivities\":9600,\"totalFood\":8640}",
+      "status": "upcoming",
+      "start_date": "2026-05-22",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    },
+    {
+      "id": "api-seed-sochi-1",
+      "payload": "{\"id\":\"api-seed-sochi-1\",\"from\":\"Казань\",\"to\":\"Сочи\",\"toCountry\":\"Россия\",\"startDate\":\"2026-06-03\",\"endDate\":\"2026-06-06\",\"budget\":76000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"beach\",\"nature\"],\"travelStyle\":\"comfort\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Роза Хутор\",\"category\":\"Природа\",\"emoji\":\"🏔️\",\"description\":\"Горный курорт с канатной дорогой.\",\"duration\":\"5 часов\",\"time\":\"09:30\",\"rating\":4.8,\"address\":\"Роза Хутор\",\"price\":\"2 000 ₽\"},{\"id\":\"p2\",\"name\":\"Набережная Сочи\",\"category\":\"Прогулка\",\"emoji\":\"🌊\",\"description\":\"Вечер у моря.\",\"duration\":\"2 часа\",\"time\":\"19:00\",\"rating\":4.7,\"address\":\"Центральная набережная\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-sochi-1-t1\",\"type\":\"flight\",\"from\":\"Казань\",\"to\":\"Сочи\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":8360,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-sochi-1-t2\",\"type\":\"train\",\"from\":\"Сочи\",\"to\":\"Казань\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":6840,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-sochi-1-h1\",\"name\":\"Sea Galaxy Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":8400,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Сочи, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":15200,\"totalHotel\":25200,\"totalActivities\":15200,\"totalFood\":13680}",
+      "status": "upcoming",
+      "start_date": "2026-06-03",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    },
+    {
+      "id": "api-seed-kgd-1",
+      "payload": "{\"id\":\"api-seed-kgd-1\",\"from\":\"Москва\",\"to\":\"Калининград\",\"toCountry\":\"Россия\",\"startDate\":\"2026-06-16\",\"endDate\":\"2026-06-19\",\"budget\":56000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"history\",\"food\"],\"travelStyle\":\"comfort\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Остров Канта\",\"category\":\"История\",\"emoji\":\"⛪\",\"description\":\"Кафедральный собор и музейная зона.\",\"duration\":\"2 часа\",\"time\":\"11:00\",\"rating\":4.7,\"address\":\"Остров Канта\",\"price\":\"300 ₽\"},{\"id\":\"p2\",\"name\":\"Рыбная деревня\",\"category\":\"Еда\",\"emoji\":\"🐟\",\"description\":\"Рестораны и набережная.\",\"duration\":\"2 часа\",\"time\":\"18:30\",\"rating\":4.6,\"address\":\"Октябрьский остров\",\"price\":\"1 300 ₽\"}]}],\"transport\":[{\"id\":\"api-seed-kgd-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Калининград\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":6160,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-kgd-1-t2\",\"type\":\"train\",\"from\":\"Калининград\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":5040,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-kgd-1-h1\",\"name\":\"Kaliningrad Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":5900,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Калининград, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":11200,\"totalHotel\":17700,\"totalActivities\":11200,\"totalFood\":10080}",
+      "status": "upcoming",
+      "start_date": "2026-06-16",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    },
+    {
+      "id": "api-seed-vvo-1",
+      "payload": "{\"id\":\"api-seed-vvo-1\",\"from\":\"Москва\",\"to\":\"Владивосток\",\"toCountry\":\"Россия\",\"startDate\":\"2026-07-01\",\"endDate\":\"2026-07-04\",\"budget\":92000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"nature\",\"food\"],\"travelStyle\":\"comfort\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1601462904263-f2fa0c851cb9?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Токаревский маяк\",\"category\":\"Природа\",\"emoji\":\"🗼\",\"description\":\"Символ Владивостока у Японского моря.\",\"duration\":\"1.5 часа\",\"time\":\"10:30\",\"rating\":4.8,\"address\":\"Токаревская кошка\",\"price\":\"Бесплатно\"},{\"id\":\"p2\",\"name\":\"Русский мост\",\"category\":\"Архитектура\",\"emoji\":\"🌉\",\"description\":\"Видовые точки на остров Русский.\",\"duration\":\"2.5 часа\",\"time\":\"15:30\",\"rating\":4.7,\"address\":\"Русский мост\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-vvo-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Владивосток\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":10120,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-vvo-1-t2\",\"type\":\"train\",\"from\":\"Владивосток\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":8280,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-vvo-1-h1\",\"name\":\"Azimut Vladivostok\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":7600,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Владивосток, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":18400,\"totalHotel\":22800,\"totalActivities\":18400,\"totalFood\":16560}",
+      "status": "upcoming",
+      "start_date": "2026-07-01",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    },
+    {
+      "id": "api-seed-baikal-1",
+      "payload": "{\"id\":\"api-seed-baikal-1\",\"from\":\"Москва\",\"to\":\"Байкал\",\"toCountry\":\"Россия\",\"startDate\":\"2026-07-20\",\"endDate\":\"2026-07-23\",\"budget\":104000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"nature\",\"hiking\"],\"travelStyle\":\"comfort\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Листвянка\",\"category\":\"Природа\",\"emoji\":\"🏞️\",\"description\":\"Берег Байкала и рынок сувениров.\",\"duration\":\"4 часа\",\"time\":\"10:00\",\"rating\":4.9,\"address\":\"Листвянка\",\"price\":\"1 000 ₽\"},{\"id\":\"p2\",\"name\":\"Кругобайкальская прогулка\",\"category\":\"Активности\",\"emoji\":\"🥾\",\"description\":\"Треккинг вдоль берега.\",\"duration\":\"3 часа\",\"time\":\"16:00\",\"rating\":4.8,\"address\":\"Южный Байкал\",\"price\":\"1 500 ₽\"}]}],\"transport\":[{\"id\":\"api-seed-baikal-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Байкал\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":11440,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-baikal-1-t2\",\"type\":\"train\",\"from\":\"Байкал\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":9360,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-baikal-1-h1\",\"name\":\"Baikal View Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":9400,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Байкал, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":20800,\"totalHotel\":28200,\"totalActivities\":20800,\"totalFood\":18720}",
+      "status": "upcoming",
+      "start_date": "2026-07-20",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    },
+    {
+      "id": "api-seed-msk-past",
+      "payload": "{\"id\":\"api-seed-msk-past\",\"from\":\"Казань\",\"to\":\"Москва\",\"toCountry\":\"Россия\",\"startDate\":\"2025-04-10\",\"endDate\":\"2025-04-13\",\"budget\":42000,\"currency\":\"₽\",\"travelers\":1,\"interests\":[\"history\"],\"travelStyle\":\"standard\",\"status\":\"past\",\"coverImage\":\"https://images.unsplash.com/photo-1513326738677-b964603b136d?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Красная площадь\",\"category\":\"История\",\"emoji\":\"🧱\",\"description\":\"Сердце столицы.\",\"duration\":\"2 часа\",\"time\":\"10:00\",\"rating\":4.9,\"address\":\"Красная площадь\",\"price\":\"Бесплатно\"},{\"id\":\"p2\",\"name\":\"Москва-Сити\",\"category\":\"Архитектура\",\"emoji\":\"🏙️\",\"description\":\"Смотровая площадка с панорамой города.\",\"duration\":\"2 часа\",\"time\":\"18:00\",\"rating\":4.7,\"address\":\"Пресненская набережная\",\"price\":\"1 200 ₽\"}]}],\"transport\":[{\"id\":\"api-seed-msk-past-t1\",\"type\":\"flight\",\"from\":\"Казань\",\"to\":\"Москва\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":4620,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-msk-past-t2\",\"type\":\"train\",\"from\":\"Москва\",\"to\":\"Казань\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":3780,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-msk-past-h1\",\"name\":\"Marriott Moscow\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":12500,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Москва, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":8400,\"totalHotel\":37500,\"totalActivities\":8400,\"totalFood\":7560}",
+      "status": "past",
+      "start_date": "2025-04-10",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    },
+    {
+      "id": "api-seed-spb-past",
+      "payload": "{\"id\":\"api-seed-spb-past\",\"from\":\"Москва\",\"to\":\"Санкт-Петербург\",\"toCountry\":\"Россия\",\"startDate\":\"2025-08-14\",\"endDate\":\"2025-08-17\",\"budget\":46000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"museums\"],\"travelStyle\":\"standard\",\"status\":\"past\",\"coverImage\":\"https://images.unsplash.com/photo-1548834925-e48f8a27d7b2?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Эрмитаж\",\"category\":\"Музей\",\"emoji\":\"🏛️\",\"description\":\"Крупнейший музейный комплекс России.\",\"duration\":\"3-4 часа\",\"time\":\"10:00\",\"rating\":4.9,\"address\":\"Дворцовая площадь, 2\",\"price\":\"500 ₽\"},{\"id\":\"p2\",\"name\":\"Разводные мосты\",\"category\":\"Вечерняя программа\",\"emoji\":\"🌉\",\"description\":\"Ночная прогулка по Неве.\",\"duration\":\"2 часа\",\"time\":\"21:00\",\"rating\":4.8,\"address\":\"Дворцовая набережная\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-spb-past-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Санкт-Петербург\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":5060,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-spb-past-t2\",\"type\":\"train\",\"from\":\"Санкт-Петербург\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":4140,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-spb-past-h1\",\"name\":\"Nevsky Grand Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":7200,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Санкт-Петербург, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":9200,\"totalHotel\":21600,\"totalActivities\":9200,\"totalFood\":8280}",
+      "status": "past",
+      "start_date": "2025-08-14",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    },
+    {
+      "id": "api-seed-kzn-draft",
+      "payload": "{\"id\":\"api-seed-kzn-draft\",\"from\":\"Москва\",\"to\":\"Казань\",\"toCountry\":\"Россия\",\"startDate\":\"2026-08-12\",\"endDate\":\"2026-08-15\",\"budget\":36000,\"currency\":\"₽\",\"travelers\":1,\"interests\":[\"food\"],\"travelStyle\":\"budget\",\"status\":\"draft\",\"coverImage\":\"https://images.unsplash.com/photo-1595218699680-e9c3acba6e91?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Казанский Кремль\",\"category\":\"История\",\"emoji\":\"🏰\",\"description\":\"Исторический центр Казани.\",\"duration\":\"2-3 часа\",\"time\":\"10:30\",\"rating\":4.8,\"address\":\"Кремль\",\"price\":\"200 ₽\"},{\"id\":\"p2\",\"name\":\"Улица Баумана\",\"category\":\"Прогулка\",\"emoji\":\"🛍️\",\"description\":\"Пешеходная улица с кафе и сувенирами.\",\"duration\":\"2 часа\",\"time\":\"15:00\",\"rating\":4.6,\"address\":\"ул. Баумана\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-kzn-draft-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Казань\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":3960,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-kzn-draft-t2\",\"type\":\"train\",\"from\":\"Казань\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":3240,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-kzn-draft-h1\",\"name\":\"Korston Kazan\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":6800,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Казань, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":7200,\"totalHotel\":20400,\"totalActivities\":7200,\"totalFood\":6480}",
+      "status": "draft",
+      "start_date": "2026-08-12",
+      "updated_at": "2026-04-20T09:10:32.114Z",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
+    }
+  ],
+  "auditLogs": [
+    {
+      "ts": "2026-04-14T04:44:13.351Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "05051dbe-c2b5-4051-b35a-0900558003d3",
+      "email": "sprint2g@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:44:13.388Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "05051dbe-c2b5-4051-b35a-0900558003d3",
+      "email": "sprint2g@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.265Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "c87aad68-1f52-48ad-816e-318a08ed288a",
+      "email": "sprint2h@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.341Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "c87aad68-1f52-48ad-816e-318a08ed288a",
+      "email": "sprint2h@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.346Z",
+      "path": "/auth/refresh",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "c87aad68-1f52-48ad-816e-318a08ed288a",
+      "email": "sprint2h@travelai.app",
+      "event": "refresh_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.349Z",
+      "path": "/auth/refresh",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": "c87aad68-1f52-48ad-816e-318a08ed288a",
+      "email": null,
+      "event": "refresh_missing",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.369Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "c87aad68-1f52-48ad-816e-318a08ed288a",
+      "email": "sprint2h@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "api-trip-5"
+      }
+    },
+    {
+      "ts": "2026-04-14T04:45:01.372Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "c87aad68-1f52-48ad-816e-318a08ed288a",
+      "email": "sprint2h@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-14T04:45:01.413Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.452Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.503Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.543Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.582Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.621Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.659Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.699Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.740Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.777Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.814Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.850Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.886Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.920Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.955Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:01.989Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:02.024Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:02.057Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:02.093Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 401,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": "sprint2h@travelai.app",
+      "event": "login_failed",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-14T04:45:02.096Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 429,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": null,
+      "event": "rate_limit",
+      "meta": {
+        "retryAfterSec": 60
+      }
+    },
+    {
+      "ts": "2026-04-20T08:32:06.331Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T08:41:07.539Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "c43a3e08-2108-4760-ae7a-3528eb1d9e77",
+      "email": "smoke_1776674467401_26682@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T08:41:07.585Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "c43a3e08-2108-4760-ae7a-3528eb1d9e77",
+      "email": "smoke_1776674467401_26682@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T08:41:07.590Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "c43a3e08-2108-4760-ae7a-3528eb1d9e77",
+      "email": "smoke_1776674467401_26682@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776674467587"
+      }
+    },
+    {
+      "ts": "2026-04-20T08:41:07.595Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "c43a3e08-2108-4760-ae7a-3528eb1d9e77",
+      "email": "smoke_1776674467401_26682@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-20T08:41:07.602Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "c43a3e08-2108-4760-ae7a-3528eb1d9e77",
+      "email": "smoke_1776674467401_26682@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776674467587"
+      }
+    },
+    {
+      "ts": "2026-04-20T08:53:35.116Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "1a4d4411-eeb0-4ddc-bf45-e1b93b83340a",
+      "email": "smoke_1776675215025_67002@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T08:53:35.154Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "1a4d4411-eeb0-4ddc-bf45-e1b93b83340a",
+      "email": "smoke_1776675215025_67002@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T08:53:35.159Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "1a4d4411-eeb0-4ddc-bf45-e1b93b83340a",
+      "email": "smoke_1776675215025_67002@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776675215156"
+      }
+    },
+    {
+      "ts": "2026-04-20T08:53:35.163Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "1a4d4411-eeb0-4ddc-bf45-e1b93b83340a",
+      "email": "smoke_1776675215025_67002@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-20T08:53:35.168Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "1a4d4411-eeb0-4ddc-bf45-e1b93b83340a",
+      "email": "smoke_1776675215025_67002@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776675215156"
+      }
+    },
+    {
+      "ts": "2026-04-20T08:57:04.488Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "4255ad5e-443b-48e6-a886-e1628314f05c",
+      "email": "smoke_1776675424370_58779@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T08:57:04.536Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "4255ad5e-443b-48e6-a886-e1628314f05c",
+      "email": "smoke_1776675424370_58779@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T08:57:04.541Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "4255ad5e-443b-48e6-a886-e1628314f05c",
+      "email": "smoke_1776675424370_58779@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776675424538"
+      }
+    },
+    {
+      "ts": "2026-04-20T08:57:04.546Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "4255ad5e-443b-48e6-a886-e1628314f05c",
+      "email": "smoke_1776675424370_58779@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-20T08:57:04.551Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "4255ad5e-443b-48e6-a886-e1628314f05c",
+      "email": "smoke_1776675424370_58779@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776675424538"
+      }
+    },
+    {
+      "ts": "2026-04-20T09:05:15.837Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "78da554f-562c-41eb-9799-f5c5dd1579b1",
+      "email": "smoke_1776675915744_6743@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T09:05:15.875Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "78da554f-562c-41eb-9799-f5c5dd1579b1",
+      "email": "smoke_1776675915744_6743@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T09:05:15.880Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "78da554f-562c-41eb-9799-f5c5dd1579b1",
+      "email": "smoke_1776675915744_6743@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776675915877"
+      }
+    },
+    {
+      "ts": "2026-04-20T09:05:15.885Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "78da554f-562c-41eb-9799-f5c5dd1579b1",
+      "email": "smoke_1776675915744_6743@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-20T09:05:15.889Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "78da554f-562c-41eb-9799-f5c5dd1579b1",
+      "email": "smoke_1776675915744_6743@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776675915877"
+      }
+    },
+    {
+      "ts": "2026-04-20T09:05:15.927Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T09:05:15.930Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 404,
+      "ip": "127.0.0.1",
+      "userId": null,
+      "email": null,
+      "event": "route_not_found",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T09:10:10.765Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "0aee11c3-27b6-42e7-9e18-be0441a01e9e",
+      "email": "smoke_1776676210665_20568@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T09:10:10.803Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "0aee11c3-27b6-42e7-9e18-be0441a01e9e",
+      "email": "smoke_1776676210665_20568@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T09:10:10.809Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "0aee11c3-27b6-42e7-9e18-be0441a01e9e",
+      "email": "smoke_1776676210665_20568@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776676210805"
+      }
+    },
+    {
+      "ts": "2026-04-20T09:10:10.813Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "0aee11c3-27b6-42e7-9e18-be0441a01e9e",
+      "email": "smoke_1776676210665_20568@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-20T09:10:10.818Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "0aee11c3-27b6-42e7-9e18-be0441a01e9e",
+      "email": "smoke_1776676210665_20568@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776676210805"
+      }
+    },
+    {
+      "ts": "2026-04-20T09:10:10.853Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-20T09:10:10.860Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@travelai.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-20T09:10:10.871Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    }
+  ]
+}
