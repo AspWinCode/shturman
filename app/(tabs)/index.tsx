@@ -5,22 +5,28 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
   Image,
-  ImageBackground,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Colors from '@/constants/colors';
 import { BorderRadius, Shadows, Spacing, Typography } from '@/constants/theme';
 import { POPULAR_CITIES, MOCK_ROUTES, MOCK_TRIPS } from '@/constants/data';
 import { useStore } from '@/store/useStore';
 import { Badge } from '@/components/ui/Badge';
 
-const { width } = Dimensions.get('window');
-
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+  const cityCardWidth = isCompact ? 112 : 130;
+  const cityCardHeight = isCompact ? 150 : 170;
+  const fabSize = isCompact ? 54 : 60;
+
   const user = useStore((s) => s.user);
   const trips = useStore((s) => s.trips);
   const upcomingTrips = trips.filter((t) => t.status === 'upcoming').slice(0, 1);
@@ -38,17 +44,34 @@ export default function HomeScreen() {
       <StatusBar style="light" />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 110 + insets.bottom }]}
       >
         {/* Hero gradient header */}
-        <View style={styles.hero}>
+        <View
+          style={[
+            styles.hero,
+            {
+              paddingTop: insets.top + 12,
+              paddingHorizontal: horizontalPadding,
+            },
+          ]}
+        >
           {/* Top row */}
           <View style={styles.topRow}>
-            <View>
+            <View style={styles.titleCol}>
+              <View style={styles.brandRow}>
+                <Image source={require('@/assets/shturman-logo.png')} style={styles.brandLogo} />
+                <Text style={styles.brandName}>Штурман</Text>
+              </View>
               <Text style={styles.greeting}>{greeting}, {user.name || 'путешественник'}! 👋</Text>
               <Text style={styles.heroSubtext}>Куда отправимся дальше?</Text>
             </View>
-            <TouchableOpacity style={styles.notifBtn}>
+            <TouchableOpacity
+              style={styles.notifBtn}
+              onPress={() => router.push('/(profile)/notifications' as never)}
+              accessibilityRole="button"
+              accessibilityLabel="Открыть настройки уведомлений"
+            >
               <Ionicons name="notifications-outline" size={22} color="#fff" />
               <View style={styles.notifDot} />
             </TouchableOpacity>
@@ -56,6 +79,7 @@ export default function HomeScreen() {
 
           {/* Create Trip CTA */}
           <TouchableOpacity
+            testID="btn-open-create-trip"
             style={styles.createTripCard}
             onPress={() => router.push('/trip/create')}
             activeOpacity={0.9}
@@ -89,7 +113,7 @@ export default function HomeScreen() {
 
         {/* Active trip */}
         {upcomingTrips.length > 0 && (
-          <View style={styles.section}>
+          <View style={[styles.section, { paddingHorizontal: horizontalPadding }]}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Ближайшая поездка</Text>
               <TouchableOpacity onPress={() => router.push('/(tabs)/trips')}>
@@ -127,14 +151,14 @@ export default function HomeScreen() {
         )}
 
         {/* Popular cities */}
-        <View style={styles.section}>
+        <View style={[styles.section, { paddingHorizontal: horizontalPadding }]}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Популярные направления</Text>
           </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalScroll}
+            contentContainerStyle={[styles.horizontalScroll, { paddingRight: horizontalPadding }]}
           >
             {POPULAR_CITIES.map((city) => (
               <TouchableOpacity
@@ -146,7 +170,7 @@ export default function HomeScreen() {
                   });
                 }}
                 activeOpacity={0.85}
-                style={styles.cityCard}
+                style={[styles.cityCard, { width: cityCardWidth, height: cityCardHeight }]}
               >
                 <Image source={{ uri: city.image }} style={styles.cityImage} />
                 <View style={[StyleSheet.absoluteFill, {backgroundColor: 'rgba(0,0,0,0.35)'}]} />
@@ -161,7 +185,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Recommended routes */}
-        <View style={styles.section}>
+        <View style={[styles.section, { paddingHorizontal: horizontalPadding }]}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Рекомендуемые маршруты</Text>
             <TouchableOpacity onPress={() => router.push('/(tabs)/discover')}>
@@ -175,7 +199,7 @@ export default function HomeScreen() {
               activeOpacity={0.85}
               style={styles.routeCard}
             >
-              <Image source={{ uri: route.image }} style={styles.routeImage} />
+              <Image source={{ uri: route.image }} style={[styles.routeImage, { width: isCompact ? 92 : 100 }]} />
               <View style={styles.routeInfo}>
                 <Text style={styles.routeTitle}>{route.title}</Text>
                 <View style={styles.routeMeta}>
@@ -205,11 +229,18 @@ export default function HomeScreen() {
 
       {/* Floating Action Button */}
       <TouchableOpacity
-        style={styles.fab}
+        testID="btn-open-create-trip-fab"
+        style={[
+          styles.fab,
+          {
+            bottom: insets.bottom + 74,
+            right: horizontalPadding,
+          },
+        ]}
         onPress={() => router.push('/trip/create')}
         activeOpacity={0.9}
       >
-        <View style={styles.fabGradient}>
+        <View style={[styles.fabGradient, { width: fabSize, height: fabSize, borderRadius: fabSize / 2 }]}>
           <Ionicons name="add" size={28} color="#fff" />
         </View>
       </TouchableOpacity>
@@ -238,6 +269,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: Spacing.xl,
+  },
+  titleCol: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  brandLogo: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+  },
+  brandName: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: Typography.sizes.sm,
+    fontWeight: Typography.weights.semibold,
+    letterSpacing: 0.2,
   },
   greeting: {
     fontSize: Typography.sizes.lg,

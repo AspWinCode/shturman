@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PasswordStrengthIndicator } from '@/components/ui/PasswordStrengthIndicator';
@@ -20,6 +22,11 @@ import { BorderRadius, Spacing, Typography } from '@/constants/theme';
 import { useStore } from '@/store/useStore';
 
 export default function RecoverScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -54,7 +61,16 @@ export default function RecoverScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <StatusBar style="light" />
-      <View style={[styles.header, { backgroundColor: Colors.primary }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: Colors.primary,
+            paddingTop: insets.top + 12,
+            paddingHorizontal: horizontalPadding,
+          },
+        ]}
+      >
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
@@ -62,7 +78,11 @@ export default function RecoverScreen() {
         <Text style={styles.subtitle}>Укажите email и новый пароль</Text>
       </View>
 
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[styles.content, { paddingHorizontal: horizontalPadding, paddingBottom: Spacing.lg + Math.max(insets.bottom, 12) }]}
+        keyboardShouldPersistTaps="handled"
+      >
         <Input
           label="Email"
           placeholder="your@email.com"

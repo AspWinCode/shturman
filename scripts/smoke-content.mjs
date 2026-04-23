@@ -5,7 +5,7 @@ const root = process.cwd();
 const errors = [];
 
 function readText(relPath) {
-  return fs.readFileSync(path.join(root, relPath), 'utf8');
+  return fs.readFileSync(path.join(root, relPath), 'utf8').replace(/^\uFEFF/, '');
 }
 
 function assert(condition, message) {

@@ -21,7 +21,7 @@ async function request(path, init = {}) {
 }
 
 function randomEmail() {
-  return `smoke_${Date.now()}_${Math.floor(Math.random() * 100000)}@travelai.app`;
+  return `smoke_${Date.now()}_${Math.floor(Math.random() * 100000)}@shturman.app`;
 }
 
 async function main() {
@@ -76,7 +76,7 @@ async function main() {
 
   const demoLogin = await request('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email: 'demo@travelai.app', password: 'Travel123!' }),
+    body: JSON.stringify({ email: 'demo@shturman.app', password: 'Travel123!' }),
   });
 
   const demoHeaders = { Authorization: `Bearer ${demoLogin.accessToken}` };

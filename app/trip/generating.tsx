@@ -4,15 +4,14 @@ import {
   Text,
   StyleSheet,
   Animated,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useRootNavigationState } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Colors from '@/constants/colors';
 import { Spacing, Typography, BorderRadius } from '@/constants/theme';
 import { useStore } from '@/store/useStore';
-
-const { width, height } = Dimensions.get('window');
 
 const MESSAGES = [
   { text: 'Анализируем ваши предпочтения...', emoji: '🧠' },
@@ -25,6 +24,11 @@ const MESSAGES = [
 ];
 
 export default function GeneratingScreen() {
+  const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+  const isCompact = width < 370;
+  const globeSize = isCompact ? 116 : 140;
+
   const [currentMsg, setCurrentMsg] = useState(0);
   const [progress, setProgress] = useState(0);
   const progressAnim = useRef(new Animated.Value(0)).current;
@@ -32,16 +36,40 @@ export default function GeneratingScreen() {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
+  const generateTripAI = useStore((s) => s.generateTripAI);
   const generatedTrip = useStore((s) => s.generatedTrip);
   const tripForm = useStore((s) => s.tripForm);
+  const generatedTripRef = useRef(generatedTrip);
+  const rootNavigationState = useRootNavigationState();
+  const isNavigationReadyRef = useRef(false);
 
   useEffect(() => {
-    if (!generatedTrip) {
-      router.replace('/trip/create');
-      return;
-    }
+    isNavigationReadyRef.current = Boolean(rootNavigationState?.key);
+  }, [rootNavigationState?.key]);
 
-    // Start animations
+  useEffect(() => {
+    generatedTripRef.current = generatedTrip;
+  }, [generatedTrip]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    let generationDone = false;
+    let minDelayDone = false;
+
+    const tryComplete = () => {
+      if (isCancelled) return;
+      if (!generationDone || !minDelayDone) return;
+      if (!isNavigationReadyRef.current) {
+        setTimeout(tryComplete, 60);
+        return;
+      }
+      if (!generatedTripRef.current) {
+        router.replace('/trip/create');
+        return;
+      }
+      router.replace('/trip/result');
+    };
+
     Animated.spring(scaleAnim, {
       toValue: 1,
       tension: 50,
@@ -84,17 +112,24 @@ export default function GeneratingScreen() {
       setProgress((prev) => Math.min(100, prev + Math.floor(100 / MESSAGES.length)));
     }, 600);
 
-    // Navigate when done
-    const timeout = setTimeout(() => {
+    const minDelay = setTimeout(() => {
       clearInterval(interval);
-      router.replace('/trip/result');
+      minDelayDone = true;
+      tryComplete();
     }, 4500);
 
+    void (async () => {
+      await generateTripAI();
+      generationDone = true;
+      tryComplete();
+    })();
+
     return () => {
+      isCancelled = true;
       clearInterval(interval);
-      clearTimeout(timeout);
+      clearTimeout(minDelay);
     };
-  }, [generatedTrip]);
+  }, [generateTripAI]);
 
   const progressWidth = progressAnim.interpolate({
     inputRange: [0, 1],
@@ -114,21 +149,70 @@ export default function GeneratingScreen() {
       <View style={[StyleSheet.absoluteFill, { backgroundColor: Colors.primaryDark }]} />
 
       {/* Animated circles background */}
-      <View style={styles.bgCircle1} />
-      <View style={styles.bgCircle2} />
-      <View style={styles.bgCircle3} />
+      <View
+        style={[
+          styles.bgCircle1,
+          {
+            width: width * 0.9,
+            height: width * 0.9,
+            borderRadius: width * 0.45,
+            top: -width * 0.2,
+            left: -width * 0.1,
+          },
+        ]}
+      />
+      <View
+        style={[
+          styles.bgCircle2,
+          {
+            width: width * 0.7,
+            height: width * 0.7,
+            borderRadius: width * 0.35,
+            bottom: height * 0.1,
+            right: -width * 0.15,
+          },
+        ]}
+      />
+      <View
+        style={[
+          styles.bgCircle3,
+          {
+            width: width * 0.5,
+            height: width * 0.5,
+            borderRadius: width * 0.25,
+            bottom: height * 0.25,
+            left: -width * 0.1,
+          },
+        ]}
+      />
 
       <Animated.View
-        style={[styles.content, { transform: [{ scale: scaleAnim }] }]}
+        style={[
+          styles.content,
+          {
+            paddingTop: insets.top + 12,
+            paddingBottom: insets.bottom + 12,
+            paddingHorizontal: isCompact ? Spacing.xl : Spacing['2xl'],
+            transform: [{ scale: scaleAnim }],
+          },
+        ]}
       >
         {/* Globe */}
         <Animated.View
-          style={[styles.globeContainer, { transform: [{ rotate: rotation }] }]}
+          style={[
+            styles.globeContainer,
+            {
+              width: globeSize,
+              height: globeSize,
+              borderRadius: globeSize / 2,
+              transform: [{ rotate: rotation }],
+            },
+          ]}
         >
-          <Text style={styles.globeEmoji}>🌍</Text>
+          <Text style={[styles.globeEmoji, isCompact && { fontSize: 56 }]}>🌍</Text>
         </Animated.View>
 
-        <Text style={styles.title}>Создаем маршрут</Text>
+        <Text style={[styles.title, isCompact && { fontSize: Typography.sizes.xl }]}>Создаем маршрут</Text>
         <View style={styles.destination}>
           <Text style={styles.destinationText}>
             {tripForm.from || 'Москва'} → {tripForm.to || 'Казань'}
@@ -138,7 +222,7 @@ export default function GeneratingScreen() {
         {/* Animated message */}
         <Animated.View style={[styles.messageBox, { opacity: fadeAnim }]}>
           <Text style={styles.messageEmoji}>{msg.emoji}</Text>
-          <Text style={styles.messageText}>{msg.text}</Text>
+          <Text style={[styles.messageText, isCompact && { fontSize: Typography.sizes.sm }]}>{msg.text}</Text>
         </Animated.View>
 
         {/* Progress bar */}
@@ -182,32 +266,32 @@ const styles = StyleSheet.create({
   },
   bgCircle1: {
     position: 'absolute',
-    width: width * 0.9,
-    height: width * 0.9,
-    borderRadius: width * 0.45,
+    width: 240,
+    height: 240,
+    borderRadius: 120,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.06)',
-    top: -width * 0.2,
-    left: -width * 0.1,
+    top: -80,
+    left: -40,
   },
   bgCircle2: {
     position: 'absolute',
-    width: width * 0.7,
-    height: width * 0.7,
-    borderRadius: width * 0.35,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.06)',
-    bottom: height * 0.1,
-    right: -width * 0.15,
+    bottom: 80,
+    right: -50,
   },
   bgCircle3: {
     position: 'absolute',
-    width: width * 0.5,
-    height: width * 0.5,
-    borderRadius: width * 0.25,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
     backgroundColor: 'rgba(27,58,107,0.3)',
-    bottom: height * 0.25,
-    left: -width * 0.1,
+    bottom: 180,
+    left: -30,
   },
   content: {
     alignItems: 'center',

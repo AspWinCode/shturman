@@ -20,6 +20,7 @@ interface CitySearchInputProps {
   onSelect: (city: string) => void;
   leftIcon?: keyof typeof Ionicons.glyphMap;
   error?: string;
+  testID?: string;
 }
 
 export const CitySearchInput: React.FC<CitySearchInputProps> = ({
@@ -29,6 +30,7 @@ export const CitySearchInput: React.FC<CitySearchInputProps> = ({
   onSelect,
   leftIcon = 'location-outline',
   error,
+  testID,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [query, setQuery] = useState(value);
@@ -68,6 +70,7 @@ export const CitySearchInput: React.FC<CitySearchInputProps> = ({
       {label ? <Text style={styles.label}>{label}</Text> : null}
 
       <TouchableOpacity
+        testID={testID}
         style={[styles.inputContainer, !!value && styles.hasValue, error ? styles.errorBorder : null]}
         onPress={openModal}
         activeOpacity={0.8}
@@ -111,6 +114,7 @@ export const CitySearchInput: React.FC<CitySearchInputProps> = ({
             <View style={styles.searchRow}>
               <Ionicons name={leftIcon} size={20} color={Colors.primary} style={styles.searchIcon} />
               <TextInput
+                testID={testID ? `${testID}-search` : undefined}
                 ref={inputRef}
                 style={styles.searchInput}
                 value={query}
@@ -134,6 +138,7 @@ export const CitySearchInput: React.FC<CitySearchInputProps> = ({
               style={styles.list}
               renderItem={({ item, index }) => (
                 <TouchableOpacity
+                  testID={testID ? `${testID}-option-${item.id}` : undefined}
                   style={[styles.suggestion, index < suggestions.length - 1 && styles.suggestionBorder]}
                   onPress={() => handleSelect(item)}
                   activeOpacity={0.7}

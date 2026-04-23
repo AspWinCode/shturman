@@ -2,36 +2,38 @@
   "expo": {
     "name": "Штурман",
     "slug": "shturman",
-    "version": "1.0.0",
+    "version": "1.0.1",
+    "description": "Штурман — планировщик путешествий с мультимодальными маршрутами, бюджетом и travel wallet.",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "travelai",
-    "userInterfaceStyle": "light",
+    "scheme": "shturman",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#1B3A6B"
+      "backgroundColor": "#1C4FA3"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.travelai.app",
-      "buildNumber": "1",
+      "bundleIdentifier": "com.shturman.app",
+      "buildNumber": "2",
       "infoPlist": {
         "NSCameraUsageDescription": "Используется для загрузки фото профиля",
         "NSPhotoLibraryUsageDescription": "Используется для выбора фото профиля",
-        "NSLocationWhenInUseUsageDescription": "Используется для определения города отправления"
+        "NSLocationWhenInUseUsageDescription": "Используется для определения города отправления",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#1B3A6B"
+        "backgroundColor": "#1C4FA3"
       },
-      "package": "com.travelai.app",
-      "versionCode": 1,
+      "package": "com.shturman.app",
+      "versionCode": 6,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.ACCESS_NETWORK_STATE",
@@ -46,7 +48,7 @@
           "autoVerify": true,
           "data": [
             {
-              "scheme": "travelai"
+              "scheme": "shturman"
             }
           ],
           "category": [
@@ -62,7 +64,15 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#1C4FA3",
+          "sounds": []
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -71,6 +81,9 @@
       "eas": {
         "projectId": "17189531-e2e5-4c3f-a9b3-5061cad11d82"
       },
+      "supportUrl": "https://shturman.app/support",
+      "privacyPolicyUrl": "https://shturman.app/privacy",
+      "termsUrl": "https://shturman.app/terms",
       "router": {
         "origin": false
       }

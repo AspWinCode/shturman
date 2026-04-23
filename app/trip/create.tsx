@@ -1,5 +1,6 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   View,
   Text,
   StyleSheet,
@@ -8,10 +9,13 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Image,
+  useWindowDimensions,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { CitySearchInput } from '@/components/ui/CitySearchInput';
 import { DatePickerInput } from '@/components/ui/DatePickerInput';
@@ -19,6 +23,7 @@ import Colors from '@/constants/colors';
 import { BorderRadius, Spacing, Typography } from '@/constants/theme';
 import { INTERESTS, TRAVEL_STYLES, TravelStyle, POPULAR_CITIES } from '@/constants/data';
 import { useStore } from '@/store/useStore';
+import { track } from '@/store/analyticsService';
 
 const BUDGET_PRESETS = [15000, 30000, 60000, 120000];
 const INTEREST_MAP: Record<string, string[]> = {
@@ -80,8 +85,13 @@ function inferStyleFromRoute(budget: number | null, days: number | null): Travel
 }
 
 export default function CreateTripScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+
   const updateTripForm = useStore((s) => s.updateTripForm);
-  const generateTrip = useStore((s) => s.generateTrip);
+  const canCreateTrip = useStore((s) => s.canCreateTrip);
   const params = useLocalSearchParams<{
     to?: string;
     routeDuration?: string;
@@ -96,6 +106,7 @@ export default function CreateTripScreen() {
   const [budget, setBudget] = useState(30000);
   const [budgetText, setBudgetText] = useState('30000');
   const [travelers, setTravelers] = useState(1);
+  const [needsAccessibility, setNeedsAccessibility] = useState(false);
   const [interests, setInterests] = useState<string[]>([]);
   const [style, setStyle] = useState<TravelStyle>('standard');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -184,12 +195,38 @@ export default function CreateTripScreen() {
     return Object.keys(e).length === 0;
   };
 
-  const handleGenerate = () => {
+  const handleContinue = () => {
     if (!validate()) return;
-    const nextForm = { from, to, startDate, endDate, budget, travelers, interests, travelStyle: style };
+    if (!canCreateTrip()) {
+      Alert.alert(
+        'Лимит поездок',
+        'В бесплатной версии можно создать 3 поездки в месяц. Оформи Premium для безлимитных путешествий.',
+        [
+          { text: 'Отмена', style: 'cancel' },
+          { text: 'Premium', onPress: () => router.push('/(premium)' as never) },
+        ]
+      );
+      return;
+    }
+    const nextForm = {
+      from,
+      to,
+      startDate,
+      endDate,
+      budget,
+      travelers,
+      interests,
+      travelStyle: style,
+      preferredHotel: '',
+      preferredHotelPricePerNight: 0,
+      preferredHotelRoomCapacity: 0,
+      preferredTransportType: '' as const,
+      preferredTransportCarrier: '',
+      preferredTransportTotalPrice: 0,
+      needsAccessibility,
+    };
     updateTripForm(nextForm);
-    generateTrip(nextForm);
-    router.push('/trip/generating');
+    router.push('/trip/hotel-select');
   };
 
   return (
@@ -200,11 +237,34 @@ export default function CreateTripScreen() {
       <StatusBar style="light" />
 
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: Colors.primary }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: Colors.primary,
+            paddingTop: insets.top + 12,
+            paddingHorizontal: horizontalPadding,
+          },
+        ]}
+      >
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={[
+            styles.backBtn,
+            isCompact && styles.backBtnCompact,
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Назад"
+          accessibilityHint="Вернуться на предыдущий экран"
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
           <Ionicons name="arrow-back" size={22} color="#fff" />
         </TouchableOpacity>
         <View style={styles.headerContent}>
+          <View style={styles.brandRow}>
+            <Image source={require('@/assets/shturman-logo.png')} style={styles.brandLogo} />
+            <Text style={styles.brandLabel}>Штурман</Text>
+          </View>
           <Text style={styles.headerTitle}>Новая поездка</Text>
           <Text style={styles.headerSubtitle}>Заполните форму и получите план за минуту</Text>
         </View>
@@ -212,7 +272,13 @@ export default function CreateTripScreen() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: 24 + insets.bottom + 92,
+          },
+        ]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
@@ -225,6 +291,7 @@ export default function CreateTripScreen() {
             placeholder="Город отправления"
             value={from}
             onSelect={setFrom}
+            testID="input-from"
             leftIcon="airplane-outline"
             error={errors.from}
           />
@@ -234,6 +301,7 @@ export default function CreateTripScreen() {
             placeholder="Город назначения"
             value={to}
             onSelect={setTo}
+            testID="input-to"
             leftIcon="location-outline"
             error={errors.to}
           />
@@ -294,7 +362,7 @@ export default function CreateTripScreen() {
             ].map(({ label, days }) => (
               <TouchableOpacity
                 key={label}
-                style={styles.datePreset}
+                style={[styles.datePreset, isCompact && styles.twoColToOneCol]}
                 onPress={() => {
                   const start = startDate || new Date().toISOString().split('T')[0];
                   const endD = new Date(start);
@@ -342,7 +410,7 @@ export default function CreateTripScreen() {
                 <TouchableOpacity
                   key={preset}
                   onPress={() => handleBudgetPreset(preset)}
-                  style={[styles.budgetBtn, isActive && styles.budgetBtnSelected]}
+                  style={[styles.budgetBtn, isCompact && styles.twoColToOneCol, isActive && styles.budgetBtnSelected]}
                 >
                   {isActive && (
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: Colors.primary }]} />
@@ -363,6 +431,8 @@ export default function CreateTripScreen() {
             <TouchableOpacity
               style={styles.counterBtn}
               onPress={() => setTravelers(Math.max(1, travelers - 1))}
+              accessibilityRole="button"
+              accessibilityLabel="Уменьшить количество путешественников"
             >
               <Ionicons name="remove" size={20} color={Colors.primary} />
             </TouchableOpacity>
@@ -375,10 +445,38 @@ export default function CreateTripScreen() {
             <TouchableOpacity
               style={styles.counterBtn}
               onPress={() => setTravelers(Math.min(10, travelers + 1))}
+              accessibilityRole="button"
+              accessibilityLabel="Увеличить количество путешественников"
             >
               <Ionicons name="add" size={20} color={Colors.primary} />
             </TouchableOpacity>
           </View>
+        </View>
+
+        <View style={styles.section}>
+          <TouchableOpacity
+            style={styles.accessibilityToggle}
+            onPress={() =>
+              setNeedsAccessibility((prev) => {
+                const next = !prev;
+                if (next) {
+                  void track('accessibility_filter_used', { source: 'trip_create' });
+                }
+                return next;
+              })
+            }
+            accessibilityLabel="Фильтр доступных мест"
+            accessibilityRole="switch"
+            accessibilityState={{ checked: needsAccessibility }}
+          >
+            <View style={styles.accessibilityInfo}>
+              <Text style={styles.accessibilityTitle}>♿ Нужны доступные места</Text>
+              <Text style={styles.accessibilitySubtitle}>Только локации с доступом для колясок</Text>
+            </View>
+            <View style={[styles.toggleTrack, needsAccessibility && styles.toggleTrackActive]}>
+              <View style={[styles.toggleThumb, needsAccessibility && styles.toggleThumbActive]} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Section: Travel Style */}
@@ -391,6 +489,7 @@ export default function CreateTripScreen() {
                 onPress={() => setStyle(item.id as TravelStyle)}
                 style={[
                   styles.styleCard,
+                  isCompact && styles.twoColToOneCol,
                   style === item.id && { borderColor: item.color, borderWidth: 2, backgroundColor: item.color + '10' },
                 ]}
               >
@@ -427,8 +526,16 @@ export default function CreateTripScreen() {
         <View style={{ height: 16 }} />
       </ScrollView>
 
-      <View style={styles.footer}>
-        <Button title="Сгенерировать маршрут" onPress={handleGenerate} size="lg" />
+      <View
+        style={[
+          styles.footer,
+          {
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: Spacing.lg + Math.max(insets.bottom, 8),
+          },
+        ]}
+      >
+        <Button title="Продолжить к отелю" onPress={handleContinue} size="lg" testID="btn-generate" />
       </View>
     </KeyboardAvoidingView>
   );
@@ -500,7 +607,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  backBtnCompact: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+  },
   headerContent: { flex: 1 },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
+  },
+  brandLogo: {
+    width: 20,
+    height: 20,
+    borderRadius: 6,
+  },
+  brandLabel: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: Typography.sizes.xs,
+    fontWeight: Typography.weights.semibold,
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  },
   headerTitle: {
     fontSize: Typography.sizes.xl,
     fontWeight: Typography.weights.bold,
@@ -652,6 +782,55 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
+  accessibilityToggle: {
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: Colors.surface,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  accessibilityInfo: {
+    flex: 1,
+  },
+  accessibilityTitle: {
+    fontSize: Typography.sizes.base,
+    fontWeight: Typography.weights.semibold,
+    color: Colors.text,
+  },
+  accessibilitySubtitle: {
+    marginTop: 2,
+    fontSize: Typography.sizes.sm,
+    color: Colors.textSecondary,
+  },
+  toggleTrack: {
+    width: 48,
+    height: 28,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.surfaceAlt,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  toggleTrackActive: {
+    backgroundColor: Colors.primary + '26',
+    borderColor: Colors.primary + '55',
+  },
+  toggleThumb: {
+    width: 22,
+    height: 22,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.textTertiary,
+  },
+  toggleThumbActive: {
+    marginLeft: 'auto',
+    backgroundColor: Colors.primary,
+  },
   counterBtn: {
     width: 44,
     height: 44,
@@ -733,6 +912,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: Colors.border,
   },
+  twoColToOneCol: {
+    width: '100%',
+  },
 });
-
-

@@ -6,21 +6,33 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import Colors from '@/constants/colors';
 import { BorderRadius, Shadows, Spacing, Typography } from '@/constants/theme';
 import { useStore } from '@/store/useStore';
 import { Trip } from '@/constants/data';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { getCachedTripIds } from '@/store/offlineService';
+import { t } from '@/store/i18n';
 
 type TabId = 'upcoming' | 'past';
 
 export default function TripsScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+  const fabSize = isCompact ? 54 : 60;
+
   const [activeTab, setActiveTab] = useState<TabId>('upcoming');
+  const [cachedIds, setCachedIds] = useState<string[]>([]);
   const trips = useStore((s) => s.trips);
   const deleteTrip = useStore((s) => s.deleteTrip);
 
@@ -28,13 +40,27 @@ export default function TripsScreen() {
   const pastTrips = trips.filter((t) => t.status === 'past');
   const displayedTrips = activeTab === 'upcoming' ? upcomingTrips : pastTrips;
 
+  useFocusEffect(
+    React.useCallback(() => {
+      void getCachedTripIds().then(setCachedIds).catch(() => setCachedIds([]));
+    }, [trips.length])
+  );
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
 
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Мои поездки</Text>
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: insets.top + 12,
+            paddingHorizontal: horizontalPadding,
+          },
+        ]}
+      >
+        <Text style={styles.headerTitle}>{t('trip.myTrips')}</Text>
         <Text style={styles.headerSubtitle}>
           {trips.length} поездок в профиле
         </Text>
@@ -58,7 +84,13 @@ export default function TripsScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: 110 + insets.bottom,
+          },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         {displayedTrips.length === 0 ? (
@@ -73,6 +105,8 @@ export default function TripsScreen() {
               trip={trip}
               onPress={() => router.push(`/trip/${trip.id}`)}
               onDelete={() => deleteTrip(trip.id)}
+              onWallet={() => router.push(`/(wallet)/trip/${trip.id}` as never)}
+              isOfflineAvailable={cachedIds.includes(trip.id)}
             />
           ))
         )}
@@ -81,11 +115,17 @@ export default function TripsScreen() {
 
       {/* FAB */}
       <TouchableOpacity
-        style={styles.fab}
+        style={[
+          styles.fab,
+          {
+            bottom: insets.bottom + 74,
+            right: horizontalPadding,
+          },
+        ]}
         onPress={() => router.push('/trip/create')}
         activeOpacity={0.9}
       >
-        <View style={styles.fabGradient}>
+        <View style={[styles.fabGradient, { width: fabSize, height: fabSize, borderRadius: fabSize / 2 }]}>
           <Ionicons name="add" size={28} color="#fff" />
         </View>
       </TouchableOpacity>
@@ -93,14 +133,18 @@ export default function TripsScreen() {
   );
 }
 
-function TripCard({
+const TripCard = React.memo(function TripCard({
   trip,
   onPress,
   onDelete,
+  onWallet,
+  isOfflineAvailable,
 }: {
   trip: Trip;
   onPress: () => void;
   onDelete: () => void;
+  onWallet: () => void;
+  isOfflineAvailable: boolean;
 }) {
   const nights = Math.max(0, trip.days.length - 1);
   const total = trip.totalTransport + trip.totalHotel + trip.totalActivities + trip.totalFood;
@@ -120,6 +164,12 @@ function TripCard({
             variant={trip.status === 'upcoming' ? 'success' : 'neutral'}
             size="sm"
           />
+          {isOfflineAvailable && (
+            <View style={styles.offlineBadge}>
+              <Ionicons name="cloud-done-outline" size={12} color={Colors.success} />
+              <Text style={styles.offlineBadgeText}>Оффлайн</Text>
+            </View>
+          )}
         </View>
       </View>
 
@@ -162,6 +212,9 @@ function TripCard({
               {total.toLocaleString('ru-RU')} ₽
             </Text>
           </View>
+          <TouchableOpacity style={styles.tripDocsBtn} onPress={onWallet} accessibilityRole="button" accessibilityLabel="Документы поездки">
+            <Ionicons name="wallet-outline" size={14} color={Colors.primary} />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.tripOpenBtn}>
             <Text style={styles.tripOpenText}>Открыть</Text>
             <Ionicons name="chevron-forward" size={14} color={Colors.primary} />
@@ -170,7 +223,7 @@ function TripCard({
       </View>
     </TouchableOpacity>
   );
-}
+});
 
 function EmptyState({
   tab,
@@ -192,7 +245,7 @@ function EmptyState({
       </Text>
       {tab === 'upcoming' && (
         <Button
-          title="Создать поездку"
+          title={t('trip.createTrip')}
           onPress={onCreateTrip}
           size="md"
           fullWidth={false}
@@ -274,6 +327,23 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
     left: 12,
+    gap: 6,
+  },
+  offlineBadge: {
+    marginTop: 6,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+    backgroundColor: '#DCFCE7',
+  },
+  offlineBadgeText: {
+    color: Colors.success,
+    fontSize: Typography.sizes.xs,
+    fontWeight: Typography.weights.semibold,
   },
   tripInfo: {
     padding: Spacing.base,
@@ -344,6 +414,16 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#EEF2FF',
     borderRadius: BorderRadius.lg,
+  },
+  tripDocsBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: Colors.primary + '33',
+    backgroundColor: Colors.primary + '10',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tripOpenText: {
     fontSize: Typography.sizes.sm,

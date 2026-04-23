@@ -1,21 +1,60 @@
 ﻿import { create } from 'zustand';
+import * as FileSystem from 'expo-file-system';
 import {
+  DocumentType,
+  Place,
+  Review,
   Trip,
+  TripDocument,
   TravelStyle,
   TravelerType,
   MOCK_TRIPS,
 } from '@/constants/data';
 import { deleteTripFromDb, fetchTripsFromDb, resetTripsDb, upsertTripToDb } from '@/store/tripsDb';
 import { generateTripFromForm } from '@/store/tripGenerator';
+import { generateTripWithAI } from '@/store/aiTripGenerator';
 import {
   changePasswordForUser,
+  deleteAccountForUser,
   hydrateAuthStorage,
   loginUser,
   logoutUser,
+  oauthLoginUser,
   registerUser,
   resetAuthStorage,
   resetPasswordByEmail,
 } from '@/store/authStorage';
+import {
+  cancelTripNotifications,
+  clearAllTripNotifications,
+  scheduleTripNotifications,
+} from '@/store/notificationsService';
+import {
+  addDocument as addDocumentDb,
+  clearAllDocuments as clearAllDocumentsDb,
+  deleteDocumentsByTripId,
+  deleteDocument as deleteDocumentDb,
+  getAllDocuments as getAllDocumentsDb,
+  getDocuments as getDocumentsDb,
+} from '@/store/walletDb';
+import { clearCachedTrips, removeCachedTrip } from '@/store/offlineService';
+import {
+  addReview as addReviewDb,
+  clearAllReviews as clearAllReviewsDb,
+  deleteReview as deleteReviewDb,
+  getAllReviews as getAllReviewsDb,
+  getReviewsForPlace as getReviewsForPlaceDb,
+} from '@/store/reviewsDb';
+import {
+  FREE_TRIP_LIMIT,
+  SubscriptionPlan,
+  SubscriptionState,
+  countTripsThisMonth,
+  isPremiumActive,
+  loadSubscriptionState,
+  saveSubscriptionState,
+} from '@/store/subscriptionService';
+import { setAnalyticsUser, track } from '@/store/analyticsService';
 
 interface UserProfile {
   name: string;
@@ -28,7 +67,7 @@ interface UserProfile {
   onboardingCompleted: boolean;
 }
 
-interface TripForm {
+export interface TripForm {
   from: string;
   to: string;
   startDate: string;
@@ -37,6 +76,13 @@ interface TripForm {
   travelers: number;
   interests: string[];
   travelStyle: TravelStyle;
+  preferredHotel: string;
+  preferredHotelPricePerNight: number;
+  preferredHotelRoomCapacity: number;
+  preferredTransportType: 'flight' | 'train' | 'bus' | '';
+  preferredTransportCarrier: string;
+  preferredTransportTotalPrice: number;
+  needsAccessibility: boolean;
 }
 
 interface AppStore {
@@ -45,8 +91,11 @@ interface AppStore {
   tripForm: TripForm;
   generatedTrip: Trip | null;
   favorites: string[];
+  subscription: SubscriptionState;
   tripsHydrated: boolean;
   authHydrated: boolean;
+  generatingWithAI: boolean;
+  lastGenerationWasAI: boolean;
 
   setUser: (user: Partial<UserProfile>) => void;
   hydrateAuth: () => Promise<void>;
@@ -54,6 +103,8 @@ interface AppStore {
   register: (name: string, email: string, password: string) => Promise<{ ok: boolean; message?: string }>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<{ ok: boolean; message?: string }>;
   recoverPassword: (email: string, newPassword: string) => Promise<{ ok: boolean; message?: string }>;
+  oauthLogin: (provider: 'yandex' | 'google' | 'apple', idToken: string, user: { email: string; name: string }) => Promise<{ ok: boolean; message?: string }>;
+  deleteAccount: () => Promise<{ ok: boolean; message?: string }>;
   logout: () => Promise<void>;
   completeOnboarding: (interests: string[], style: TravelStyle, type: TravelerType) => void;
 
@@ -61,12 +112,36 @@ interface AppStore {
   resetTripForm: () => void;
   hydrateTrips: () => Promise<void>;
   generateTrip: (input?: Partial<TripForm>) => void;
+  generateTripAI: () => Promise<void>;
   clearGeneratedTrip: () => void;
   saveTrip: (trip: Trip) => void;
   deleteTrip: (id: string) => void;
   resetDemoData: () => Promise<void>;
 
   toggleFavorite: (routeId: string) => void;
+  loadSubscription: () => Promise<void>;
+  activateSubscription: (plan: SubscriptionPlan, expiresAt: string) => Promise<void>;
+  isPremium: () => boolean;
+  canCreateTrip: () => boolean;
+  setTripExpense: (tripId: string, category: keyof NonNullable<Trip['expenses']>, amount: number) => void;
+  addPlaceToGeneratedDay: (dayIndex: number, place: Place) => void;
+  removePlaceFromGeneratedDay: (dayIndex: number, placeId: string) => void;
+  movePlaceInGeneratedDay: (dayIndex: number, fromIndex: number, toIndex: number) => void;
+  addPlaceToDay: (tripId: string, dayIndex: number, place: Place) => void;
+  removePlaceFromDay: (tripId: string, dayIndex: number, placeId: string) => void;
+  movePlaceInDay: (tripId: string, dayIndex: number, fromIndex: number, toIndex: number) => void;
+  addDocument: (
+    tripId: string,
+    asset: { uri: string; name: string; mimeType: string; size: number },
+    type: DocumentType
+  ) => Promise<{ ok: boolean; message?: string }>;
+  removeDocument: (docId: string) => Promise<void>;
+  getDocumentsForTrip: (tripId: string) => Promise<TripDocument[]>;
+  getAllDocuments: () => Promise<TripDocument[]>;
+  addReview: (review: Review) => Promise<void>;
+  getReviewsForPlace: (placeId: string) => Promise<Review[]>;
+  getMyReviews: () => Promise<Review[]>;
+  deleteReview: (reviewId: string) => Promise<void>;
 }
 
 const defaultTripForm: TripForm = {
@@ -78,6 +153,13 @@ const defaultTripForm: TripForm = {
   travelers: 1,
   interests: [],
   travelStyle: 'standard',
+  preferredHotel: '',
+  preferredHotelPricePerNight: 0,
+  preferredHotelRoomCapacity: 0,
+  preferredTransportType: '',
+  preferredTransportCarrier: '',
+  preferredTransportTotalPrice: 0,
+  needsAccessibility: false,
 };
 
 
@@ -100,6 +182,41 @@ function sortTripsForUi(trips: Trip[]): Trip[] {
   });
 }
 
+function normalizePlaceTime(index: number): string {
+  const defaults = ['10:00', '13:00', '16:00', '19:00', '21:00'];
+  return defaults[index] ?? `${String(Math.min(23, 10 + index * 2)).padStart(2, '0')}:00`;
+}
+
+function withPlaceDefaults(place: Place, currentDayPlaces: Place[]): Place {
+  const safeId = place.id?.trim() ? place.id : `place-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+  return {
+    ...place,
+    id: safeId,
+    time: place.time?.trim() ? place.time : normalizePlaceTime(currentDayPlaces.length),
+    duration: place.duration?.trim() ? place.duration : '1.5 часа',
+    rating: Number.isFinite(place.rating) ? place.rating : 4.5,
+    address: place.address?.trim() ? place.address : '',
+    emoji: place.emoji?.trim() ? place.emoji : '📍',
+  };
+}
+
+function applyTimeByOrder(places: Place[]): Place[] {
+  return places.map((place, index) => ({
+    ...place,
+    time: normalizePlaceTime(index),
+  }));
+}
+
+function moveItem<T>(items: T[], fromIndex: number, toIndex: number): T[] {
+  if (fromIndex === toIndex) return items;
+  if (fromIndex < 0 || toIndex < 0 || fromIndex >= items.length || toIndex >= items.length) return items;
+  const copy = [...items];
+  const [moved] = copy.splice(fromIndex, 1);
+  if (!moved) return items;
+  copy.splice(toIndex, 0, moved);
+  return copy;
+}
+
 export const useStore = create<AppStore>((set, get) => ({
   user: {
     name: '',
@@ -115,8 +232,11 @@ export const useStore = create<AppStore>((set, get) => ({
   tripForm: defaultTripForm,
   generatedTrip: null,
   favorites: [],
+  subscription: { plan: 'none', expiresAt: null, originalOrderId: null },
   tripsHydrated: false,
   authHydrated: false,
+  generatingWithAI: false,
+  lastGenerationWasAI: false,
 
   setUser: (userData) =>
     set((state) => ({ user: { ...state.user, ...userData } })),
@@ -124,7 +244,10 @@ export const useStore = create<AppStore>((set, get) => ({
   hydrateAuth: async () => {
     try {
       const { sessionUser } = await hydrateAuthStorage();
+      const subscription = await loadSubscriptionState();
+      set({ subscription });
       if (sessionUser) {
+        void setAnalyticsUser(sessionUser.email);
         set((state) => ({
           user: {
             ...state.user,
@@ -138,9 +261,11 @@ export const useStore = create<AppStore>((set, get) => ({
         return;
       }
 
+      void setAnalyticsUser(null);
       set({ authHydrated: true });
     } catch (error) {
       console.warn('Failed to hydrate auth session', error);
+      void setAnalyticsUser(null);
       set({ authHydrated: true });
     }
   },
@@ -160,6 +285,7 @@ export const useStore = create<AppStore>((set, get) => ({
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${result.user.email}`,
       },
     }));
+    void setAnalyticsUser(result.user.email);
     return { ok: true };
   },
 
@@ -191,6 +317,50 @@ export const useStore = create<AppStore>((set, get) => ({
     return { ok: true };
   },
 
+  oauthLogin: async (provider, idToken, oauthUser) => {
+    const result = await oauthLoginUser(provider, idToken, oauthUser);
+    if (!result.ok) {
+      return { ok: false, message: result.message };
+    }
+    set((state) => ({
+      user: {
+        ...state.user,
+        email: result.user.email,
+        name: result.user.name,
+        isLoggedIn: true,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${result.user.email}`,
+      },
+    }));
+    void setAnalyticsUser(result.user.email);
+    return { ok: true };
+  },
+
+  deleteAccount: async () => {
+    const result = await deleteAccountForUser();
+    if (!result.ok) {
+      return { ok: false, message: result.message };
+    }
+    await clearAllDocumentsDb();
+    await clearAllReviewsDb();
+    await clearCachedTrips();
+    set((state) => ({
+      user: {
+        ...state.user,
+        isLoggedIn: false,
+        name: '',
+        email: '',
+      },
+      trips: [],
+      favorites: [],
+      subscription: { plan: 'none', expiresAt: null, originalOrderId: null },
+      generatedTrip: null,
+      generatingWithAI: false,
+      lastGenerationWasAI: false,
+    }));
+    void setAnalyticsUser(null);
+    return { ok: true };
+  },
+
   logout: async () => {
     await logoutUser();
     set((state) => ({
@@ -200,19 +370,27 @@ export const useStore = create<AppStore>((set, get) => ({
         name: '',
         email: '',
       },
+      subscription: { plan: 'none', expiresAt: null, originalOrderId: null },
+      generatedTrip: null,
+      generatingWithAI: false,
+      lastGenerationWasAI: false,
     }));
+    void setAnalyticsUser(null);
   },
 
   completeOnboarding: (interests, style, type) =>
-    set((state) => ({
-      user: {
-        ...state.user,
-        interests,
-        travelStyle: style,
-        travelerType: type,
-        onboardingCompleted: true,
-      },
-    })),
+    set((state) => {
+      void track('onboarding_completed', { interestsCount: interests.length, style, travelerType: type });
+      return {
+        user: {
+          ...state.user,
+          interests,
+          travelStyle: style,
+          travelerType: type,
+          onboardingCompleted: true,
+        },
+      };
+    }),
 
   updateTripForm: (form) =>
     set((state) => ({ tripForm: { ...state.tripForm, ...form } })),
@@ -239,10 +417,47 @@ export const useStore = create<AppStore>((set, get) => ({
     const current = get().tripForm;
     const nextForm = input ? { ...current, ...input } : current;
     const generated = generateTripFromForm(nextForm);
-    set({ generatedTrip: generated });
+    set({ generatedTrip: generated, lastGenerationWasAI: false });
   },
 
-  clearGeneratedTrip: () => set({ generatedTrip: null }),
+  generateTripAI: async () => {
+    const form = get().tripForm;
+
+    if (!get().isPremium()) {
+      get().generateTrip();
+      void track('ai_generation_fallback', { reason: 'free_plan' });
+      void track('trip_created', { source: 'template' });
+      return;
+    }
+
+    void track('ai_generation_started', { to: form.to || '' });
+    set({ generatingWithAI: true, generatedTrip: null, lastGenerationWasAI: false });
+    try {
+      const fallback = () => generateTripFromForm(form);
+      const { trip, generatedByAI } = await generateTripWithAI(form, fallback);
+      set({
+        generatedTrip: trip,
+        generatingWithAI: false,
+        lastGenerationWasAI: generatedByAI,
+      });
+      void track(generatedByAI ? 'ai_generation_success' : 'ai_generation_fallback', {
+        to: form.to || '',
+      });
+      void track('trip_created', { source: generatedByAI ? 'ai' : 'template' });
+    } catch (error) {
+      console.warn('AI generation failed, fallback used', error);
+      const generated = generateTripFromForm(form);
+      set({
+        generatedTrip: generated,
+        generatingWithAI: false,
+        lastGenerationWasAI: false,
+      });
+      void track('ai_generation_fallback', { reason: 'exception' });
+      void track('trip_created', { source: 'template' });
+    }
+  },
+
+  clearGeneratedTrip: () => set({ generatedTrip: null, generatingWithAI: false, lastGenerationWasAI: false }),
 
   saveTrip: (trip) =>
     set((state) => {
@@ -250,15 +465,24 @@ export const useStore = create<AppStore>((set, get) => ({
       void upsertTripToDb(savedTrip).catch((error) => {
         console.warn('Failed to save trip to database', error);
       });
+      void scheduleTripNotifications({
+        id: savedTrip.id,
+        to: savedTrip.to,
+        startDate: savedTrip.startDate,
+        endDate: savedTrip.endDate,
+      }).catch(() => {});
 
       const nextTrips = sortTripsForUi([
         ...state.trips.filter((t) => t.id !== savedTrip.id),
         savedTrip,
       ]);
+      void track('trip_saved', { to: savedTrip.to, days: savedTrip.days.length });
 
       return {
         trips: nextTrips,
         generatedTrip: null,
+        generatingWithAI: false,
+        lastGenerationWasAI: false,
       };
     }),
 
@@ -267,6 +491,10 @@ export const useStore = create<AppStore>((set, get) => ({
       void deleteTripFromDb(id).catch((error) => {
         console.warn('Failed to delete trip from database', error);
       });
+      void cancelTripNotifications(id).catch(() => {});
+      void deleteDocumentsByTripId(id).catch(() => {});
+      void removeCachedTrip(id).catch(() => {});
+      void track('trip_deleted', { tripId: id });
 
       return {
         trips: state.trips.filter((t) => t.id !== id),
@@ -278,6 +506,10 @@ export const useStore = create<AppStore>((set, get) => ({
     const prevUser = get().user;
 
     await resetTripsDb({ reseed: true });
+    await clearAllTripNotifications();
+    await clearAllDocumentsDb();
+    await clearAllReviewsDb();
+    await clearCachedTrips();
     if (!wasLoggedIn) {
       await resetAuthStorage();
     }
@@ -300,10 +532,212 @@ export const useStore = create<AppStore>((set, get) => ({
       trips: sortTripsForUi(refreshedTrips),
       tripForm: defaultTripForm,
       generatedTrip: null,
+      generatingWithAI: false,
+      lastGenerationWasAI: false,
       favorites: [],
+      subscription: wasLoggedIn
+        ? get().subscription
+        : { plan: 'none', expiresAt: null, originalOrderId: null },
       authHydrated: true,
       tripsHydrated: true,
     });
+  },
+
+  setTripExpense: (tripId, category, amount) =>
+    set((state) => {
+      const updatedTrips = state.trips.map((t) => {
+        if (t.id !== tripId) return t;
+        const updated: Trip = {
+          ...t,
+          expenses: { ...t.expenses, [category]: amount },
+        };
+        void upsertTripToDb(updated).catch(() => {});
+        return updated;
+      });
+      const updatedGenerated =
+        state.generatedTrip?.id === tripId
+          ? { ...state.generatedTrip, expenses: { ...state.generatedTrip.expenses, [category]: amount } }
+          : state.generatedTrip;
+      return { trips: updatedTrips, generatedTrip: updatedGenerated };
+    }),
+
+  addPlaceToGeneratedDay: (dayIndex, place) =>
+    set((state) => {
+      if (!state.generatedTrip) return state;
+      const nextDays = state.generatedTrip.days.map((day, idx) => {
+        if (idx !== dayIndex) return day;
+        const nextPlace = withPlaceDefaults(place, day.places);
+        return { ...day, places: [...day.places, nextPlace] };
+      });
+      return { generatedTrip: { ...state.generatedTrip, days: nextDays } };
+    }),
+
+  removePlaceFromGeneratedDay: (dayIndex, placeId) =>
+    set((state) => {
+      if (!state.generatedTrip) return state;
+      const nextDays = state.generatedTrip.days.map((day, idx) => {
+        if (idx !== dayIndex) return day;
+        return { ...day, places: day.places.filter((p) => p.id !== placeId) };
+      });
+      return { generatedTrip: { ...state.generatedTrip, days: nextDays } };
+    }),
+
+  movePlaceInGeneratedDay: (dayIndex, fromIndex, toIndex) =>
+    set((state) => {
+      if (!state.generatedTrip) return state;
+      const nextDays = state.generatedTrip.days.map((day, idx) => {
+        if (idx !== dayIndex) return day;
+        const moved = moveItem(day.places, fromIndex, toIndex);
+        return { ...day, places: applyTimeByOrder(moved) };
+      });
+      return { generatedTrip: { ...state.generatedTrip, days: nextDays } };
+    }),
+
+  addPlaceToDay: (tripId, dayIndex, place) =>
+    set((state) => {
+      let updatedTripForDb: Trip | null = null;
+      let updatedDays: Trip['days'] | null = null;
+      const nextTrips = state.trips.map((trip) => {
+        if (trip.id !== tripId) return trip;
+        const nextDays = trip.days.map((day, idx) => {
+          if (idx !== dayIndex) return day;
+          const nextPlace = withPlaceDefaults(place, day.places);
+          return { ...day, places: [...day.places, nextPlace] };
+        });
+        updatedDays = nextDays;
+        updatedTripForDb = { ...trip, days: nextDays };
+        return updatedTripForDb;
+      });
+
+      if (updatedTripForDb) {
+        void upsertTripToDb(updatedTripForDb).catch(() => {});
+      }
+
+      const nextGenerated =
+        state.generatedTrip?.id === tripId && updatedDays
+          ? { ...state.generatedTrip, days: updatedDays }
+          : state.generatedTrip;
+
+      return { trips: nextTrips, generatedTrip: nextGenerated };
+    }),
+
+  removePlaceFromDay: (tripId, dayIndex, placeId) =>
+    set((state) => {
+      let updatedTripForDb: Trip | null = null;
+      let updatedDays: Trip['days'] | null = null;
+      const nextTrips = state.trips.map((trip) => {
+        if (trip.id !== tripId) return trip;
+        const nextDays = trip.days.map((day, idx) => {
+          if (idx !== dayIndex) return day;
+          return { ...day, places: day.places.filter((p) => p.id !== placeId) };
+        });
+        updatedDays = nextDays;
+        updatedTripForDb = { ...trip, days: nextDays };
+        return updatedTripForDb;
+      });
+
+      if (updatedTripForDb) {
+        void upsertTripToDb(updatedTripForDb).catch(() => {});
+      }
+
+      const nextGenerated =
+        state.generatedTrip?.id === tripId && updatedDays
+          ? { ...state.generatedTrip, days: updatedDays }
+          : state.generatedTrip;
+
+      return { trips: nextTrips, generatedTrip: nextGenerated };
+    }),
+
+  movePlaceInDay: (tripId, dayIndex, fromIndex, toIndex) =>
+    set((state) => {
+      let updatedTripForDb: Trip | null = null;
+      let updatedDays: Trip['days'] | null = null;
+
+      const nextTrips = state.trips.map((trip) => {
+        if (trip.id !== tripId) return trip;
+        const nextDays = trip.days.map((day, idx) => {
+          if (idx !== dayIndex) return day;
+          const moved = moveItem(day.places, fromIndex, toIndex);
+          return { ...day, places: applyTimeByOrder(moved) };
+        });
+        updatedDays = nextDays;
+        updatedTripForDb = { ...trip, days: nextDays };
+        return updatedTripForDb;
+      });
+
+      if (updatedTripForDb) {
+        void upsertTripToDb(updatedTripForDb).catch(() => {});
+      }
+
+      const nextGenerated =
+        state.generatedTrip?.id === tripId && updatedDays
+          ? { ...state.generatedTrip, days: updatedDays }
+          : state.generatedTrip;
+
+      return { trips: nextTrips, generatedTrip: nextGenerated };
+    }),
+
+  addDocument: async (tripId, asset, type) => {
+    try {
+      const ext = asset.mimeType === 'application/pdf'
+        ? '.pdf'
+        : asset.mimeType === 'image/png'
+          ? '.png'
+          : '.jpg';
+      const fileName = `doc_${Date.now()}${ext}`;
+      const walletDir = `${FileSystem.documentDirectory}wallet/`;
+      const destUri = `${walletDir}${fileName}`;
+
+      await FileSystem.makeDirectoryAsync(walletDir, { intermediates: true });
+      await FileSystem.copyAsync({ from: asset.uri, to: destUri });
+
+      const doc: TripDocument = {
+        id: `doc_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        tripId,
+        type,
+        name: asset.name,
+        uri: destUri,
+        mimeType: asset.mimeType,
+        sizeBytes: asset.size,
+        uploadedAt: new Date().toISOString(),
+      };
+
+      await addDocumentDb(doc);
+      void track('wallet_document_added', { type, tripId });
+      return { ok: true };
+    } catch (error) {
+      console.warn('Failed to add wallet document', error);
+      return { ok: false, message: 'Не удалось сохранить документ' };
+    }
+  },
+
+  removeDocument: async (docId) => {
+    await deleteDocumentDb(docId);
+  },
+
+  getDocumentsForTrip: async (tripId) => {
+    return getDocumentsDb(tripId);
+  },
+
+  getAllDocuments: async () => {
+    return getAllDocumentsDb();
+  },
+
+  addReview: async (review) => {
+    await addReviewDb(review);
+    void track('review_added', { placeId: review.placeId, rating: review.rating });
+  },
+
+  getReviewsForPlace: async (placeId) => {
+    return getReviewsForPlaceDb(placeId);
+  },
+
+  getMyReviews: async () => {
+    return getAllReviewsDb();
+  },
+
+  deleteReview: async (reviewId) => {
+    await deleteReviewDb(reviewId);
   },
 
   toggleFavorite: (routeId) =>
@@ -312,6 +746,29 @@ export const useStore = create<AppStore>((set, get) => ({
         ? state.favorites.filter((id) => id !== routeId)
         : [...state.favorites, routeId],
     })),
-}));
 
+  loadSubscription: async () => {
+    const state = await loadSubscriptionState();
+    set({ subscription: state });
+  },
+
+  activateSubscription: async (plan, expiresAt) => {
+    const nextState: SubscriptionState = {
+      plan,
+      expiresAt,
+      originalOrderId: null,
+    };
+    await saveSubscriptionState(nextState);
+    set({ subscription: nextState });
+  },
+
+  isPremium: () => {
+    return isPremiumActive(get().subscription);
+  },
+
+  canCreateTrip: () => {
+    if (isPremiumActive(get().subscription)) return true;
+    return countTripsThisMonth(get().trips) < FREE_TRIP_LIMIT;
+  },
+}));
 

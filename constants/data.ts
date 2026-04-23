@@ -42,49 +42,49 @@ export const POPULAR_CITIES = [
     name: 'Санкт-Петербург',
     country: 'Россия',
     emoji: '🏰',
-    image: 'https://images.unsplash.com/photo-1548834925-e48f8a27d7b2?w=800',
+    image: 'https://source.unsplash.com/featured/1600x900/?saint-petersburg,russia,city',
   },
   {
     id: 'moscow',
     name: 'Москва',
     country: 'Россия',
     emoji: '🧱',
-    image: 'https://images.unsplash.com/photo-1513326738677-b964603b136d?w=800',
+    image: 'https://source.unsplash.com/featured/1600x900/?moscow,kremlin,city',
   },
   {
     id: 'kazan',
     name: 'Казань',
     country: 'Россия',
     emoji: '🕌',
-    image: 'https://images.unsplash.com/photo-1595218699680-e9c3acba6e91?w=800',
+    image: 'https://source.unsplash.com/featured/1600x900/?kazan,russia,kremlin',
   },
   {
     id: 'sochi',
     name: 'Сочи',
     country: 'Россия',
     emoji: '🌊',
-    image: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=800',
+    image: 'https://source.unsplash.com/featured/1600x900/?sochi,russia,sea',
   },
   {
     id: 'kaliningrad',
     name: 'Калининград',
     country: 'Россия',
     emoji: '⚓',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800',
+    image: 'https://source.unsplash.com/featured/1600x900/?kaliningrad,russia,city',
   },
   {
     id: 'vladivostok',
     name: 'Владивосток',
     country: 'Россия',
     emoji: '🌉',
-    image: 'https://images.unsplash.com/photo-1601462904263-f2fa0c851cb9?w=800',
+    image: 'https://source.unsplash.com/featured/1600x900/?vladivostok,russia,bridge',
   },
   {
     id: 'baikal',
-    name: 'Байкал',
+    name: 'Озеро Байкал',
     country: 'Россия',
     emoji: '🏞️',
-    image: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800',
+    image: 'https://source.unsplash.com/featured/1600x900/?baikal,lake,russia',
   },
 ];
 
@@ -127,6 +127,8 @@ export interface Place {
   id: string;
   name: string;
   category: string;
+  placeType?: string;
+  internalTags?: string[];
   description: string;
   duration: string;
   time: string;
@@ -134,6 +136,17 @@ export interface Place {
   address: string;
   emoji: string;
   price?: string;
+  lat?: number;
+  lng?: number;
+  accessible?: AccessibilityInfo;
+}
+
+export interface AccessibilityInfo {
+  wheelchair: boolean;
+  audioGuide: boolean;
+  braille: boolean;
+  parkingNearby: boolean;
+  notes?: string;
 }
 
 export interface DayPlan {
@@ -220,6 +233,54 @@ export interface Trip {
   totalHotel: number;
   totalActivities: number;
   totalFood: number;
+  // Фактические расходы (вводятся пользователем)
+  expenses?: {
+    transport?: number;
+    hotel?: number;
+    activities?: number;
+    food?: number;
+  };
+}
+
+export type DocumentType =
+  | 'flight_ticket'
+  | 'train_ticket'
+  | 'hotel_booking'
+  | 'insurance'
+  | 'visa'
+  | 'other';
+
+export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
+  flight_ticket: '✈️ Авиабилет',
+  train_ticket: '🚆 Ж/д билет',
+  hotel_booking: '🏨 Бронь отеля',
+  insurance: '🛡️ Страховка',
+  visa: '📋 Виза',
+  other: '📎 Другое',
+};
+
+export interface TripDocument {
+  id: string;
+  tripId: string;
+  type: DocumentType;
+  name: string;
+  uri: string;
+  mimeType: string;
+  sizeBytes: number;
+  uploadedAt: string;
+}
+
+export interface Review {
+  id: string;
+  tripId: string;
+  placeId: string;
+  placeName: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+  text: string;
+  photos: string[];
+  createdAt: string;
+  accessibilityRating?: 'yes' | 'no' | 'partial' | 'unknown';
+  accessibilityComment?: string;
 }
 
 export const MOCK_TRIPS: Trip[] = [
@@ -236,7 +297,7 @@ export const MOCK_TRIPS: Trip[] = [
     interests: ['museums', 'architecture', 'food'],
     travelStyle: 'standard',
     status: 'upcoming',
-    coverImage: 'https://images.unsplash.com/photo-1548834925-e48f8a27d7b2?w=1200',
+    coverImage: 'https://source.unsplash.com/featured/1800x1000/?saint-petersburg,russia,city',
     totalTransport: 9000,
     totalHotel: 22000,
     totalActivities: 8000,
@@ -357,7 +418,7 @@ export const MOCK_TRIPS: Trip[] = [
     interests: ['beach', 'food', 'nature'],
     travelStyle: 'comfort',
     status: 'past',
-    coverImage: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=1200',
+    coverImage: 'https://source.unsplash.com/featured/1800x1000/?sochi,russia,sea',
     totalTransport: 18000,
     totalHotel: 26000,
     totalActivities: 9000,
@@ -438,6 +499,7 @@ export interface Route {
   image: string;
   description: string;
   season: string;
+  isAccessibilityFriendly?: boolean;
 }
 
 export const MOCK_ROUTES: Route[] = [
@@ -451,9 +513,10 @@ export const MOCK_ROUTES: Route[] = [
     rating: 4.9,
     reviews: 5241,
     tags: ['архитектура', 'музеи', 'гастрономия'],
-    image: 'https://images.unsplash.com/photo-1548834925-e48f8a27d7b2?w=1200',
+    image: 'https://source.unsplash.com/featured/1800x1000/?saint-petersburg,russia,city',
     description: 'Эрмитаж, дворцы, прогулки по Невскому и вечер на набережной.',
     season: 'круглый год',
+    isAccessibilityFriendly: true,
   },
   {
     id: 'r2',
@@ -465,9 +528,10 @@ export const MOCK_ROUTES: Route[] = [
     rating: 4.8,
     reviews: 4110,
     tags: ['история', 'архитектура', 'еда'],
-    image: 'https://images.unsplash.com/photo-1513326738677-b964603b136d?w=1200',
+    image: 'https://source.unsplash.com/featured/1800x1000/?moscow,kremlin,city',
     description: 'Красная площадь, Зарядье, музеи и гастрономические кварталы.',
     season: 'круглый год',
+    isAccessibilityFriendly: true,
   },
   {
     id: 'r3',
@@ -479,9 +543,10 @@ export const MOCK_ROUTES: Route[] = [
     rating: 4.8,
     reviews: 2890,
     tags: ['история', 'еда', 'культура'],
-    image: 'https://images.unsplash.com/photo-1595218699680-e9c3acba6e91?w=1200',
+    image: 'https://source.unsplash.com/featured/1800x1000/?kazan,russia,kremlin',
     description: 'Кремль, улица Баумана и национальная кухня Татарстана.',
     season: 'апрель-октябрь',
+    isAccessibilityFriendly: true,
   },
   {
     id: 'r4',
@@ -493,9 +558,10 @@ export const MOCK_ROUTES: Route[] = [
     rating: 4.7,
     reviews: 6120,
     tags: ['пляж', 'природа', 'активности'],
-    image: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=1200',
+    image: 'https://source.unsplash.com/featured/1800x1000/?sochi,russia,sea',
     description: 'Море, Олимпийский парк, Роза Хутор и вечерние прогулки.',
     season: 'май-октябрь',
+    isAccessibilityFriendly: false,
   },
   {
     id: 'r5',
@@ -507,9 +573,10 @@ export const MOCK_ROUTES: Route[] = [
     rating: 4.7,
     reviews: 2140,
     tags: ['архитектура', 'история', 'природа'],
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200',
+    image: 'https://source.unsplash.com/featured/1800x1000/?kaliningrad,russia,city',
     description: 'Остров Канта, районы старого города и выезд в Зеленоградск.',
     season: 'май-сентябрь',
+    isAccessibilityFriendly: true,
   },
   {
     id: 'r6',
@@ -521,8 +588,10 @@ export const MOCK_ROUTES: Route[] = [
     rating: 4.8,
     reviews: 1830,
     tags: ['природа', 'архитектура', 'еда'],
-    image: 'https://images.unsplash.com/photo-1601462904263-f2fa0c851cb9?w=1200',
+    image: 'https://source.unsplash.com/featured/1800x1000/?vladivostok,russia,bridge',
     description: 'Русский мост, Токаревский маяк и гастротур по морским ресторанам.',
     season: 'июнь-сентябрь',
+    isAccessibilityFriendly: false,
   },
 ];
+

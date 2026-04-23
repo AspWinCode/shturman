@@ -3,17 +3,16 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   Animated,
   Image,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import Colors from '@/constants/colors';
 import { Typography, Spacing } from '@/constants/theme';
-
-const { width, height } = Dimensions.get('window');
 
 const HIGHLIGHTS = [
   { emoji: '⚡', text: 'Маршрут за 60 секунд' },
@@ -22,6 +21,11 @@ const HIGHLIGHTS = [
 ];
 
 export default function WelcomeScreen() {
+  const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+  const isCompact = width < 370;
+  const globeSize = isCompact ? 150 : 180;
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(40)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -54,18 +58,19 @@ export default function WelcomeScreen() {
       <View style={[StyleSheet.absoluteFill, {backgroundColor: '#0F2548'}]} />
 
       {/* Background circles */}
-      <View style={styles.circle1} />
-      <View style={styles.circle2} />
+      <View style={[styles.circle1, { width: width * 0.8, height: width * 0.8, borderRadius: width * 0.4, top: -width * 0.2, right: -width * 0.2 }]} />
+      <View style={[styles.circle2, { width: width * 0.6, height: width * 0.6, borderRadius: width * 0.3, bottom: height * 0.3, left: -width * 0.2 }]} />
 
       {/* Hero image placeholder */}
       <Animated.View
         style={[
           styles.heroContainer,
+          { marginTop: Math.max(24, insets.top + 12) },
           { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
         ]}
       >
-        <View style={styles.globeWrapper}>
-          <Text style={styles.globeEmoji}>🌍</Text>
+        <View style={[styles.globeWrapper, { width: globeSize, height: globeSize, borderRadius: globeSize / 2 }]}>
+          <Image source={require('@/assets/shturman-logo.png')} style={styles.logoImage} />
           <View style={styles.planeBadge}>
             <Text style={styles.planeEmoji}>✈️</Text>
           </View>
@@ -76,16 +81,17 @@ export default function WelcomeScreen() {
       <Animated.View
         style={[
           styles.content,
+          { paddingHorizontal: isCompact ? Spacing.lg : Spacing.xl },
           { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
         ]}
       >
-        <Text style={styles.tagline}>TravelAI</Text>
-        <Text style={styles.title}>
+        <Text style={styles.tagline}>Штурман</Text>
+        <Text style={[styles.title, isCompact && { lineHeight: 30 }]}>
           Планируйте поездки{'\n'}за минуты с
         </Text>
-        <Text style={styles.titleAccent}>умным AI</Text>
+        <Text style={[styles.titleAccent, isCompact && { fontSize: Typography.sizes['2xl'] }]}>умным AI</Text>
         <Text style={styles.subtitle}>
-          Укажите пару параметров, а приложение соберет готовый план под ваш бюджет
+          Укажите пару параметров, и Штурман соберет готовый план под ваш бюджет
         </Text>
 
         {/* Feature highlights */}
@@ -116,9 +122,7 @@ export default function WelcomeScreen() {
       </Animated.View>
 
       {/* CTAs */}
-      <Animated.View
-        style={[styles.ctas, { opacity: fadeAnim }]}
-      >
+      <Animated.View style={[styles.ctas, { opacity: fadeAnim, paddingBottom: Spacing.lg + Math.max(insets.bottom, 8), paddingHorizontal: isCompact ? Spacing.lg : Spacing.xl }]}>
         <Button
           title="Начать планирование"
           onPress={() => router.push('/(onboarding)/interests')}
@@ -143,24 +147,24 @@ const styles = StyleSheet.create({
   },
   circle1: {
     position: 'absolute',
-    width: width * 0.8,
-    height: width * 0.8,
-    borderRadius: width * 0.4,
+    width: 240,
+    height: 240,
+    borderRadius: 120,
     backgroundColor: 'rgba(27,58,107,0.4)',
-    top: -width * 0.2,
-    right: -width * 0.2,
+    top: -60,
+    right: -60,
   },
   circle2: {
     position: 'absolute',
-    width: width * 0.6,
-    height: width * 0.6,
-    borderRadius: width * 0.3,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
     backgroundColor: 'rgba(232,71,43,0.15)',
-    bottom: height * 0.3,
-    left: -width * 0.2,
+    bottom: 180,
+    left: -60,
   },
   heroContainer: {
-    marginTop: height * 0.1,
+    marginTop: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -175,8 +179,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
   },
-  globeEmoji: {
-    fontSize: 100,
+  logoImage: {
+    width: 140,
+    height: 140,
+    borderRadius: 24,
   },
   planeBadge: {
     position: 'absolute',

@@ -19,7 +19,25 @@
       "Bash(npm list *)",
       "Bash(node -e \"const fs=require\\('fs'\\); const buf=fs.readFileSync\\('D:/travel_app/assets/icon.png'\\); console.log\\('PNG signature OK:', buf.slice\\(0,4\\).toString\\('hex'\\) === '89504e47'\\);\")",
       "Bash(eas whoami *)",
-      "Bash(node scripts/generate-feature-graphic.js)"
+      "Bash(node scripts/generate-feature-graphic.js)",
+      "Bash(eas build:view 660868b7-3ce0-4b5e-a47d-5e8ffa182a8d)",
+      "Bash(npm why *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :8081)",
+      "Bash(taskkill /PID 20380 /F)",
+      "PowerShell(Stop-Process -Id 20380 -Force)",
+      "PowerShell(Set-Location D:\\\\travel_app; $env:AUTH_JWT_SECRET = \"shturman-travel-ai-jwt-secret-2026-change-in-prod!\"; $env:AUTH_ENABLE_DEMO_USER = \"true\"; node api/server.js)",
+      "PowerShell($proc = Get-NetTCPConnection -LocalPort 8787 -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty OwningProcess; if \\($proc\\) { Stop-Process -Id $proc -Force; \"Killed PID $proc\" } else { \"Nothing on 8787\" })",
+      "PowerShell($p = Get-NetTCPConnection -LocalPort 8081 -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty OwningProcess; if \\($p\\) { Stop-Process -Id $p -Force; \"Killed Metro PID $p\" } else { \"Metro not running\" })",
+      "Bash(node --env-file=.env api/server.js)",
+      "Bash(curl -s http://localhost:8787/health)",
+      "Bash(curl -s -X POST http://localhost:8787/auth/oauth -H \"Content-Type: application/json\" -d \"{\\\\\"provider\\\\\":\\\\\"google\\\\\",\\\\\"idToken\\\\\":\\\\\"demo-google-test\\\\\",\\\\\"user\\\\\":{\\\\\"email\\\\\":\\\\\"test.google@gmail.com\\\\\",\\\\\"name\\\\\":\\\\\"Тест Гугл\\\\\"}}\")",
+      "Bash(curl -s -X POST http://localhost:8787/auth/oauth -H \"Content-Type: application/json\" -d \"{\\\\\"provider\\\\\":\\\\\"yandex\\\\\",\\\\\"idToken\\\\\":\\\\\"demo-ya-1\\\\\",\\\\\"user\\\\\":{\\\\\"email\\\\\":\\\\\"user@yandex.ru\\\\\",\\\\\"name\\\\\":\\\\\"Ivan\\\\\"}}\")",
+      "Bash(curl -s -X DELETE http://localhost:8787/auth/delete-account -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0N2EwZDlhNC0wMTJiLTQ4ZmMtOTIyYi1iYmY2ZTE3MzkxZjgiLCJlbWFpbCI6InVzZXJAeWFuZGV4LnJ1IiwidHlwZSI6ImFjY2VzcyIsImp0aSI6IjgxY2IyMzUyLWI0NWItNDIwNi1hMjNmLWVmYTMwZGJmZTcxYSIsImlhdCI6MTc3Njg1NjQwNCwiZXhwIjoxNzc2ODU3MzA0fQ.0ugsh6pxyfzOXkZ8CaVcURoOhmXBupKMJ64kI_OQh54')",
+      "Bash(curl -s -X POST http://localhost:8787/auth/oauth -H \"Content-Type: application/json\" -d \"{\\\\\"provider\\\\\":\\\\\"google\\\\\",\\\\\"idToken\\\\\":\\\\\"demo-g-2\\\\\",\\\\\"user\\\\\":{\\\\\"email\\\\\":\\\\\"user@yandex.ru\\\\\",\\\\\"name\\\\\":\\\\\"Ivan2\\\\\"}}\")",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(findstr \"react-native-maps\")",
+      "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue | Select-Object Id, CPU, @{N='MB';E={[math]::Round\\($_.WorkingSet/1MB,1\\)}})"
     ]
   }
 }

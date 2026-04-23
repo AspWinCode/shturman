@@ -2,8 +2,10 @@
 import { validatePasswordByPolicy } from '@/constants/passwordPolicy';
 import {
   apiChangePassword,
+  apiDeleteAccount,
   apiLogin,
   apiLogout,
+  apiOAuthLogin,
   apiRecover,
   apiRefresh,
   apiRegister,
@@ -30,7 +32,7 @@ interface StoredAuthSession {
 }
 
 const DEMO_USER: StoredAuthUser = {
-  email: 'demo@travelai.app',
+  email: 'demo@shturman.app',
   name: 'Demo',
   password: 'Travel123!',
   createdAt: '2026-01-01T00:00:00.000Z',
@@ -258,6 +260,48 @@ export async function resetPasswordByEmail(
   return { ok: true };
 }
 
+export async function oauthLoginUser(
+  provider: 'yandex' | 'google' | 'apple',
+  idToken: string,
+  oauthUser: { email: string; name: string }
+): Promise<{ ok: true; user: StoredAuthUser } | { ok: false; message: string }> {
+  if (!await isApiAvailable()) {
+    // Offline fallback: store a fake session without real tokens
+    const user: StoredAuthUser = {
+      email: normalizeEmail(oauthUser.email),
+      name: oauthUser.name.trim() || 'Пользователь',
+      createdAt: new Date().toISOString(),
+    };
+    await writeSession({ user: { email: user.email, name: user.name } });
+    return { ok: true, user };
+  }
+
+  const result = await apiOAuthLogin(provider, idToken, oauthUser);
+  if (!result.ok) return { ok: false, message: result.message };
+
+  await writeSession({
+    user: { email: result.data.user.email, name: result.data.user.name },
+    accessToken: result.data.accessToken,
+    refreshToken: result.data.refreshToken,
+  });
+  return { ok: true, user: toPublicUser(result.data.user) };
+}
+
+export async function deleteAccountForUser(): Promise<{ ok: true } | { ok: false; message: string }> {
+  const session = await readSession();
+
+  if (session?.accessToken && await isApiAvailable()) {
+    const result = await apiDeleteAccount(session.accessToken);
+    if (!result.ok) return { ok: false, message: result.message };
+  }
+
+  // Clear local session and users cache regardless
+  await clearSession();
+  await AsyncStorage.removeItem(USERS_KEY);
+  invalidateApiAvailability();
+  return { ok: true };
+}
+
 export async function logoutUser() {
   const session = await readSession();
   if (session?.refreshToken && await isApiAvailable()) {
@@ -298,4 +342,3 @@ export async function getCurrentSessionUser(): Promise<{ email: string; name: st
   const session = await readSession();
   return session?.user ?? null;
 }
-

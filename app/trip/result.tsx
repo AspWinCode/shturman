@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -6,57 +6,121 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Dimensions,
   Linking,
   ActivityIndicator,
+  TextInput,
+  Alert,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { AddPlaceModal } from '@/components/AddPlaceModal';
+import { AccessibilityPopup } from '@/components/AccessibilityPopup';
+import { AddReviewModal } from '@/components/AddReviewModal';
+import { ReviewsList } from '@/components/ReviewsList';
+import { TripMap } from '@/components/TripMap';
+import { WeatherWidget } from '@/components/WeatherWidget';
 import Colors from '@/constants/colors';
 import { BorderRadius, Shadows, Spacing, Typography } from '@/constants/theme';
 import { useStore } from '@/store/useStore';
-import { Trip, DayPlan, Hotel } from '@/constants/data';
+import { Trip, DayPlan, Hotel, Place, Review } from '@/constants/data';
 import { getMultimodalRoute } from '@/store/multimodalRoute';
+import { buildInCityTransitByPlace } from '@/store/inCityMobility';
+import { searchYandexRasp, YandexRaspOffer } from '@/store/yandexRaspApi';
 import {
-  AviasalesFlight,
-  searchFlights,
-  buildBookingUrl,
-  formatTime,
-  formatDuration,
-  formatDateShort,
-} from '@/store/aviasalesApi';
-import { getCityIata, getAirlineName } from '@/constants/iata';
-import {
-  buildTutuTrainLink,
+  buildYandexBusesLink,
   buildYandexFlightsLink,
+  buildOstrovokHotelsLink,
+  buildOstrovokMainLink,
+  buildYandexTravelMainLink,
   buildYandexTrainsLink,
   buildYandexHotelsLink,
 } from '@/store/deepLinksService';
+import { OstrovokOffer, searchOstrovok } from '@/store/ostrovokApi';
+import { getWeatherForecast, WeatherForecast } from '@/store/weatherApi';
+import {
+  TrainOffer,
+  searchTrainOffers,
+  createTrainBooking,
+  payTrainBooking,
+} from '@/store/trainTicketsApi';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { shareTrip } from '@/store/shareService';
+import { track } from '@/store/analyticsService';
 
-const { width } = Dimensions.get('window');
-type TabId = 'plan' | 'transport' | 'hotels' | 'budget';
+type TabId = 'plan' | 'transport' | 'hotels' | 'budget' | 'map';
+
+function buildIsoDates(startDate: string, daysCount: number): string[] {
+  const start = new Date(startDate);
+  if (Number.isNaN(start.getTime()) || daysCount <= 0) return [];
+  const dates: string[] = [];
+  for (let i = 0; i < daysCount; i += 1) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    dates.push(d.toISOString().slice(0, 10));
+  }
+  return dates;
+}
 
 export default function TripResultScreen() {
+  const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
+  const heroHeight = Math.max(240, Math.min(320, Math.round(height * 0.34)));
+
   const [activeTab, setActiveTab] = useState<TabId>('plan');
   const generatedTrip = useStore((s) => s.generatedTrip);
+  const lastGenerationWasAI = useStore((s) => s.lastGenerationWasAI);
   const clearGeneratedTrip = useStore((s) => s.clearGeneratedTrip);
   const saveTrip = useStore((s) => s.saveTrip);
+  const { isOnline } = useNetworkStatus();
   const trip = generatedTrip;
+  const [weather, setWeather] = useState<WeatherForecast | null>(null);
 
   useEffect(() => {
-    if (!trip) router.replace('/(tabs)');
-  }, [trip]);
+    let mounted = true;
 
-  if (!trip) return null;
+    const loadWeather = async () => {
+      if (!trip) {
+        if (mounted) setWeather(null);
+        return;
+      }
+      const dates = buildIsoDates(trip.startDate, trip.days.length);
+      const forecast = await getWeatherForecast(trip.to, dates);
+      if (mounted) setWeather(forecast);
+    };
 
-  const tabs: { id: TabId; label: string; icon: string }[] = [
-    { id: 'plan', label: 'Маршрут', icon: '🗓️' },
-    { id: 'transport', label: 'Транспорт', icon: '✈️' },
-    { id: 'hotels', label: 'Отели', icon: '🏨' },
-    { id: 'budget', label: 'Бюджет', icon: '💸' },
+    void loadWeather();
+
+    return () => {
+      mounted = false;
+    };
+  }, [trip?.id, trip?.to, trip?.startDate, trip?.days.length]);
+
+  if (!trip) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', padding: Spacing.xl }]}>
+        <Text style={[styles.tabSectionTitle, { marginBottom: 8 }]}>Нет сгенерированной поездки</Text>
+        <Text style={[styles.hotelLiveSubtitle, { marginBottom: 16 }]}>
+          Сначала создайте поездку, затем откроется экран результата.
+        </Text>
+        <TouchableOpacity style={styles.partnerBtnFull} onPress={() => router.push('/trip/create')} activeOpacity={0.9}>
+          <Text style={styles.partnerBtnText}>К созданию поездки</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const tabs: { id: TabId; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
+    { id: 'plan', label: 'Маршрут', icon: 'calendar-outline' },
+    { id: 'transport', label: 'Транспорт', icon: 'airplane-outline' },
+    { id: 'hotels', label: 'Отели', icon: 'bed-outline' },
+    { id: 'budget', label: 'Бюджет', icon: 'wallet-outline' },
+    { id: 'map', label: 'Карта', icon: 'map-outline' },
   ];
 
   const handleSave = () => {
@@ -65,24 +129,39 @@ export default function TripResultScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="result-screen">
       <StatusBar style="light" />
 
       {/* Header image */}
-      <View style={styles.heroContainer}>
+      <View style={[styles.heroContainer, { height: heroHeight }]}>
         <Image source={{ uri: trip.coverImage }} style={styles.heroImage} />
         <View style={[StyleSheet.absoluteFill, {backgroundColor: 'rgba(0,0,0,0.35)'}]} />
 
         {/* Top bar */}
-        <View style={styles.heroTopBar}>
-          <TouchableOpacity style={styles.heroBtn} onPress={() => router.back()}>
+        <View style={[styles.heroTopBar, { top: insets.top + 8 }]}>
+          <TouchableOpacity
+            style={styles.heroBtn}
+            onPress={() => router.back()}
+            accessibilityRole="button"
+            accessibilityLabel="Назад"
+          >
             <Ionicons name="arrow-back" size={22} color="#fff" />
           </TouchableOpacity>
           <View style={styles.heroTopRight}>
-            <TouchableOpacity style={styles.heroBtn}>
+            <TouchableOpacity
+              style={styles.heroBtn}
+              onPress={() => {
+                void track('trip_shared', { tripId: trip.id, to: trip.to });
+                void shareTrip(trip).catch(() => {
+                  Alert.alert('Ошибка', 'Не удалось открыть окно шаринга.');
+                });
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Поделиться поездкой"
+            >
               <Ionicons name="share-outline" size={22} color="#fff" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.heroBtn}>
+            <TouchableOpacity style={styles.heroBtn} accessibilityRole="button" accessibilityLabel="Добавить в избранное">
               <Ionicons name="heart-outline" size={22} color="#fff" />
             </TouchableOpacity>
           </View>
@@ -92,6 +171,12 @@ export default function TripResultScreen() {
         <View style={styles.heroInfo}>
           <Text style={styles.heroCity}>{trip.to}</Text>
           <Text style={styles.heroCountry}>{trip.toCountry}</Text>
+          {lastGenerationWasAI && (
+            <View style={styles.aiBadge}>
+              <Ionicons name="sparkles" size={14} color="#7B1FA2" />
+              <Text style={styles.aiBadgeText}>Сгенерировано AI</Text>
+            </View>
+          )}
           <View style={styles.heroMeta}>
             <View style={styles.heroMetaItem}>
               <Ionicons name="calendar-outline" size={14} color="rgba(255,255,255,0.85)" />
@@ -106,6 +191,7 @@ export default function TripResultScreen() {
               <Text style={styles.heroMetaText}>{trip.budget.toLocaleString('ru-RU')} ₽</Text>
             </View>
           </View>
+          <WeatherWidget variant="summary" weather={weather?.days[0] ?? null} />
         </View>
       </View>
 
@@ -116,8 +202,16 @@ export default function TripResultScreen() {
             key={tab.id}
             onPress={() => setActiveTab(tab.id)}
             style={[styles.tab, activeTab === tab.id && styles.tabActive]}
+            accessibilityRole="tab"
+            accessibilityLabel={`Вкладка ${tab.label}`}
+            accessibilityState={{ selected: activeTab === tab.id }}
           >
-            <Text style={styles.tabIcon}>{tab.icon}</Text>
+            <Ionicons
+              name={tab.icon}
+              size={18}
+              color={activeTab === tab.id ? Colors.primary : Colors.textSecondary}
+              style={styles.tabIcon}
+            />
             <Text style={[styles.tabLabel, activeTab === tab.id && styles.tabLabelActive]}>
               {tab.label}
             </Text>
@@ -129,21 +223,23 @@ export default function TripResultScreen() {
       {/* Content */}
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.contentInner}
+        contentContainerStyle={[styles.contentInner, { paddingBottom: 100 + insets.bottom }]}
         showsVerticalScrollIndicator={false}
       >
-        {activeTab === 'plan' && <DayPlanTab days={trip.days} />}
-        {activeTab === 'transport' && <TransportTab trip={trip} />}
-        {activeTab === 'hotels' && <HotelsTab trip={trip} />}
+        {activeTab === 'plan' && <DayPlanTab trip={trip} weather={weather} />}
+        {activeTab === 'transport' && <TransportTab trip={trip} isOnline={isOnline} />}
+        {activeTab === 'hotels' && <HotelsTab trip={trip} isOnline={isOnline} />}
         {activeTab === 'budget' && <BudgetTab trip={trip} />}
+        {activeTab === 'map' && <TripMap days={trip.days} initialCity={trip.to} />}
       </ScrollView>
 
       {/* Footer */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingBottom: Spacing.lg + Math.max(insets.bottom, 8) }]}>
         <Button
           title="💾 Сохранить поездку"
           onPress={handleSave}
           size="lg"
+          testID="btn-save-trip"
         />
         <TouchableOpacity
           onPress={() => {
@@ -160,19 +256,126 @@ export default function TripResultScreen() {
   );
 }
 
-function DayPlanTab({ days }: { days: DayPlan[] }) {
+function DayPlanTab({ trip, weather }: { trip: Trip; weather: WeatherForecast | null }) {
+  const { days, multimodalRoute } = trip;
+  const addPlaceToGeneratedDay = useStore((s) => s.addPlaceToGeneratedDay);
+  const removePlaceFromGeneratedDay = useStore((s) => s.removePlaceFromGeneratedDay);
+  const movePlaceInGeneratedDay = useStore((s) => s.movePlaceInGeneratedDay);
+  const addReview = useStore((s) => s.addReview);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [addModalDayIndex, setAddModalDayIndex] = useState(0);
+  const [accessiblePopupPlace, setAccessiblePopupPlace] = useState<Place | null>(null);
+  const [reviewModalVisible, setReviewModalVisible] = useState(false);
+  const [reviewPlace, setReviewPlace] = useState<Place | null>(null);
+  const [reviewsRefresh, setReviewsRefresh] = useState(0);
+  const modeLabel: Record<string, string> = {
+    metro: '🚇 Метро',
+    bus: '🚌 Автобус',
+    taxi: '🚕 Такси',
+    walk: '🚶 Пешком',
+    ferry: '⛴️ Паром',
+  };
+
+  const typeConfig: Record<string, { emoji: string; label: string; color: string }> = {
+    flight: { emoji: '✈️', label: 'Самолёт', color: Colors.primary },
+    train: { emoji: '🚆', label: 'Поезд', color: Colors.success },
+    bus: { emoji: '🚌', label: 'Автобус', color: Colors.warning },
+    metro: { emoji: '🚇', label: 'Метро', color: '#7C3AED' },
+    taxi: { emoji: '🚕', label: 'Такси', color: '#EF4444' },
+    walk: { emoji: '🚶', label: 'Пешком', color: '#0EA5E9' },
+    ferry: { emoji: '⛴️', label: 'Паром', color: '#0F766E' },
+  };
+
+  const handleRemovePlace = (dayIndex: number, placeId: string) => {
+    Alert.alert(
+      'Удалить место?',
+      'Место будет убрано из маршрута этого дня.',
+      [
+        { text: 'Отмена', style: 'cancel' },
+        {
+          text: 'Удалить',
+          style: 'destructive',
+          onPress: () => removePlaceFromGeneratedDay(dayIndex, placeId),
+        },
+      ]
+    );
+  };
+
+  const handleMovePlace = (dayIndex: number, fromIndex: number, toIndex: number) => {
+    movePlaceInGeneratedDay(dayIndex, fromIndex, toIndex);
+  };
+
   return (
     <View>
-      {days.map((day) => (
+      {/* -- Как добраться — мультимодальный маршрут -- */}
+      {multimodalRoute && (
+        <View style={styles.howToGetCard}>
+          <View style={styles.howToGetHeader}>
+            <Text style={styles.howToGetTitle}>🚦 Как добраться</Text>
+            <View style={styles.howToGetStats}>
+              <Text style={styles.howToGetStat}>⏱️ {Math.round(multimodalRoute.totalDurationMinutes / 60)} ч</Text>
+              <Text style={styles.howToGetStat}>💰 {multimodalRoute.totalPrice.toLocaleString('ru-RU')} ₽</Text>
+              <Text style={styles.howToGetStat}>🌿 {multimodalRoute.totalCo2Kg} кг CO₂</Text>
+            </View>
+          </View>
+          <Text style={styles.howToGetSummary}>{multimodalRoute.summary}</Text>
+          <View style={styles.howToGetSegments}>
+            {multimodalRoute.segments.map((seg, idx) => {
+              const cfg = typeConfig[seg.mode] ?? { emoji: '🚗', label: seg.mode, color: Colors.textSecondary };
+              return (
+                <View key={`${seg.id}-${idx}`} style={styles.howToGetSegment}>
+                  <View style={[styles.howToGetSegDot, { backgroundColor: seg.color ?? cfg.color }]} />
+                  {idx < multimodalRoute.segments.length - 1 && <View style={styles.howToGetSegLine} />}
+                  <View style={styles.howToGetSegContent}>
+                    <View style={styles.howToGetSegHeader}>
+                      <Text style={styles.howToGetSegMode}>{cfg.emoji} {cfg.label}</Text>
+                      {seg.carrier && <Text style={styles.howToGetSegCarrier}>{seg.carrier}</Text>}
+                      <Text style={styles.howToGetSegPrice}>{seg.price > 0 ? `${seg.price.toLocaleString('ru-RU')} ₽` : 'Бесплатно'}</Text>
+                    </View>
+                    <Text style={styles.howToGetSegRoute}>{seg.from} {'→'} {seg.to}</Text>
+                    <Text style={styles.howToGetSegMeta}>{seg.departure} – {seg.arrival} · {seg.durationMinutes} мин</Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+          {multimodalRoute.directFlightCo2Kg > 0 && (
+            <View style={styles.ecoRow}>
+              <Ionicons name="leaf-outline" size={14} color={Colors.success} />
+              <Text style={styles.ecoText}>
+                Экономия CO₂ vs прямой перелёт: {Math.max(0, multimodalRoute.directFlightCo2Kg - multimodalRoute.totalCo2Kg)} кг
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
+
+      {/* -- Дни маршрута -- */}
+      {days.map((day, dayIndex) => (
         <View key={day.day} style={styles.daySection}>
+          {(() => {
+            const transitByPlace = buildInCityTransitByPlace(day, trip.to);
+            return (
+              <>
           <View style={styles.dayHeader}>
             <View style={styles.dayBadge}>
               <Text style={styles.dayBadgeText}>День {day.day}</Text>
             </View>
             <Text style={styles.dayDate}>{day.date}</Text>
+            <WeatherWidget variant="day" weather={weather?.days[dayIndex] ?? null} />
           </View>
           {day.places.map((place, index) => (
-            <View key={place.id} style={styles.placeCard}>
+            <Swipeable
+              key={`${place.id}-${dayIndex}-${index}`}
+              overshootLeft={false}
+              renderLeftActions={() => (
+                <TouchableOpacity style={styles.deleteAction} onPress={() => handleRemovePlace(dayIndex, place.id)}>
+                  <Ionicons name="trash-outline" size={20} color={Colors.textInverse} />
+                  <Text style={styles.deleteActionText}>Удалить</Text>
+                </TouchableOpacity>
+              )}
+            >
+            <View style={styles.placeCard}>
               <View style={styles.placeTimeline}>
                 <Text style={styles.placeTime}>{place.time}</Text>
                 <View style={styles.timelineDot} />
@@ -183,14 +386,61 @@ function DayPlanTab({ days }: { days: DayPlan[] }) {
                   <Text style={styles.placeEmoji}>{place.emoji}</Text>
                   <View style={styles.placeTitleRow}>
                     <Text style={styles.placeName}>{place.name}</Text>
-                    <View style={styles.placeRating}>
-                      <Ionicons name="star" size={12} color={Colors.warning} />
-                      <Text style={styles.placeRatingText}>{place.rating}</Text>
+                    <View style={styles.placeHeaderActions}>
+                      <View style={styles.placeRating}>
+                        <Ionicons name="star" size={12} color={Colors.warning} />
+                        <Text style={styles.placeRatingText}>{place.rating}</Text>
+                      </View>
+                      {place.accessible?.wheelchair && (
+                        <TouchableOpacity
+                          style={styles.accessibleBadge}
+                          onPress={() => setAccessiblePopupPlace(place)}
+                          accessibilityLabel="Место доступно для людей с ОВЗ. Нажмите для подробностей"
+                          accessibilityRole="button"
+                        >
+                          <Text style={styles.accessibleBadgeText}>♿</Text>
+                        </TouchableOpacity>
+                      )}
+                      <View style={styles.moveControls}>
+                        <TouchableOpacity
+                          style={[styles.moveBtn, index === 0 && styles.moveBtnDisabled]}
+                          onPress={() => handleMovePlace(dayIndex, index, index - 1)}
+                          disabled={index === 0}
+                          accessibilityRole="button"
+                          accessibilityLabel="Переместить место выше"
+                        >
+                          <Ionicons name="chevron-up" size={14} color={index === 0 ? Colors.textTertiary : Colors.primary} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[styles.moveBtn, index === day.places.length - 1 && styles.moveBtnDisabled]}
+                          onPress={() => handleMovePlace(dayIndex, index, index + 1)}
+                          disabled={index === day.places.length - 1}
+                          accessibilityRole="button"
+                          accessibilityLabel="Переместить место ниже"
+                        >
+                          <Ionicons
+                            name="chevron-down"
+                            size={14}
+                            color={index === day.places.length - 1 ? Colors.textTertiary : Colors.primary}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                 </View>
                 <Badge label={place.category} variant="primary" size="sm" style={{ marginBottom: 6 }} />
                 <Text style={styles.placeDescription}>{place.description}</Text>
+                {transitByPlace[place.id] && (
+                  <View style={styles.placeTransitBox}>
+                    <Text style={styles.placeTransitTitle}>Как добраться: {transitByPlace[place.id].from} {'→'} {transitByPlace[place.id].to}</Text>
+                    <Text style={styles.placeTransitLegs}>
+                      {transitByPlace[place.id].legs.map((leg) => `${modeLabel[leg.mode]} ${leg.durationMinutes} мин`).join(' · ')}
+                    </Text>
+                    <Text style={styles.placeTransitMeta}>
+                      ~{transitByPlace[place.id].totalDurationMinutes} мин · {transitByPlace[place.id].totalPrice > 0 ? `${transitByPlace[place.id].totalPrice.toLocaleString('ru-RU')} ₽` : 'бесплатно'}
+                    </Text>
+                  </View>
+                )}
                 <View style={styles.placeMeta}>
                   <View style={styles.placeMetaItem}>
                     <Ionicons name="time-outline" size={13} color={Colors.textSecondary} />
@@ -203,26 +453,89 @@ function DayPlanTab({ days }: { days: DayPlan[] }) {
                     </View>
                   )}
                 </View>
+                {trip.status === 'past' && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setReviewPlace(place);
+                      setReviewModalVisible(true);
+                    }}
+                    style={styles.reviewBtn}
+                    accessibilityLabel={`Оставить отзыв о ${place.name}`}
+                    accessibilityRole="button"
+                  >
+                    <Ionicons name="chatbubble-outline" size={16} color={Colors.primary} />
+                    <Text style={styles.reviewBtnText}>Отзыв</Text>
+                  </TouchableOpacity>
+                )}
+                <ReviewsList placeId={place.id} refreshToken={reviewsRefresh} />
               </View>
             </View>
+            </Swipeable>
           ))}
+          <TouchableOpacity
+            style={styles.addPlaceBtn}
+            onPress={() => {
+              setAddModalDayIndex(dayIndex);
+              setAddModalVisible(true);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={`Добавить место в день ${day.day}`}
+          >
+            <Ionicons name="add-circle-outline" size={18} color={Colors.primary} />
+            <Text style={styles.addPlaceBtnText}>Добавить место</Text>
+          </TouchableOpacity>
           {day.places.length === 0 && (
             <View style={styles.emptyDayCard}>
               <Text style={styles.emptyDayTitle}>Свободный блок</Text>
               <Text style={styles.emptyDayText}>В этот день нет фиксированных точек. Можно запланировать отдых или дополнительные активности.</Text>
             </View>
           )}
+              </>
+            );
+          })()}
         </View>
       ))}
+      <AddPlaceModal
+        visible={addModalVisible}
+        onClose={() => setAddModalVisible(false)}
+        onAdd={(place: Place) => {
+          addPlaceToGeneratedDay(addModalDayIndex, place);
+          setAddModalVisible(false);
+        }}
+        city={trip.to}
+        existingPlaceIds={days[addModalDayIndex]?.places.map((p) => p.id) ?? []}
+        existingPlaceNames={days[addModalDayIndex]?.places.map((p) => p.name) ?? []}
+      />
+      <AccessibilityPopup place={accessiblePopupPlace} onClose={() => setAccessiblePopupPlace(null)} />
+      <AddReviewModal
+        visible={reviewModalVisible}
+        tripId={trip.id}
+        place={reviewPlace}
+        onClose={() => {
+          setReviewModalVisible(false);
+          setReviewPlace(null);
+        }}
+        onSubmit={(review: Review) => {
+          void addReview(review).then(() => {
+            setReviewModalVisible(false);
+            setReviewPlace(null);
+            setReviewsRefresh((v) => v + 1);
+          });
+        }}
+      />
     </View>
   );
 }
 
-function TransportTab({ trip }: { trip: Trip }) {
+function TransportTab({ trip, isOnline }: { trip: Trip; isOnline: boolean }) {
   const multimodalRoute = getMultimodalRoute(trip);
-  const [realFlights, setRealFlights] = useState<AviasalesFlight[]>([]);
-  const [flightsLoading, setFlightsLoading] = useState(false);
-  const [flightsError, setFlightsError] = useState<string | null>(null);
+  const [liveOffers, setLiveOffers] = useState<YandexRaspOffer[]>([]);
+  const [liveLoading, setLiveLoading] = useState(false);
+  const [liveError, setLiveError] = useState<string | null>(null);
+  const [trainOffers, setTrainOffers] = useState<TrainOffer[]>([]);
+  const [trainsLoading, setTrainsLoading] = useState(false);
+  const [trainsError, setTrainsError] = useState<string | null>(null);
+  const [buyingTrainId, setBuyingTrainId] = useState<string | null>(null);
 
   const typeConfig = {
     flight: { emoji: '✈️', label: 'Самолет', color: Colors.primary },
@@ -234,136 +547,331 @@ function TransportTab({ trip }: { trip: Trip }) {
     ferry: { emoji: '⛴️', label: 'Паром', color: '#0F766E' },
   };
 
+  const formatTimeText = (iso?: string | null) => {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '—';
+    return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatDurationText = (minutes?: number | null) => {
+    const safe = Math.max(1, Math.round(Number(minutes) || 0));
+    const h = Math.floor(safe / 60);
+    const m = safe % 60;
+    if (h <= 0) return `${m} мин`;
+    if (m === 0) return `${h} ч`;
+    return `${h} ч ${m} мин`;
+  };
+
   useEffect(() => {
-    const fromIata = getCityIata(trip.from);
-    const toIata = getCityIata(trip.to);
-    if (!fromIata || !toIata) return;
+    if (!isOnline) {
+      setLiveLoading(false);
+      setLiveOffers([]);
+      setLiveError('Нет интернета — показаны локальные данные');
+      return;
+    }
+    setLiveLoading(true);
+    setLiveError(null);
+    searchYandexRasp({
+      from: trip.from,
+      to: trip.to,
+      date: trip.startDate,
+      travelers: trip.travelers,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          setLiveError(res.message);
+          setLiveOffers([]);
+          return;
+        }
+        setLiveOffers(res.offers.slice(0, 6));
+      })
+      .catch(() => setLiveError('Не удалось загрузить расписание'))
+      .finally(() => setLiveLoading(false));
+  }, [isOnline, trip.from, trip.to, trip.startDate, trip.travelers]);
 
-    setFlightsLoading(true);
-    setFlightsError(null);
+  useEffect(() => {
+    if (!isOnline) {
+      setTrainsLoading(false);
+      setTrainOffers([]);
+      setTrainsError('Нет интернета — показаны локальные данные');
+      return;
+    }
+    setTrainsLoading(true);
+    setTrainsError(null);
+    searchTrainOffers({
+      from: trip.from,
+      to: trip.to,
+      date: trip.startDate,
+      travelers: trip.travelers,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          setTrainsError(res.message);
+          return;
+        }
+        setTrainOffers(res.data.offers.slice(0, 6));
+      })
+      .catch(() => setTrainsError('Не удалось загрузить ЖД-билеты'))
+      .finally(() => setTrainsLoading(false));
+  }, [isOnline, trip.from, trip.to, trip.startDate, trip.travelers]);
 
-    searchFlights(fromIata, toIata, trip.startDate, 5)
-      .then((flights) => setRealFlights(flights))
-      .catch(() => setFlightsError('Не удалось загрузить билеты'))
-      .finally(() => setFlightsLoading(false));
-  }, [trip.from, trip.to, trip.startDate]);
+  const handleBuyTrainInApp = async (offer: TrainOffer) => {
+    try {
+      setBuyingTrainId(offer.id);
+      const passengers = Array.from({ length: trip.travelers }).map((_, index) => ({
+        fullName: `Пассажир ${index + 1}`,
+      }));
+      const bookingRes = await createTrainBooking({
+        offer,
+        travelers: trip.travelers,
+        passengers,
+      });
+      if (!bookingRes.ok) {
+        Alert.alert('Не удалось забронировать', bookingRes.message);
+        return;
+      }
+      const payRes = await payTrainBooking({ bookingId: bookingRes.data.booking.id });
+      if (!payRes.ok) {
+        Alert.alert('Оплата не прошла', payRes.message);
+        return;
+      }
+      const ticket = payRes.data.booking.ticket;
+      Alert.alert(
+        'Билет куплен',
+        `Поезд ${offer.trainNumber}, класс ${offer.carriageClass}\nЭлектронный билет: ${ticket?.number || '—'}`
+      );
+    } finally {
+      setBuyingTrainId(null);
+    }
+  };
 
-  const hasIata = Boolean(getCityIata(trip.from) && getCityIata(trip.to));
+  const openTransportPartner = async (type: 'flight' | 'train' | 'bus') => {
+    void track('yandex_travel_click', { source: 'trip_result_transport', type, from: trip.from, to: trip.to });
+    if (!isOnline) {
+      Alert.alert('Нет интернета', 'Подключитесь к сети для поиска билетов и расписания.');
+      return;
+    }
+    const link =
+      type === 'flight'
+        ? buildYandexFlightsLink(trip.from, trip.to, trip.startDate, trip.travelers)
+        : type === 'train'
+          ? buildYandexTrainsLink(trip.from, trip.to, trip.startDate, trip.travelers)
+          : buildYandexBusesLink(trip.from, trip.to, trip.startDate, trip.travelers);
+    try {
+      await Linking.openURL(link);
+    } catch {
+      await Linking.openURL(buildYandexTravelMainLink());
+    }
+  };
+
+  const showScheduleApiSetup = () => {
+    Alert.alert(
+      'Live-расписание недоступно',
+      'Добавьте YANDEX_RASP_API_KEY в .env backend и перезапустите API, чтобы показывать актуальные варианты.',
+      [{ text: 'Понятно' }]
+    );
+  };
 
   return (
     <View>
-      {/* ── Реальные билеты Aviasales ── */}
-      {hasIata && (
-        <View style={styles.realFlightsSection}>
-          <View style={styles.realFlightsHeader}>
-            <Text style={styles.tabSectionTitle}>Билеты Aviasales</Text>
-            <View style={styles.aviasalesBadge}>
-              <Text style={styles.aviasalesBadgeText}>live</Text>
+      <View style={styles.realFlightsSection}>
+        <View style={styles.realFlightsHeader}>
+          <Text style={styles.tabSectionTitle}>Расписание Яндекс</Text>
+          <View style={styles.aviasalesBadge}>
+            <Text style={styles.aviasalesBadgeText}>live</Text>
+          </View>
+        </View>
+        <Text style={styles.realFlightsSubtitle}>
+          Актуальные варианты на {trip.from} {'→'} {trip.to}
+        </Text>
+
+        {liveLoading && (
+          <View style={styles.flightsLoader}>
+            <ActivityIndicator color={Colors.primary} />
+            <Text style={styles.flightsLoaderText}>Загружаем транспорт...</Text>
+          </View>
+        )}
+
+        {liveError && !liveLoading && (
+          <View style={styles.flightsError}>
+            <Text style={styles.flightsErrorText}>⚠️ {liveError}</Text>
+            <View style={styles.fallbackActionsRow}>
+              <TouchableOpacity style={styles.fallbackActionBtn} onPress={() => void openTransportPartner('train')} activeOpacity={0.85}>
+                <Text style={styles.fallbackActionBtnText}>Открыть расписание в Яндексе</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.fallbackActionBtn, styles.fallbackActionBtnAlt]} onPress={showScheduleApiSetup} activeOpacity={0.85}>
+                <Text style={[styles.fallbackActionBtnText, styles.fallbackActionBtnTextAlt]}>Как включить live API</Text>
+              </TouchableOpacity>
             </View>
           </View>
-          <Text style={styles.realFlightsSubtitle}>
-            Актуальные цены на {trip.from} → {trip.to}
-          </Text>
+        )}
 
-          {flightsLoading && (
-            <View style={styles.flightsLoader}>
-              <ActivityIndicator color={Colors.primary} />
-              <Text style={styles.flightsLoaderText}>Ищем билеты...</Text>
+        {!liveLoading && !liveError && liveOffers.length === 0 && (
+          <View style={styles.flightsError}>
+            <Text style={styles.flightsErrorText}>На выбранную дату live-варианты не найдены</Text>
+            <View style={styles.fallbackActionsRow}>
+              <TouchableOpacity style={styles.fallbackActionBtn} onPress={() => void openTransportPartner('flight')} activeOpacity={0.85}>
+                <Text style={styles.fallbackActionBtnText}>Открыть авиабилеты в Яндексе</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.fallbackActionBtn, styles.fallbackActionBtnAlt]} onPress={() => void openTransportPartner('train')} activeOpacity={0.85}>
+                <Text style={[styles.fallbackActionBtnText, styles.fallbackActionBtnTextAlt]}>Открыть поезда в Яндексе</Text>
+              </TouchableOpacity>
             </View>
-          )}
+          </View>
+        )}
 
-          {flightsError && !flightsLoading && (
-            <View style={styles.flightsError}>
-              <Text style={styles.flightsErrorText}>⚠️ {flightsError}</Text>
-            </View>
-          )}
-
-          {!flightsLoading && !flightsError && realFlights.length === 0 && (
-            <View style={styles.flightsError}>
-              <Text style={styles.flightsErrorText}>
-                Рейсов на выбранную дату не найдено
-              </Text>
-            </View>
-          )}
-
-          {realFlights.map((flight, idx) => {
-            const airlineName = getAirlineName(flight.airline);
-            const depTime = formatTime(flight.departure_at);
-            const arrMinutes = flight.duration_to ?? flight.duration;
-            const arrDate = new Date(new Date(flight.departure_at).getTime() + arrMinutes * 60000);
-            const arrTime = `${String(arrDate.getHours()).padStart(2, '0')}:${String(arrDate.getMinutes()).padStart(2, '0')}`;
-            const dateLabel = formatDateShort(flight.departure_at);
-            const bookingUrl = buildBookingUrl(flight.link);
-
-            return (
-              <View key={`${flight.airline}-${flight.flight_number}-${idx}`} style={styles.realFlightCard}>
-                <View style={styles.realFlightTop}>
-                  <View style={styles.realFlightAirline}>
-                    <Text style={styles.realFlightAirlineText}>{airlineName}</Text>
-                    {flight.transfers === 0 && (
-                      <View style={styles.directBadge}>
-                        <Text style={styles.directBadgeText}>Прямой</Text>
-                      </View>
-                    )}
-                    {flight.transfers > 0 && (
-                      <View style={[styles.directBadge, { backgroundColor: '#FEF3C7' }]}>
-                        <Text style={[styles.directBadgeText, { color: '#92400E' }]}>
-                          {flight.transfers} {flight.transfers === 1 ? 'пересадка' : 'пересадки'}
-                        </Text>
-                      </View>
-                    )}
+        {liveOffers.map((offer, index) => (
+          <View key={`${offer.id}-${offer.departureAt ?? 'dep'}-${index}`} style={styles.realFlightCard}>
+            <View style={styles.realFlightTop}>
+              <View style={styles.realFlightAirline}>
+                <Text style={styles.realFlightAirlineText}>
+                  {offer.type === 'flight' ? '✈️' : offer.type === 'train' ? '🚆' : '🚌'} {offer.carrier}
+                </Text>
+                {offer.threadNumber ? (
+                  <View style={styles.directBadge}>
+                    <Text style={styles.directBadgeText}>№{offer.threadNumber}</Text>
                   </View>
-                  <Text style={styles.realFlightPrice}>
-                    {flight.price.toLocaleString('ru-RU')} ₽
-                  </Text>
-                </View>
-
-                <View style={styles.realFlightRoute}>
-                  <View style={styles.realFlightCity}>
-                    <Text style={styles.realFlightTime}>{depTime}</Text>
-                    <Text style={styles.realFlightCityName}>{trip.from}</Text>
-                    <Text style={styles.realFlightDate}>{dateLabel}</Text>
-                  </View>
-
-                  <View style={styles.realFlightMiddle}>
-                    <Text style={styles.realFlightDuration}>{formatDuration(flight.duration_to ?? flight.duration)}</Text>
-                    <View style={styles.realFlightLine}>
-                      <View style={styles.transportDot} />
-                      <View style={styles.transportDash} />
-                      <Text style={styles.transportPlane}>✈️</Text>
-                      <View style={styles.transportDash} />
-                      <View style={styles.transportDot} />
-                    </View>
-                  </View>
-
-                  <View style={[styles.realFlightCity, { alignItems: 'flex-end' }]}>
-                    <Text style={styles.realFlightTime}>{arrTime}</Text>
-                    <Text style={styles.realFlightCityName}>{trip.to}</Text>
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  style={styles.buyBtn}
-                  onPress={() => Linking.openURL(bookingUrl)}
-                  activeOpacity={0.85}
-                >
-                  <Text style={styles.buyBtnText}>Купить на Aviasales →</Text>
-                </TouchableOpacity>
+                ) : null}
               </View>
-            );
-          })}
-        </View>
-      )}
+              <Text style={styles.realFlightPrice}>{offer.totalPrice.toLocaleString('ru-RU')} ₽</Text>
+            </View>
 
-      {/* ── Мультимодальный маршрут ── */}
+            <View style={styles.realFlightRoute}>
+              <View style={styles.realFlightCity}>
+                <Text style={styles.realFlightTime}>{offer.departureAt ? new Date(offer.departureAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : '—'}</Text>
+                <Text style={styles.realFlightCityName}>{offer.fromStation || trip.from}</Text>
+              </View>
+              <View style={styles.realFlightMiddle}>
+                <Text style={styles.realFlightDuration}>{Math.max(1, Math.round(offer.durationMinutes / 60))} ч</Text>
+                <View style={styles.realFlightLine}>
+                  <View style={styles.transportDot} />
+                  <View style={styles.transportDash} />
+                  <Text style={styles.transportPlane}>{offer.type === 'flight' ? '✈️' : offer.type === 'train' ? '🚆' : '🚌'}</Text>
+                  <View style={styles.transportDash} />
+                  <View style={styles.transportDot} />
+                </View>
+              </View>
+              <View style={[styles.realFlightCity, { alignItems: 'flex-end' }]}>
+                <Text style={styles.realFlightTime}>{offer.arrivalAt ? new Date(offer.arrivalAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : '—'}</Text>
+                <Text style={styles.realFlightCityName}>{offer.toStation || trip.to}</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={[styles.buyBtn, !isOnline && styles.bookBtnDisabled]}
+              onPress={() => void openTransportPartner(offer.type)}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.buyBtnText}>Купить на Яндекс Путешествиях →</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.realFlightsSection}>
+        <View style={styles.realFlightsHeader}>
+          <Text style={styles.tabSectionTitle}>ЖД-билеты (API)</Text>
+          <View style={[styles.aviasalesBadge, { backgroundColor: Colors.success }]}>
+            <Text style={styles.aviasalesBadgeText}>in-app</Text>
+          </View>
+        </View>
+        <Text style={styles.realFlightsSubtitle}>
+          {trip.from} {'→'} {trip.to} · {trip.travelers} {trip.travelers === 1 ? 'пассажир' : 'пассажиров'}
+        </Text>
+
+        {trainsLoading && (
+          <View style={styles.flightsLoader}>
+            <ActivityIndicator color={Colors.primary} />
+            <Text style={styles.flightsLoaderText}>Ищем поезда РЖД...</Text>
+          </View>
+        )}
+
+        {!trainsLoading && trainsError && (
+          <View style={styles.flightsError}>
+            <Text style={styles.flightsErrorText}>⚠️ {trainsError}</Text>
+            <View style={styles.fallbackActionsRow}>
+              <TouchableOpacity style={styles.fallbackActionBtn} onPress={() => void openTransportPartner('train')} activeOpacity={0.85}>
+                <Text style={styles.fallbackActionBtnText}>Открыть поезда в Яндексе</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {!trainsLoading && !trainsError && trainOffers.length === 0 && (
+          <View style={styles.flightsError}>
+            <Text style={styles.flightsErrorText}>На выбранную дату поезда не найдены</Text>
+            <View style={styles.fallbackActionsRow}>
+              <TouchableOpacity style={styles.fallbackActionBtn} onPress={() => void openTransportPartner('train')} activeOpacity={0.85}>
+                <Text style={styles.fallbackActionBtnText}>Открыть альтернативы в Яндексе</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {trainOffers.map((offer, index) => (
+          <View key={`${offer.id}-${offer.trainNumber}-${offer.carriageClass}-${offer.departureAt}-${index}`} style={styles.trainOfferCard}>
+            <View style={styles.realFlightTop}>
+              <View style={styles.realFlightAirline}>
+                <Text style={styles.realFlightAirlineText}>🚆 {offer.trainNumber} · {offer.trainName}</Text>
+                <View style={styles.directBadge}>
+                  <Text style={styles.directBadgeText}>{offer.carriageClass}</Text>
+                </View>
+              </View>
+              <Text style={styles.realFlightPrice}>{offer.totalPrice.toLocaleString('ru-RU')} ₽</Text>
+            </View>
+
+            <View style={styles.realFlightRoute}>
+              <View style={styles.realFlightCity}>
+                <Text style={styles.realFlightTime}>{formatTimeText(offer.departureAt)}</Text>
+                <Text style={styles.realFlightCityName}>{offer.from}</Text>
+              </View>
+
+              <View style={styles.realFlightMiddle}>
+                <Text style={styles.realFlightDuration}>{formatDurationText(offer.durationMinutes)}</Text>
+                <View style={styles.realFlightLine}>
+                  <View style={styles.transportDot} />
+                  <View style={styles.transportDash} />
+                  <Text style={styles.transportPlane}>🚆</Text>
+                  <View style={styles.transportDash} />
+                  <View style={styles.transportDot} />
+                </View>
+              </View>
+
+              <View style={[styles.realFlightCity, { alignItems: 'flex-end' }]}>
+                <Text style={styles.realFlightTime}>{formatTimeText(offer.arrivalAt)}</Text>
+                <Text style={styles.realFlightCityName}>{offer.to}</Text>
+              </View>
+            </View>
+
+            <View style={styles.trainOfferFooter}>
+              <Text style={styles.trainOfferMeta}>
+                Осталось мест: {offer.seatsLeft} · за 1 пассажира: {offer.pricePerPerson.toLocaleString('ru-RU')} ₽
+              </Text>
+              <TouchableOpacity
+                style={[styles.buyBtn, buyingTrainId === offer.id && { opacity: 0.7 }]}
+                onPress={() => handleBuyTrainInApp(offer)}
+                disabled={buyingTrainId !== null}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.buyBtnText}>
+                  {buyingTrainId === offer.id ? 'Покупаем...' : 'Купить в приложении'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* -- Мультимодальный маршрут -- */}
       {multimodalRoute && (
         <View style={styles.multimodalCard}>
           <Text style={styles.tabSectionTitle}>Мультимодальный маршрут</Text>
           <Text style={styles.multimodalSummary}>{multimodalRoute.summary}</Text>
           <View style={styles.multimodalStats}>
-            <Text style={styles.multimodalStat}>⏱ {Math.round(multimodalRoute.totalDurationMinutes / 60)} ч</Text>
+            <Text style={styles.multimodalStat}>⏱️ {Math.round(multimodalRoute.totalDurationMinutes / 60)} ч</Text>
             <Text style={styles.multimodalStat}>🔁 {multimodalRoute.transfers} перес.</Text>
-            <Text style={styles.multimodalStat}>🧪 CO₂ {multimodalRoute.totalCo2Kg} кг</Text>
+            <Text style={styles.multimodalStat}>🌿 CO₂ {multimodalRoute.totalCo2Kg} кг</Text>
           </View>
           <Text style={styles.multimodalEco}>
             Прямой перелет: ~{multimodalRoute.directFlightCo2Kg} кг CO₂
@@ -379,7 +887,7 @@ function TransportTab({ trip }: { trip: Trip }) {
                     <Text style={styles.segmentMode}>{cfg.emoji} {cfg.label}</Text>
                     <Text style={styles.segmentPrice}>{segment.price.toLocaleString('ru-RU')} ₽</Text>
                   </View>
-                  <Text style={styles.segmentRoute}>{segment.from} → {segment.to}</Text>
+                  <Text style={styles.segmentRoute}>{segment.from} {'→'} {segment.to}</Text>
                   <Text style={styles.segmentMeta}>
                     {segment.departure}–{segment.arrival} · {segment.durationMinutes} мин · {segment.distanceKm} км
                   </Text>
@@ -390,39 +898,10 @@ function TransportTab({ trip }: { trip: Trip }) {
         </View>
       )}
 
-      {/* ── Tutu.ru: поезда и автобусы ── */}
-      <View style={styles.partnerCard}>
-        <View style={styles.partnerCardHeader}>
-          <Text style={styles.partnerCardTitle}>🚆 Поезда и автобусы — Tutu.ru</Text>
-          <View style={[styles.partnerBadge, { backgroundColor: '#E8F5E9' }]}>
-            <Text style={[styles.partnerBadgeText, { color: '#2E7D32' }]}>РЖД</Text>
-          </View>
-        </View>
-        <Text style={styles.partnerCardSubtitle}>
-          Расписание, наличие мест и цены на поезда по всей России
-        </Text>
-        <View style={styles.partnerBtns}>
-          <TouchableOpacity
-            style={styles.partnerBtn}
-            onPress={() => Linking.openURL(buildTutuTrainLink(trip.from, trip.to, trip.startDate))}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.partnerBtnText}>🚆 Поезда →</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.partnerBtn, { backgroundColor: Colors.surface, borderWidth: 1, borderColor: Colors.border }]}
-            onPress={() => Linking.openURL(`https://www.tutu.ru/avtobusy/wizard/search/?from=${encodeURIComponent(trip.from)}&to=${encodeURIComponent(trip.to)}&date=${trip.startDate.split('-').reverse().join('.')}`)}
-            activeOpacity={0.85}
-          >
-            <Text style={[styles.partnerBtnText, { color: Colors.text }]}>🚌 Автобусы →</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* ── Яндекс Путешествия ── */}
+      {/* -- Яндекс Путешествия -- */}
       <View style={[styles.partnerCard, styles.yandexCard]}>
         <View style={styles.partnerCardHeader}>
-          <Text style={styles.partnerCardTitle}>🟡 Яндекс Путешествия</Text>
+          <Text style={styles.partnerCardTitle}>🧭 Яндекс Путешествия</Text>
           <View style={[styles.partnerBadge, { backgroundColor: '#FFFDE7' }]}>
             <Text style={[styles.partnerBadgeText, { color: '#F57F17' }]}>Всё в одном</Text>
           </View>
@@ -432,15 +911,15 @@ function TransportTab({ trip }: { trip: Trip }) {
         </Text>
         <View style={styles.partnerBtns}>
           <TouchableOpacity
-            style={styles.partnerBtn}
-            onPress={() => Linking.openURL(buildYandexFlightsLink(trip.from, trip.to, trip.startDate, trip.travelers))}
+            style={[styles.partnerBtn, !isOnline && styles.bookBtnDisabled]}
+            onPress={() => void openTransportPartner('flight')}
             activeOpacity={0.85}
           >
             <Text style={styles.partnerBtnText}>✈️ Авиа →</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.partnerBtn, { backgroundColor: Colors.surface, borderWidth: 1, borderColor: Colors.border }]}
-            onPress={() => Linking.openURL(buildYandexTrainsLink(trip.from, trip.to, trip.startDate))}
+            style={[styles.partnerBtn, { backgroundColor: Colors.surface, borderWidth: 1, borderColor: Colors.border }, !isOnline && styles.bookBtnDisabled]}
+            onPress={() => void openTransportPartner('train')}
             activeOpacity={0.85}
           >
             <Text style={[styles.partnerBtnText, { color: Colors.text }]}>🚆 Поезда →</Text>
@@ -448,7 +927,7 @@ function TransportTab({ trip }: { trip: Trip }) {
         </View>
       </View>
 
-      {/* ── Альтернативные варианты (генерация) ── */}
+      {/* -- Альтернативные варианты (генерация) -- */}
       <Text style={styles.tabSectionTitle}>Альтернативные варианты</Text>
       {trip.transport.map((t) => {
         const cfg = typeConfig[t.type as keyof typeof typeConfig] ?? { emoji: '🚗', label: t.type, color: Colors.textSecondary };
@@ -499,69 +978,205 @@ function TransportTab({ trip }: { trip: Trip }) {
   );
 }
 
-function HotelsTab({ trip }: { trip: Trip }) {
+function HotelsTab({ trip, isOnline }: { trip: Trip; isOnline: boolean }) {
   const { hotels } = trip;
+  const [liveHotels, setLiveHotels] = useState<OstrovokOffer[]>([]);
+  const [hotelsLoading, setHotelsLoading] = useState(false);
+
+  const nights = Math.max(
+    1,
+    Math.round((new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime()) / 86400000)
+  );
+
+  useEffect(() => {
+    if (!isOnline) {
+      setHotelsLoading(false);
+      setLiveHotels([]);
+      return;
+    }
+    setHotelsLoading(true);
+    searchOstrovok({
+      city: trip.to,
+      checkin: trip.startDate,
+      checkout: trip.endDate,
+      adults: trip.travelers,
+    })
+      .then((res) => setLiveHotels(res.ok ? res.offers : []))
+      .catch(() => setLiveHotels([]))
+      .finally(() => setHotelsLoading(false));
+  }, [isOnline, trip.to, trip.startDate, trip.endDate, trip.travelers]);
+
+  const bookUrl = buildOstrovokHotelsLink(trip.to, trip.startDate, trip.endDate, trip.travelers);
+  const openHotelsLink = async () => {
+    void track('ostrovok_click', { source: 'trip_result_hotels', to: trip.to });
+    if (!isOnline) {
+      Alert.alert('Нет интернета', 'Подключитесь к сети для поиска отелей.');
+      return;
+    }
+    try {
+      await Linking.openURL(bookUrl);
+    } catch {
+      await Linking.openURL(buildOstrovokMainLink());
+    }
+  };
+
+  const showHotelsApiSetup = () => {
+    Alert.alert(
+      'Live-отели недоступны',
+      'Добавьте OSTROVOK_KEY_ID и OSTROVOK_API_KEY (или OSTROVOK_AUTH_HEADER) в .env backend и перезапустите API.',
+      [{ text: 'Понятно' }]
+    );
+  };
+
   return (
     <View>
-      <Text style={styles.tabSectionTitle}>Рекомендуемые отели</Text>
-      {hotels.map((hotel) => (
-        <View key={hotel.id} style={styles.hotelCard}>
-          <Image source={{ uri: hotel.image }} style={styles.hotelImage} />
-          <View style={styles.hotelInfo}>
-            <Text style={styles.hotelName}>{hotel.name}</Text>
-            <View style={styles.hotelStars}>
-              {Array.from({ length: hotel.stars }).map((_, i) => (
-                <Ionicons key={i} name="star" size={13} color={Colors.warning} />
-              ))}
-            </View>
-            <View style={styles.hotelRating}>
-              <Text style={styles.hotelRatingValue}>{hotel.rating}</Text>
-              <Text style={styles.hotelReviews}>({hotel.reviews} отзывов)</Text>
-            </View>
-            <View style={styles.hotelMeta}>
-              <Ionicons name="location-outline" size={13} color={Colors.textSecondary} />
-              <Text style={styles.hotelDistance}>{hotel.distanceFromCenter} от центра</Text>
-            </View>
-            <View style={styles.hotelAmenities}>
-              {hotel.amenities.slice(0, 3).map((a) => (
-                <View key={a} style={styles.amenityChip}>
-                  <Text style={styles.amenityText}>{a}</Text>
-                </View>
-              ))}
-            </View>
-            <View style={styles.hotelFooter}>
-              <View>
-                <Text style={styles.hotelPrice}>{hotel.pricePerNight.toLocaleString('ru-RU')} ₽</Text>
-                <Text style={styles.hotelPriceLabel}>/ночь</Text>
-              </View>
-              <TouchableOpacity style={styles.bookBtn}>
-                <View style={styles.bookBtnGradient}>
-                  <Text style={styles.bookBtnText}>Booking →</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
+      <View style={styles.hotelLiveHeader}>
+        <Text style={styles.tabSectionTitle}>Отели на ваши даты</Text>
+        <View style={styles.aviasalesBadge}>
+          <Text style={styles.aviasalesBadgeText}>live</Text>
         </View>
-      ))}
+      </View>
+      <Text style={styles.hotelLiveSubtitle}>
+        {nights} {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'} · {trip.travelers}{' '}
+        {trip.travelers === 1 ? 'гость' : 'гостей'} · {trip.to}
+      </Text>
 
-      {/* ── Яндекс Путешествия: отели ── */}
+      {hotelsLoading && (
+        <View style={styles.flightsLoader}>
+          <ActivityIndicator color={Colors.primary} />
+          <Text style={styles.flightsLoaderText}>Ищем отели...</Text>
+        </View>
+      )}
+
+      {!hotelsLoading && liveHotels.length > 0 && (
+        <View>
+          {liveHotels.map((hotel, index) => (
+            <TouchableOpacity
+              key={`${hotel.id}-${hotel.hotelName}-${index}`}
+              style={[styles.hotelCard, !isOnline && styles.bookBtnDisabled]}
+              activeOpacity={0.93}
+              onPress={() => void openHotelsLink()}
+            >
+              <Image
+                source={{
+                  uri:
+                    hotel.photoUrl ||
+                    'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400',
+                }}
+                style={styles.hotelImage}
+              />
+              <View style={styles.hotelInfo}>
+                <Text style={styles.hotelName} numberOfLines={2}>
+                  {hotel.hotelName}
+                </Text>
+                <View style={styles.hotelStars}>
+                  {Array.from({ length: Math.min(5, hotel.stars) }).map((_, i) => (
+                    <Ionicons key={i} name="star" size={12} color={Colors.warning} />
+                  ))}
+                </View>
+                <View style={styles.hotelRating}>
+                  <View style={styles.hotelRatingBadge}>
+                    <Text style={styles.hotelRatingBadgeText}>{hotel.rating.toFixed(1)}</Text>
+                  </View>
+                  <Text style={styles.hotelRatingLabel}>B2B.Ostrovok</Text>
+                </View>
+                <View style={styles.hotelFooter}>
+                  <View>
+                    <Text style={styles.hotelPrice}>{hotel.pricePerNight.toLocaleString('ru-RU')} ₽</Text>
+                    <Text style={styles.hotelPriceLabel}>
+                      /ночь · всего {hotel.totalPrice.toLocaleString('ru-RU')} ₽
+                    </Text>
+                  </View>
+                  <View style={styles.bookBtnGradient}>
+                    <Text style={styles.bookBtnText}>Забронировать →</Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
+      {!hotelsLoading && liveHotels.length === 0 && hotels.length > 0 && (
+        <View>
+          <Text style={styles.hotelFallbackNote}>Live временно недоступен — показываем рекомендации и ссылки на партнёров</Text>
+          <View style={styles.fallbackActionsRow}>
+            <TouchableOpacity style={styles.fallbackActionBtn} onPress={() => void openHotelsLink()} activeOpacity={0.85}>
+              <Text style={styles.fallbackActionBtnText}>Открыть отели в Островке</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.fallbackActionBtn, styles.fallbackActionBtnAlt]} onPress={showHotelsApiSetup} activeOpacity={0.85}>
+              <Text style={[styles.fallbackActionBtnText, styles.fallbackActionBtnTextAlt]}>Как включить live API</Text>
+            </TouchableOpacity>
+          </View>
+          {hotels.map((hotel, index) => (
+            <TouchableOpacity
+              key={`${hotel.id}-${hotel.name}-${index}`}
+              style={[styles.hotelCard, !isOnline && styles.bookBtnDisabled]}
+              activeOpacity={0.93}
+              onPress={() => void openHotelsLink()}
+            >
+              <Image source={{ uri: hotel.image }} style={styles.hotelImage} />
+              <View style={styles.hotelInfo}>
+                <Text style={styles.hotelName}>{hotel.name}</Text>
+                <View style={styles.hotelStars}>
+                  {Array.from({ length: hotel.stars }).map((_, i) => (
+                    <Ionicons key={i} name="star" size={12} color={Colors.warning} />
+                  ))}
+                </View>
+                <View style={styles.hotelMeta}>
+                  <Ionicons name="location-outline" size={13} color={Colors.textSecondary} />
+                  <Text style={styles.hotelDistance}>{hotel.distanceFromCenter} от центра</Text>
+                </View>
+                <View style={styles.hotelAmenities}>
+                  {hotel.amenities.slice(0, 3).map((a) => (
+                    <View key={a} style={styles.amenityChip}>
+                      <Text style={styles.amenityText}>{a}</Text>
+                    </View>
+                  ))}
+                </View>
+                <View style={styles.hotelFooter}>
+                  <View>
+                    <Text style={styles.hotelPrice}>{hotel.pricePerNight.toLocaleString('ru-RU')} ₽</Text>
+                    <Text style={styles.hotelPriceLabel}>/ночь</Text>
+                  </View>
+                  <View style={styles.bookBtnGradient}>
+                    <Text style={styles.bookBtnText}>Найти →</Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
+      <TouchableOpacity
+        style={[styles.hotellookBtn, !isOnline && styles.bookBtnDisabled]}
+        onPress={() => void openHotelsLink()}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.hotellookBtnText}>🔍 Все отели в Островке →</Text>
+      </TouchableOpacity>
+
       <View style={[styles.partnerCard, styles.yandexCard]}>
         <View style={styles.partnerCardHeader}>
-          <Text style={styles.partnerCardTitle}>🟡 Яндекс Путешествия</Text>
+          <Text style={styles.partnerCardTitle}>🧭 Яндекс Путешествия</Text>
           <View style={[styles.partnerBadge, { backgroundColor: '#FFFDE7' }]}>
             <Text style={[styles.partnerBadgeText, { color: '#F57F17' }]}>Отели</Text>
           </View>
         </View>
         <Text style={styles.partnerCardSubtitle}>
-          Сравните тысячи вариантов жилья — отели, апартаменты, хостелы
+          Резервный переход к поиску отелей в Яндекс Путешествиях
         </Text>
         <TouchableOpacity
-          style={styles.partnerBtnFull}
-          onPress={() =>
-            Linking.openURL(
-              buildYandexHotelsLink(trip.to, trip.startDate, trip.endDate, trip.travelers),
-            )
-          }
+          style={[styles.partnerBtnFull, !isOnline && styles.bookBtnDisabled]}
+          onPress={() => {
+            void track('yandex_travel_click', { source: 'trip_result_hotels', type: 'hotel', to: trip.to });
+            if (!isOnline) {
+              Alert.alert('Нет интернета', 'Подключитесь к сети для поиска отелей.');
+              return;
+            }
+            void Linking.openURL(buildYandexHotelsLink(trip.to, trip.startDate, trip.endDate, trip.travelers));
+          }}
           activeOpacity={0.85}
         >
           <Text style={styles.partnerBtnText}>🏨 Найти отели на Яндексе →</Text>
@@ -572,64 +1187,150 @@ function HotelsTab({ trip }: { trip: Trip }) {
 }
 
 function BudgetTab({ trip }: { trip: Trip }) {
-  const total = trip.totalTransport + trip.totalHotel + trip.totalActivities + trip.totalFood;
-  const remaining = trip.budget - total;
+  const setTripExpense = useStore((s) => s.setTripExpense);
+  const [inputValues, setInputValues] = useState<Record<string, string>>({
+    transport: String(trip.expenses?.transport ?? ''),
+    hotel: String(trip.expenses?.hotel ?? ''),
+    activities: String(trip.expenses?.activities ?? ''),
+    food: String(trip.expenses?.food ?? ''),
+  });
+
+  const planned = useMemo(
+    () => trip.totalTransport + trip.totalHotel + trip.totalActivities + trip.totalFood,
+    [trip.totalTransport, trip.totalHotel, trip.totalActivities, trip.totalFood]
+  );
+  const expTransport = trip.expenses?.transport ?? 0;
+  const expHotel = trip.expenses?.hotel ?? 0;
+  const expActivities = trip.expenses?.activities ?? 0;
+  const expFood = trip.expenses?.food ?? 0;
+  const actualTotal = expTransport + expHotel + expActivities + expFood;
+  const hasAny = actualTotal > 0;
+
   const categories = [
-    { label: 'Транспорт', amount: trip.totalTransport, emoji: '✈️', color: '#6366F1' },
-    { label: 'Отели', amount: trip.totalHotel, emoji: '🏨', color: '#EC4899' },
-    { label: 'Активности', amount: trip.totalActivities, emoji: '🎟️', color: '#10B981' },
-    { label: 'Питание', amount: trip.totalFood, emoji: '🍽️', color: '#F59E0B' },
+    { key: 'transport' as const, label: 'Транспорт', plan: trip.totalTransport, fact: expTransport, emoji: '✈️', color: '#6366F1' },
+    { key: 'hotel' as const, label: 'Отели', plan: trip.totalHotel, fact: expHotel, emoji: '🏨', color: '#EC4899' },
+    { key: 'activities' as const, label: 'Активности', plan: trip.totalActivities, fact: expActivities, emoji: '🎟️', color: '#10B981' },
+    { key: 'food' as const, label: 'Питание', plan: trip.totalFood, fact: expFood, emoji: '🍽️', color: '#F59E0B' },
   ];
+
+  const handleExpenseChange = (key: keyof NonNullable<Trip['expenses']>, value: string) => {
+    setInputValues((prev) => ({ ...prev, [key]: value }));
+    const num = parseInt(value.replace(/\D/g, ''), 10);
+    if (!isNaN(num)) {
+      setTripExpense(trip.id, key, num);
+    } else if (value === '') {
+      setTripExpense(trip.id, key, 0);
+    }
+  };
 
   return (
     <View>
       <Text style={styles.tabSectionTitle}>Бюджет поездки</Text>
 
-      {/* Total summary */}
+      {/* -- Общая сводка -- */}
       <View style={styles.budgetSummary}>
         <View style={styles.budgetSummaryRow}>
           <Text style={styles.budgetSummaryLabel}>Запланированный бюджет</Text>
           <Text style={styles.budgetSummaryValue}>{trip.budget.toLocaleString('ru-RU')} ₽</Text>
         </View>
         <View style={styles.budgetSummaryRow}>
-          <Text style={styles.budgetSummaryLabel}>Ожидаемые расходы</Text>
+          <Text style={styles.budgetSummaryLabel}>Смета (план)</Text>
           <Text style={[styles.budgetSummaryValue, { color: Colors.text }]}>
-            {total.toLocaleString('ru-RU')} ₽
+            {planned.toLocaleString('ru-RU')} ₽
           </Text>
         </View>
-        <View style={[styles.budgetSummaryDivider]} />
+        {hasAny && (
+          <View style={styles.budgetSummaryRow}>
+            <Text style={styles.budgetSummaryLabel}>Фактические расходы</Text>
+            <Text style={[styles.budgetSummaryValue, { color: actualTotal <= trip.budget ? Colors.success : Colors.error }]}>
+              {actualTotal.toLocaleString('ru-RU')} ₽
+            </Text>
+          </View>
+        )}
+        <View style={styles.budgetSummaryDivider} />
         <View style={styles.budgetSummaryRow}>
-          <Text style={[styles.budgetSummaryLabel, { fontWeight: '700' }]}>Остаток</Text>
+          <Text style={[styles.budgetSummaryLabel, { fontWeight: '700' }]}>
+            {hasAny ? 'Остаток (факт)' : 'Остаток (план)'}
+          </Text>
           <Text style={[
             styles.budgetSummaryValue,
-            { color: remaining >= 0 ? Colors.success : Colors.error, fontWeight: '700' }
+            { color: (trip.budget - (hasAny ? actualTotal : planned)) >= 0 ? Colors.success : Colors.error, fontWeight: '700' }
           ]}>
-            {remaining >= 0 ? '+' : ''}{remaining.toLocaleString('ru-RU')} ₽
+            {(() => {
+              const r = trip.budget - (hasAny ? actualTotal : planned);
+              return `${r >= 0 ? '+' : ''}${r.toLocaleString('ru-RU')} ₽`;
+            })()}
           </Text>
         </View>
       </View>
 
-      {/* Categories */}
+      {/* -- Hint -- */}
+      <View style={styles.budgetHint}>
+        <Ionicons name="pencil-outline" size={14} color={Colors.primary} />
+        <Text style={styles.budgetHintText}>Вводите фактические расходы — увидите план vs факт</Text>
+      </View>
+
+      {/* -- Категории с вводом факта -- */}
       {categories.map((cat) => {
-        const pct = total > 0 ? Math.round((cat.amount / total) * 100) : 0;
+        const planPct = planned > 0 ? Math.round((cat.plan / planned) * 100) : 0;
+        const factPct = cat.fact > 0 && cat.plan > 0
+          ? Math.min(150, Math.round((cat.fact / cat.plan) * 100))
+          : 0;
+        const isOver = cat.fact > cat.plan && cat.fact > 0;
+
         return (
-          <View key={cat.label} style={styles.budgetCategory}>
+          <View key={cat.key} style={styles.budgetCategoryCard}>
             <View style={styles.budgetCategoryHeader}>
               <View style={styles.budgetCategoryLeft}>
                 <Text style={styles.budgetCategoryEmoji}>{cat.emoji}</Text>
                 <Text style={styles.budgetCategoryLabel}>{cat.label}</Text>
               </View>
-              <Text style={styles.budgetCategoryAmount}>{cat.amount.toLocaleString('ru-RU')} ₽</Text>
+              <View style={styles.budgetCategoryRight}>
+                <Text style={styles.budgetPlanAmount}>{cat.plan.toLocaleString('ru-RU')} ₽</Text>
+                <Text style={styles.budgetPlanLabel}>план</Text>
+              </View>
             </View>
+
+            {/* Plan bar */}
             <View style={styles.budgetBarBg}>
-              <View
-                style={[
-                  styles.budgetBarFill,
-                  { width: `${pct}%`, backgroundColor: cat.color },
-                ]}
-              />
+              <View style={[styles.budgetBarFill, { width: `${planPct}%`, backgroundColor: cat.color + '60' }]} />
             </View>
-            <Text style={styles.budgetPct}>{pct}%</Text>
+
+            {/* Fact input row */}
+            <View style={styles.budgetFactRow}>
+              <Text style={styles.budgetFactLabel}>Факт:</Text>
+              <View style={[styles.budgetFactInput, isOver && { borderColor: Colors.error }]}>
+                <TextInput
+                  style={styles.budgetFactInputText}
+                  value={inputValues[cat.key]}
+                  onChangeText={(v) => handleExpenseChange(cat.key, v)}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  placeholderTextColor={Colors.textSecondary}
+                />
+                <Text style={styles.budgetFactCurrency}>₽</Text>
+              </View>
+              {cat.fact > 0 && (
+                <Text style={[styles.budgetFactDiff, { color: isOver ? Colors.error : Colors.success }]}>
+                  {isOver ? '+' : '-'}{Math.abs(cat.fact - cat.plan).toLocaleString('ru-RU')} ₽
+                </Text>
+              )}
+            </View>
+
+            {/* Fact bar */}
+            {cat.fact > 0 && (
+              <View style={styles.budgetBarBg}>
+                <View style={[
+                  styles.budgetBarFill,
+                  {
+                    width: `${Math.min(100, factPct)}%`,
+                    backgroundColor: isOver ? Colors.error : cat.color,
+                  }
+                ]} />
+              </View>
+            )}
+
+            <Text style={styles.budgetPct}>{planPct}% от сметы</Text>
           </View>
         );
       })}
@@ -664,9 +1365,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heroBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: 'rgba(0,0,0,0.3)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -686,6 +1387,22 @@ const styles = StyleSheet.create({
     fontSize: Typography.sizes.base,
     color: 'rgba(255,255,255,0.8)',
     marginBottom: 8,
+  },
+  aiBadge: {
+    marginBottom: 10,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+  },
+  aiBadgeText: {
+    fontSize: Typography.sizes.xs,
+    fontWeight: Typography.weights.semibold,
+    color: '#7B1FA2',
   },
   heroMeta: {
     flexDirection: 'row',
@@ -840,6 +1557,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
   },
+  placeHeaderActions: {
+    alignItems: 'flex-end',
+    gap: 6,
+  },
+  accessibleBadge: {
+    minWidth: 24,
+    height: 24,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.primary + '18',
+    borderWidth: 1,
+    borderColor: Colors.primary + '40',
+  },
+  accessibleBadgeText: {
+    fontSize: 12,
+    color: Colors.primary,
+    fontWeight: Typography.weights.bold,
+  },
   placeName: {
     flex: 1,
     fontSize: Typography.sizes.base,
@@ -857,11 +1594,54 @@ const styles = StyleSheet.create({
     color: Colors.warning,
     fontWeight: Typography.weights.semibold,
   },
+  moveControls: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  moveBtn: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1,
+    borderColor: Colors.primary + '40',
+    backgroundColor: Colors.primary + '12',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  moveBtnDisabled: {
+    borderColor: Colors.border,
+    backgroundColor: Colors.surfaceAlt,
+  },
   placeDescription: {
     fontSize: Typography.sizes.sm,
     color: Colors.textSecondary,
     lineHeight: 20,
     marginBottom: 8,
+  },
+  placeTransitBox: {
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: BorderRadius.lg,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  placeTransitTitle: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.text,
+    fontWeight: Typography.weights.semibold,
+    marginBottom: 2,
+  },
+  placeTransitLegs: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.textSecondary,
+  },
+  placeTransitMeta: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.primary,
+    marginTop: 2,
+    fontWeight: Typography.weights.medium,
   },
   placeMeta: {
     flexDirection: 'row',
@@ -875,6 +1655,24 @@ const styles = StyleSheet.create({
   placeMetaText: {
     fontSize: Typography.sizes.xs,
     color: Colors.textSecondary,
+  },
+  reviewBtn: {
+    marginTop: 8,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.primary + '33',
+    backgroundColor: Colors.primary + '10',
+  },
+  reviewBtnText: {
+    color: Colors.primary,
+    fontSize: Typography.sizes.sm,
+    fontWeight: Typography.weights.semibold,
   },
   emptyDayCard: {
     backgroundColor: Colors.surface,
@@ -893,6 +1691,38 @@ const styles = StyleSheet.create({
     fontSize: Typography.sizes.sm,
     color: Colors.textSecondary,
     lineHeight: 20,
+  },
+  addPlaceBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: Colors.primary + '10',
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.primary + '30',
+    paddingVertical: 10,
+    marginBottom: Spacing.sm,
+  },
+  addPlaceBtnText: {
+    color: Colors.primary,
+    fontSize: Typography.sizes.sm,
+    fontWeight: Typography.weights.semibold,
+  },
+  deleteAction: {
+    width: 104,
+    borderRadius: BorderRadius.lg,
+    marginRight: 8,
+    marginBottom: Spacing.md,
+    backgroundColor: Colors.error,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  deleteActionText: {
+    color: Colors.textInverse,
+    fontSize: Typography.sizes.xs,
+    fontWeight: Typography.weights.semibold,
   },
 
   // Transport
@@ -1073,6 +1903,9 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
     overflow: 'hidden',
   },
+  bookBtnDisabled: {
+    opacity: 0.5,
+  },
   bookBtnGradient: {
     paddingHorizontal: Spacing.base,
     paddingVertical: 8,
@@ -1171,7 +2004,7 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
   },
 
-  // Partner cards (Tutu, Yandex)
+  // Partner cards (Yandex Travel)
   partnerCard: {
     backgroundColor: Colors.surface,
     borderRadius: BorderRadius.xl,
@@ -1233,7 +2066,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.sizes.sm,
   },
 
-  // Real flights (Aviasales)
+  // Real transport offers (Yandex Rasp)
   realFlightsSection: {
     marginBottom: Spacing.xl,
   },
@@ -1286,6 +2119,33 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     textAlign: 'center',
   },
+  fallbackActionsRow: {
+    marginTop: Spacing.sm,
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  fallbackActionBtn: {
+    backgroundColor: '#E8EEF9',
+    borderColor: '#C8D6F1',
+    borderWidth: 1,
+    borderRadius: BorderRadius.lg,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  fallbackActionBtnAlt: {
+    backgroundColor: Colors.surface,
+    borderColor: Colors.border,
+  },
+  fallbackActionBtnText: {
+    color: Colors.primary,
+    fontSize: Typography.sizes.xs,
+    fontWeight: Typography.weights.semibold,
+  },
+  fallbackActionBtnTextAlt: {
+    color: Colors.text,
+  },
   realFlightCard: {
     backgroundColor: Colors.surface,
     borderRadius: BorderRadius.xl,
@@ -1293,6 +2153,15 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
     borderWidth: 1.5,
     borderColor: Colors.primary + '30',
+    ...Shadows.card,
+  },
+  trainOfferCard: {
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.base,
+    marginBottom: Spacing.md,
+    borderWidth: 1.5,
+    borderColor: Colors.success + '30',
     ...Shadows.card,
   },
   realFlightTop: {
@@ -1375,6 +2244,13 @@ const styles = StyleSheet.create({
     fontWeight: Typography.weights.bold,
     fontSize: Typography.sizes.base,
   },
+  trainOfferFooter: {
+    gap: 8,
+  },
+  trainOfferMeta: {
+    fontSize: Typography.sizes.sm,
+    color: Colors.textSecondary,
+  },
 
   // Budget
   budgetSummary: {
@@ -1451,7 +2327,236 @@ const styles = StyleSheet.create({
     color: Colors.textTertiary,
     textAlign: 'right',
   },
+  budgetCategoryCard: {
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.base,
+    marginBottom: Spacing.md,
+    ...Shadows.sm,
+  },
+  budgetCategoryRight: {
+    alignItems: 'flex-end',
+  },
+  budgetPlanAmount: {
+    fontSize: Typography.sizes.md,
+    fontWeight: Typography.weights.bold,
+    color: Colors.text,
+  },
+  budgetPlanLabel: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.textSecondary,
+  },
+  budgetFactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: Spacing.sm,
+    marginBottom: 6,
+  },
+  budgetFactLabel: {
+    fontSize: Typography.sizes.sm,
+    color: Colors.textSecondary,
+    width: 40,
+  },
+  budgetFactInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: BorderRadius.md,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    backgroundColor: Colors.surfaceAlt,
+  },
+  budgetFactInputText: {
+    flex: 1,
+    fontSize: Typography.sizes.base,
+    color: Colors.text,
+    fontWeight: Typography.weights.semibold,
+  },
+  budgetFactCurrency: {
+    fontSize: Typography.sizes.sm,
+    color: Colors.textSecondary,
+  },
+  budgetFactDiff: {
+    fontSize: Typography.sizes.sm,
+    fontWeight: Typography.weights.bold,
+    minWidth: 70,
+    textAlign: 'right',
+  },
+  budgetHint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: Colors.primary + '10',
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.primary,
+  },
+  budgetHintText: {
+    fontSize: Typography.sizes.sm,
+    color: Colors.text,
+    flex: 1,
+  },
+
+  // Multimodal in route tab
+  howToGetCard: {
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.base,
+    marginBottom: Spacing.xl,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    ...Shadows.sm,
+  },
+  howToGetHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  howToGetTitle: {
+    fontSize: Typography.sizes.md,
+    fontWeight: Typography.weights.bold,
+    color: Colors.text,
+  },
+  howToGetStats: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  howToGetStat: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.textSecondary,
+  },
+  howToGetSummary: {
+    fontSize: Typography.sizes.sm,
+    color: Colors.textSecondary,
+    marginBottom: Spacing.md,
+  },
+  howToGetSegments: {
+    gap: 0,
+  },
+  howToGetSegment: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingBottom: 8,
+    position: 'relative',
+  },
+  howToGetSegDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginTop: 3,
+    flexShrink: 0,
+  },
+  howToGetSegLine: {
+    position: 'absolute',
+    left: 5,
+    top: 15,
+    width: 2,
+    height: '100%',
+    backgroundColor: Colors.border,
+  },
+  howToGetSegContent: {
+    flex: 1,
+  },
+  howToGetSegHeader: {
+    flexDirection: 'row',
+    gap: 6,
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  howToGetSegMode: {
+    fontSize: Typography.sizes.sm,
+    fontWeight: Typography.weights.semibold,
+    color: Colors.text,
+  },
+  howToGetSegCarrier: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.textSecondary,
+    flex: 1,
+  },
+  howToGetSegPrice: {
+    fontSize: Typography.sizes.sm,
+    fontWeight: Typography.weights.bold,
+    color: Colors.primary,
+  },
+  howToGetSegRoute: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.textSecondary,
+    marginTop: 2,
+  },
+  howToGetSegMeta: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.textTertiary,
+    marginTop: 1,
+  },
+  ecoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginTop: Spacing.sm,
+    paddingTop: Spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+  ecoText: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.success,
+  },
+
+  // Hotels live
+  hotelLiveHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+  hotelLiveSubtitle: {
+    fontSize: Typography.sizes.sm,
+    color: Colors.textSecondary,
+    marginBottom: Spacing.md,
+  },
+  hotelFallbackNote: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.textSecondary,
+    marginBottom: Spacing.sm,
+    fontStyle: 'italic',
+  },
+  hotelRatingBadge: {
+    backgroundColor: Colors.success,
+    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  hotelRatingBadgeText: {
+    color: '#fff',
+    fontSize: Typography.sizes.xs,
+    fontWeight: Typography.weights.bold,
+  },
+  hotelRatingLabel: {
+    fontSize: Typography.sizes.xs,
+    color: Colors.textSecondary,
+  },
+  hotellookBtn: {
+    backgroundColor: Colors.primary,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.base,
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+    marginTop: 4,
+  },
+  hotellookBtnText: {
+    color: '#fff',
+    fontWeight: Typography.weights.bold,
+    fontSize: Typography.sizes.base,
+  },
 });
+
+
 
 
 

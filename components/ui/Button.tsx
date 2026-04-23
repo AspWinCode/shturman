@@ -22,6 +22,9 @@ interface ButtonProps {
   textStyle?: TextStyle;
   icon?: React.ReactNode;
   fullWidth?: boolean;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  testID?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -35,6 +38,9 @@ export const Button: React.FC<ButtonProps> = ({
   textStyle,
   icon,
   fullWidth = true,
+  accessibilityLabel,
+  accessibilityHint,
+  testID,
 }) => {
   const isDisabled = disabled || loading;
 
@@ -53,9 +59,14 @@ export const Button: React.FC<ButtonProps> = ({
   if (variant === 'primary') {
     return (
       <TouchableOpacity
+        testID={testID}
         onPress={onPress}
         disabled={isDisabled}
         activeOpacity={0.85}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel ?? title}
+        accessibilityHint={accessibilityHint}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         style={[fullWidth && styles.fullWidth, style]}
       >
         <View style={[styles.base, sizeStyles[size], { backgroundColor: isDisabled ? '#C4C4C4' : Colors.primary }]}>
@@ -100,9 +111,14 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <TouchableOpacity
+      testID={testID}
       onPress={onPress}
       disabled={isDisabled}
       activeOpacity={0.75}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? title}
+      accessibilityHint={accessibilityHint}
+      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       style={[
         styles.base,
         sizeStyles[size],
@@ -138,6 +154,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: BorderRadius.lg,
+    minHeight: 44,
+    minWidth: 44,
     gap: 8,
   },
   primaryGradient: {

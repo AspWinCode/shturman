@@ -7,21 +7,29 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import Colors from '@/constants/colors';
 import { BorderRadius, Spacing, Typography, Shadows } from '@/constants/theme';
 import { useStore } from '@/store/useStore';
+import { OAuthButtons } from '@/components/auth/OAuthButtons';
 
 const DEMO_EMAIL = 'demo@travelai.app';
 const DEMO_PASSWORD = 'Travel123!';
 const SHOW_DEMO_CREDENTIALS = __DEV__ || process.env.EXPO_PUBLIC_SHOW_DEMO_CREDENTIALS === 'true';
 
 export default function LoginScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -66,7 +74,16 @@ export default function LoginScreen() {
     >
       <StatusBar style="light" />
 
-      <View style={[styles.gradientHeader, { backgroundColor: Colors.primary }]}>
+      <View
+        style={[
+          styles.gradientHeader,
+          {
+            backgroundColor: Colors.primary,
+            paddingTop: insets.top + 12,
+            paddingHorizontal: horizontalPadding,
+          },
+        ]}
+      >
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
@@ -79,7 +96,13 @@ export default function LoginScreen() {
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: Spacing.lg + Math.max(insets.bottom, 12),
+          },
+        ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -96,6 +119,7 @@ export default function LoginScreen() {
           placeholder="your@email.com"
           value={email}
           onChangeText={setEmail}
+          testID="input-email"
           keyboardType="email-address"
           autoCapitalize="none"
           leftIcon="mail-outline"
@@ -106,6 +130,7 @@ export default function LoginScreen() {
           placeholder="Введите пароль"
           value={password}
           onChangeText={setPassword}
+          testID="input-password"
           secureTextEntry
           leftIcon="lock-closed-outline"
           error={errors.password}
@@ -119,8 +144,11 @@ export default function LoginScreen() {
           onPress={handleLogin}
           size="lg"
           loading={loading}
+          testID="btn-login"
           style={{ marginTop: Spacing.sm }}
         />
+
+        <OAuthButtons onSuccess={() => router.replace('/(tabs)')} />
 
         <View style={styles.registerRow}>
           <Text style={styles.registerText}>Нет аккаунта? </Text>

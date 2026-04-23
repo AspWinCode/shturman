@@ -3,7 +3,7 @@
     {
       "id": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
       "name": "Demo",
-      "email": "demo@travelai.app",
+      "email": "demo@shturman.app",
       "passwordHash": "b60f09d39799401b97f84130ff85b8ff849079905294c070598725871d893c429eb00cfed36a60d81572fdaa173da1ea2e908d6b14e79bf750abc124d76157ce",
       "passwordSalt": "e89493f17844badada2d45daa43a9313",
       "createdAt": "2026-04-14T03:48:14.085Z",
@@ -116,6 +116,152 @@
       "passwordSalt": "f7c677ed8f2bab9f12f6ede888f61ef6",
       "createdAt": "2026-04-20T09:10:10.763Z",
       "updatedAt": "2026-04-20T09:10:10.763Z"
+    },
+    {
+      "id": "152f0d0c-2da7-4806-b4d3-dab6f4726955",
+      "name": "Smoke User",
+      "email": "smoke_1776844844276_61683@travelai.app",
+      "passwordHash": "fd96cd00e14393920d41656be7705d44f286cf02d79a755446bf2ade7f610e29c22cf895a5c3c8c16183a94cae45b69ee384af9bd80ac78799e732fc198ba17f",
+      "passwordSalt": "4c85b3dcb631268ad52f1167e8f01e82",
+      "createdAt": "2026-04-22T08:00:44.433Z",
+      "updatedAt": "2026-04-22T08:00:44.433Z"
+    },
+    {
+      "id": "674e8d79-11cb-4bb3-b565-4a19a4389d24",
+      "name": "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ",
+      "email": "test.google@gmail.com",
+      "passwordHash": null,
+      "passwordSalt": null,
+      "oauthProvider": "google",
+      "createdAt": "2026-04-22T11:12:56.093Z",
+      "updatedAt": "2026-04-22T11:12:56.093Z"
+    },
+    {
+      "id": "e3cd9005-1630-40f6-8fbe-ebb4b51bb764",
+      "name": "Ivan2",
+      "email": "user@yandex.ru",
+      "passwordHash": null,
+      "passwordSalt": null,
+      "oauthProvider": "google",
+      "createdAt": "2026-04-22T11:14:00.153Z",
+      "updatedAt": "2026-04-22T11:14:00.153Z"
+    },
+    {
+      "id": "e43bf143-c087-49f8-b506-b70754b19109",
+      "name": "Smoke User",
+      "email": "smoke_1776860102256_53177@travelai.app",
+      "passwordHash": "6fa84978b00490db39d3285858e62440ab97fa1e527a6ebf72714fec55f4b1fb3f46707ec42b3f6e3570cc4b6336e8ea5b4cdf731a5189e8fde29603abc69a41",
+      "passwordSalt": "aa4bacea3e7d6fd8872f7d352017a8d7",
+      "createdAt": "2026-04-22T12:15:02.408Z",
+      "updatedAt": "2026-04-22T12:15:02.408Z"
+    },
+    {
+      "id": "07feca16-337c-4678-a401-f4ef83aa8748",
+      "name": "Smoke User",
+      "email": "smoke_1776911003189_19584@travelai.app",
+      "passwordHash": "b913e5248a2f0c083b47cbfbc297aa6e1edaf6006e9036836cc6ef63452a35eac541550e6a28c3b62863272c4eb383c9c5d7c90e8f99ad80da8be6aef1517291",
+      "passwordSalt": "938e149240a5551da6c98a606ba47ef2",
+      "createdAt": "2026-04-23T02:23:23.325Z",
+      "updatedAt": "2026-04-23T02:23:23.325Z"
+    },
+    {
+      "id": "ddd31f4a-047d-4b73-a17c-90625654c61b",
+      "name": "Smoke User",
+      "email": "smoke_1776927251889_85702@travelai.app",
+      "passwordHash": "ebea4b2fd8b958f04f0c699a441557b9379ea55b23561ec25eca507eddd06e92d6397125b213e0bb40da86eb5421f952a88384c5778be882a57cba7a0c11e89a",
+      "passwordSalt": "98020413519914e3fb8296ae1dc81ee9",
+      "createdAt": "2026-04-23T06:54:11.998Z",
+      "updatedAt": "2026-04-23T06:54:11.998Z"
+    },
+    {
+      "id": "5b9991b3-f5aa-4720-a687-46f298c96974",
+      "name": "Smoke User",
+      "email": "smoke_1776928175888_46495@travelai.app",
+      "passwordHash": "00857422f9c31c86b014f31fbb3280a399147095d44965563078e62ea85e8e8071ec0d916e614230aa5964c67d1a219b74669a58b6d1ff89931381f381b7aa98",
+      "passwordSalt": "9c8db66b56b5f1312d0d68c7048d2d08",
+      "createdAt": "2026-04-23T07:09:35.992Z",
+      "updatedAt": "2026-04-23T07:09:35.992Z"
+    },
+    {
+      "id": "0c1223da-52c8-4785-8236-91065cc6cdc9",
+      "name": "Smoke User",
+      "email": "smoke_1776928878023_19820@travelai.app",
+      "passwordHash": "188b384220eaa7295fdbae2697819f2f16e64bef017a370c116fd7f7bbba970d3ee6ffbaa03028f00d89ccbdf9182f8518986b2b894f110fec8be99c10730f49",
+      "passwordSalt": "56b56e02829faad911d56cb462927be7",
+      "createdAt": "2026-04-23T07:21:18.125Z",
+      "updatedAt": "2026-04-23T07:21:18.125Z"
+    },
+    {
+      "id": "1566904f-3ab3-4b10-9770-df6dcdbc4347",
+      "name": "Smoke User",
+      "email": "smoke_1776928918474_35286@travelai.app",
+      "passwordHash": "b950f31a35b4c17c390f451aef39c3aaaa4cd4c23d7addda942ed93448d8d7cdff6e2bca3280eff0c82528b3c5939bd2251cb94e4d96ce870418ee1fcf8dde3f",
+      "passwordSalt": "b4d6e37ac08b82a7a6b518db5ff4d38f",
+      "createdAt": "2026-04-23T07:21:58.577Z",
+      "updatedAt": "2026-04-23T07:21:58.577Z"
+    },
+    {
+      "id": "711f5bf7-0fd7-4e18-96b6-94ce80aed8d5",
+      "name": "Smoke User",
+      "email": "smoke_1776929226956_31009@travelai.app",
+      "passwordHash": "6fbaae099990781892efca080ad0133d72c55e5dfc84078cdb3bff92c8a729a1444e497f8d79a55a4200deed19e29b7a18e272c1fa9461b1fcbe14adda061842",
+      "passwordSalt": "00e0568b8bbcbd3738f0a09798747ca2",
+      "createdAt": "2026-04-23T07:27:07.065Z",
+      "updatedAt": "2026-04-23T07:27:07.065Z"
+    },
+    {
+      "id": "50aa54db-737b-49e0-8396-f4c0d3535dfd",
+      "name": "Smoke User",
+      "email": "smoke_1776929826128_38538@travelai.app",
+      "passwordHash": "5ccad3ae65b025388655a0709c3627d648d1c25b4e3842e62a2bf78b392b3e12e2e8ffe3e56c261abd4364af5436f62d1a1f9cedfa212d1d2055f971d923b99e",
+      "passwordSalt": "e378e882ec02c5f05de2019e2d3b8cef",
+      "createdAt": "2026-04-23T07:37:06.262Z",
+      "updatedAt": "2026-04-23T07:37:06.262Z"
+    },
+    {
+      "id": "257d6dd5-5794-4136-9416-b1c122dc3172",
+      "name": "Smoke User",
+      "email": "smoke_1776931864543_33844@travelai.app",
+      "passwordHash": "7e9a24974d3f3f3f7b640188bcbf814616cb092b88a0e444d80b1bfe6af11d8ab3f836f4145a525203aecfa3896955a4ff79ef3a3ef3db75818300881097449f",
+      "passwordSalt": "2333e381a59eba909f67e775c0ebc111",
+      "createdAt": "2026-04-23T08:11:04.698Z",
+      "updatedAt": "2026-04-23T08:11:04.698Z"
+    },
+    {
+      "id": "23dcba0c-1005-40a8-8b8f-987919640c0b",
+      "name": "Smoke User",
+      "email": "smoke_1776932590932_52581@travelai.app",
+      "passwordHash": "01ad13ac6e50d0bc64c39e156f7a5691d85ab2599d1e3026216fbbd805f6dac28b62822a7a03d62138121dfdd82c148ccacb688a997b47f553735058bc886509",
+      "passwordSalt": "64d9a4a9a8fbbc1f9800e272658af1f7",
+      "createdAt": "2026-04-23T08:23:11.047Z",
+      "updatedAt": "2026-04-23T08:23:11.047Z"
+    },
+    {
+      "id": "a369e8ca-bc9c-4a91-9a99-cd12be00267a",
+      "name": "Smoke User",
+      "email": "smoke_1776933034443_44373@travelai.app",
+      "passwordHash": "b1eced3aabfcb35345fcf18aa49a2dbb5fddb78d34b1710a5b96202c5daaf33feec932523ccdbbf813f329ca5d7698f592b40024a0749066f050f2fd1e46c3ea",
+      "passwordSalt": "6d22fd546ba7055733a7ce3daf471389",
+      "createdAt": "2026-04-23T08:30:34.570Z",
+      "updatedAt": "2026-04-23T08:30:34.570Z"
+    },
+    {
+      "id": "b75dc64b-a5f3-4d99-95ec-bc69bcc7ccba",
+      "name": "Smoke User",
+      "email": "smoke_1776933838717_35458@shturman.app",
+      "passwordHash": "7e8a1059ae089caf0447f62002eae24980b94340c42747877e9b85bf6efb4249f4325616f193995ddb74ee1def8b0f60de870cbf0b3ceb4f5003170101824eb3",
+      "passwordSalt": "be8b41a608ee8961aea52a58df78ca44",
+      "createdAt": "2026-04-23T08:43:58.854Z",
+      "updatedAt": "2026-04-23T08:43:58.854Z"
+    },
+    {
+      "id": "fa851b43-5695-416b-80d4-627bd41f4283",
+      "name": "Smoke User",
+      "email": "smoke_1776934576042_58304@shturman.app",
+      "passwordHash": "f3579e7e847060892a94970c5ca1415d3c68eea3db005ea470f6deb48fbe1f828af03dcb6b2ca322670a5704e028c963b5fc129bd3c9c735f84c0d318367f448",
+      "passwordSalt": "f9d5544d7c60d7bc474728a52f785aa1",
+      "createdAt": "2026-04-23T08:56:16.198Z",
+      "updatedAt": "2026-04-23T08:56:16.198Z"
     }
   ],
   "refreshTokens": [
@@ -178,6 +324,226 @@
       "tokenHash": "fc69558bc47c69d485d0a00c34414e0a8c8f7f464f699197d2acc0fa161386ce",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
       "exp": 1779268210
+    },
+    {
+      "tokenHash": "53dbe618d3c1ccedf321cf4206a64b6430240c40edf54db89d65f82740f323c7",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779378679
+    },
+    {
+      "tokenHash": "e8b35c5032a75d31a68d2aabe1a89b0d930ea14a28749b4e9b1fc48071b59828",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779433589
+    },
+    {
+      "tokenHash": "e87e213376fa62b32e6c926a9f83ffd2913be4b1820c880328e597763a7e2e7c",
+      "userId": "152f0d0c-2da7-4806-b4d3-dab6f4726955",
+      "exp": 1779436844
+    },
+    {
+      "tokenHash": "cd8446bd0be88218338071eee37454c82813378c0ad9ec155ff4278a57fea068",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779436844
+    },
+    {
+      "tokenHash": "e5f03ea7a6f8f7a50722c0055a599ff07b6a5f298d0fc324e626583398875182",
+      "userId": "674e8d79-11cb-4bb3-b565-4a19a4389d24",
+      "exp": 1779448376
+    },
+    {
+      "tokenHash": "31d20e38023d479c2db74b78cfaff45878d8f3249b543cd274e7546e0b471021",
+      "userId": "e3cd9005-1630-40f6-8fbe-ebb4b51bb764",
+      "exp": 1779448440
+    },
+    {
+      "tokenHash": "6d1364ae3fe51de40649b0d512ddd9552b68a057fa079425c00c0f1315c4e477",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779449006
+    },
+    {
+      "tokenHash": "90b9e891ccfe0bd1e4941f2a7047a35562377258d0f7bc6fef2cdbfd1001e775",
+      "userId": "e43bf143-c087-49f8-b506-b70754b19109",
+      "exp": 1779452102
+    },
+    {
+      "tokenHash": "113888abe9085c6fc021e659280c50d95b7871785ffbff76fc4e9eafc191fbaa",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779452102
+    },
+    {
+      "tokenHash": "b5c276fe4f8baa0181cb013eb1711399eb518665393fc1afd9088c83cba83fd3",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779457698
+    },
+    {
+      "tokenHash": "09c3d6c14d13fb96da56ee6e719b2390245cf7da7fd41a3ae1b5ac55dc37cfd5",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779470094
+    },
+    {
+      "tokenHash": "042239bafad29138c908cbffa90aed45227144ece43fe4d6d4386a279717d19b",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779470636
+    },
+    {
+      "tokenHash": "0abe4b00a165ced59012fd6c2a5e01cf47193a9f026d78b7807644cacbd00c6b",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779502823
+    },
+    {
+      "tokenHash": "a1dd3516ba134315442f181f8d6501630d483c392b18b09a11eb23957c94291b",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779502996
+    },
+    {
+      "tokenHash": "f660cca2b98c20c14136d74ee904ddcda92f9bf91f0e19f6b0bbafe7743bc22f",
+      "userId": "07feca16-337c-4678-a401-f4ef83aa8748",
+      "exp": 1779503003
+    },
+    {
+      "tokenHash": "ef3c6b6daa258cdab47fad93911000f5fdc95a28fa7b82d02e99e7fe96a43e00",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779503003
+    },
+    {
+      "tokenHash": "db127f6e851e7a727899f3997d47c01f67ce673f85a3643374c52995152484e9",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779503108
+    },
+    {
+      "tokenHash": "5e53f186cccb6590ad39b4cdc69b6ab17a0f2cae46dd51ce437fe9d6a09dc726",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779503108
+    },
+    {
+      "tokenHash": "46f68ac85a8f1f322047f58da92f46d607ff457f0ff2bd29abc0bb957a0fa468",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779503108
+    },
+    {
+      "tokenHash": "85a94428ed056011ef5dfe1c7adebfd38797689155ad9d03efae80be42d9614a",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779503203
+    },
+    {
+      "tokenHash": "dc750bf29546e9577cb4c8f25a7a2ac5cff6ce5fad4c73e7ed40fc15e3dec969",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779505812
+    },
+    {
+      "tokenHash": "83abe42e073267ac08bf1358493c4bc1b3cedd27981588afbf04a1176d4628b7",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779518823
+    },
+    {
+      "tokenHash": "8026d63c321682f5836f039e837d08abd55080eac6e9477088afa65467a6b713",
+      "userId": "ddd31f4a-047d-4b73-a17c-90625654c61b",
+      "exp": 1779519252
+    },
+    {
+      "tokenHash": "7d3c9b56ca9612568979506816b726c2968097e99d106082ad696fa9c8b01a34",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779519252
+    },
+    {
+      "tokenHash": "022b1a9e96fd54888e5a1653342d4cae8bf5c97b982279bec917b545b0ab5ec3",
+      "userId": "5b9991b3-f5aa-4720-a687-46f298c96974",
+      "exp": 1779520176
+    },
+    {
+      "tokenHash": "e6555c64794ecb3c17f789112270c92317cb58a44a91b0163469e3015bb6ba24",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779520176
+    },
+    {
+      "tokenHash": "f4361e5bac19b8de177744625891d13aa4a04da3aed8939864dd338db94ddf72",
+      "userId": "0c1223da-52c8-4785-8236-91065cc6cdc9",
+      "exp": 1779520878
+    },
+    {
+      "tokenHash": "2a3ce34869f444d638137c7f91d2ba569d629725be99ad75bfcba96eaf1106ab",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779520878
+    },
+    {
+      "tokenHash": "c3d2e9270c935180eed2115bf9607fd37f4a1407c345cc72aabb22179d718680",
+      "userId": "1566904f-3ab3-4b10-9770-df6dcdbc4347",
+      "exp": 1779520918
+    },
+    {
+      "tokenHash": "66a2328fd13cad9ecb2ac824a0ff1a9450f3dd3a465949f1b5ef797247ef27e1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779520918
+    },
+    {
+      "tokenHash": "e5573fe4c17022a6cdcb69ae01cfdc33966b8dea2a28a633039726365d268615",
+      "userId": "711f5bf7-0fd7-4e18-96b6-94ce80aed8d5",
+      "exp": 1779521227
+    },
+    {
+      "tokenHash": "b6cff49f022de9800c897d87e73d949db4a49a633eafec71b0c21c523210f425",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779521227
+    },
+    {
+      "tokenHash": "d02d20a6c03cf00ef0765e530c2f1324324e071d4962076338ca021fd3d8bc6f",
+      "userId": "50aa54db-737b-49e0-8396-f4c0d3535dfd",
+      "exp": 1779521826
+    },
+    {
+      "tokenHash": "e59cbb53a9559baece68f62256fcef0dfe9f4c6bcb541d1be546bbda2f6905ce",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779521826
+    },
+    {
+      "tokenHash": "3adda143ddb7369ded54b19d43de56ef659e76639df7eedfe0d5e76af0f89d1d",
+      "userId": "257d6dd5-5794-4136-9416-b1c122dc3172",
+      "exp": 1779523864
+    },
+    {
+      "tokenHash": "113de34a20c0471f24348eacd2a35b83af612bda587a70e160639bc359d2af77",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779523864
+    },
+    {
+      "tokenHash": "15a819241601e301de7bb1f992103cd119247abb58b5b658ef244139f90ccae7",
+      "userId": "23dcba0c-1005-40a8-8b8f-987919640c0b",
+      "exp": 1779524591
+    },
+    {
+      "tokenHash": "431b1dcdb5dc42f19d669ce3230518453566780018f6274c89d7656e03f2f09e",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779524591
+    },
+    {
+      "tokenHash": "4597f2eddfe6e9a70ce2c36e0a207d9780ed2a0a0682d3f36360f07e1ca9092c",
+      "userId": "a369e8ca-bc9c-4a91-9a99-cd12be00267a",
+      "exp": 1779525034
+    },
+    {
+      "tokenHash": "276882c1db66916c810025321c134f42ff5df4130d6fa77f4d71651c5c0c4621",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779525034
+    },
+    {
+      "tokenHash": "dacb6dbbf38f7902622083eb346d308aaf744d26f9ead7e4840737f28a539e1c",
+      "userId": "b75dc64b-a5f3-4d99-95ec-bc69bcc7ccba",
+      "exp": 1779525838
+    },
+    {
+      "tokenHash": "b7b7decb48478c2ff8e9412221af3dc40bdade83388a90cbe3e90a6e5317f641",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779525839
+    },
+    {
+      "tokenHash": "9e8536ac6e998542804c488fca80c8a0454b1c8e468a3e957366cd62320429bb",
+      "userId": "fa851b43-5695-416b-80d4-627bd41f4283",
+      "exp": 1779526576
+    },
+    {
+      "tokenHash": "7254ec4f223bd0b78c7a5a03d3fbe21cce85580bcc9a4bd7558c8cc7eb01990b",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "exp": 1779526576
     }
   ],
   "trips": [
@@ -186,7 +552,7 @@
       "payload": "{\"id\":\"api-seed-spb-1\",\"from\":\"Москва\",\"to\":\"Санкт-Петербург\",\"toCountry\":\"Россия\",\"startDate\":\"2026-05-10\",\"endDate\":\"2026-05-13\",\"budget\":52000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"museums\",\"food\"],\"travelStyle\":\"standard\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1548834925-e48f8a27d7b2?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Эрмитаж\",\"category\":\"Музей\",\"emoji\":\"🏛️\",\"description\":\"Крупнейший музейный комплекс России.\",\"duration\":\"3-4 часа\",\"time\":\"10:00\",\"rating\":4.9,\"address\":\"Дворцовая площадь, 2\",\"price\":\"500 ₽\"},{\"id\":\"p2\",\"name\":\"Разводные мосты\",\"category\":\"Вечерняя программа\",\"emoji\":\"🌉\",\"description\":\"Ночная прогулка по Неве.\",\"duration\":\"2 часа\",\"time\":\"21:00\",\"rating\":4.8,\"address\":\"Дворцовая набережная\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-spb-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Санкт-Петербург\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":5720,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-spb-1-t2\",\"type\":\"train\",\"from\":\"Санкт-Петербург\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":4680,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-spb-1-h1\",\"name\":\"Nevsky Grand Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":7200,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Санкт-Петербург, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":10400,\"totalHotel\":21600,\"totalActivities\":10400,\"totalFood\":9360}",
       "status": "upcoming",
       "start_date": "2026-05-10",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     },
     {
@@ -194,7 +560,7 @@
       "payload": "{\"id\":\"api-seed-kzn-1\",\"from\":\"Москва\",\"to\":\"Казань\",\"toCountry\":\"Россия\",\"startDate\":\"2026-05-22\",\"endDate\":\"2026-05-25\",\"budget\":48000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"history\",\"food\"],\"travelStyle\":\"standard\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1595218699680-e9c3acba6e91?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Казанский Кремль\",\"category\":\"История\",\"emoji\":\"🏰\",\"description\":\"Исторический центр Казани.\",\"duration\":\"2-3 часа\",\"time\":\"10:30\",\"rating\":4.8,\"address\":\"Кремль\",\"price\":\"200 ₽\"},{\"id\":\"p2\",\"name\":\"Улица Баумана\",\"category\":\"Прогулка\",\"emoji\":\"🛍️\",\"description\":\"Пешеходная улица с кафе и сувенирами.\",\"duration\":\"2 часа\",\"time\":\"15:00\",\"rating\":4.6,\"address\":\"ул. Баумана\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-kzn-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Казань\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":5280,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-kzn-1-t2\",\"type\":\"train\",\"from\":\"Казань\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":4320,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-kzn-1-h1\",\"name\":\"Korston Kazan\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":6800,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Казань, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":9600,\"totalHotel\":20400,\"totalActivities\":9600,\"totalFood\":8640}",
       "status": "upcoming",
       "start_date": "2026-05-22",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     },
     {
@@ -202,7 +568,7 @@
       "payload": "{\"id\":\"api-seed-sochi-1\",\"from\":\"Казань\",\"to\":\"Сочи\",\"toCountry\":\"Россия\",\"startDate\":\"2026-06-03\",\"endDate\":\"2026-06-06\",\"budget\":76000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"beach\",\"nature\"],\"travelStyle\":\"comfort\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Роза Хутор\",\"category\":\"Природа\",\"emoji\":\"🏔️\",\"description\":\"Горный курорт с канатной дорогой.\",\"duration\":\"5 часов\",\"time\":\"09:30\",\"rating\":4.8,\"address\":\"Роза Хутор\",\"price\":\"2 000 ₽\"},{\"id\":\"p2\",\"name\":\"Набережная Сочи\",\"category\":\"Прогулка\",\"emoji\":\"🌊\",\"description\":\"Вечер у моря.\",\"duration\":\"2 часа\",\"time\":\"19:00\",\"rating\":4.7,\"address\":\"Центральная набережная\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-sochi-1-t1\",\"type\":\"flight\",\"from\":\"Казань\",\"to\":\"Сочи\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":8360,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-sochi-1-t2\",\"type\":\"train\",\"from\":\"Сочи\",\"to\":\"Казань\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":6840,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-sochi-1-h1\",\"name\":\"Sea Galaxy Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":8400,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Сочи, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":15200,\"totalHotel\":25200,\"totalActivities\":15200,\"totalFood\":13680}",
       "status": "upcoming",
       "start_date": "2026-06-03",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     },
     {
@@ -210,7 +576,7 @@
       "payload": "{\"id\":\"api-seed-kgd-1\",\"from\":\"Москва\",\"to\":\"Калининград\",\"toCountry\":\"Россия\",\"startDate\":\"2026-06-16\",\"endDate\":\"2026-06-19\",\"budget\":56000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"history\",\"food\"],\"travelStyle\":\"comfort\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Остров Канта\",\"category\":\"История\",\"emoji\":\"⛪\",\"description\":\"Кафедральный собор и музейная зона.\",\"duration\":\"2 часа\",\"time\":\"11:00\",\"rating\":4.7,\"address\":\"Остров Канта\",\"price\":\"300 ₽\"},{\"id\":\"p2\",\"name\":\"Рыбная деревня\",\"category\":\"Еда\",\"emoji\":\"🐟\",\"description\":\"Рестораны и набережная.\",\"duration\":\"2 часа\",\"time\":\"18:30\",\"rating\":4.6,\"address\":\"Октябрьский остров\",\"price\":\"1 300 ₽\"}]}],\"transport\":[{\"id\":\"api-seed-kgd-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Калининград\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":6160,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-kgd-1-t2\",\"type\":\"train\",\"from\":\"Калининград\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":5040,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-kgd-1-h1\",\"name\":\"Kaliningrad Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":5900,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Калининград, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":11200,\"totalHotel\":17700,\"totalActivities\":11200,\"totalFood\":10080}",
       "status": "upcoming",
       "start_date": "2026-06-16",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     },
     {
@@ -218,7 +584,7 @@
       "payload": "{\"id\":\"api-seed-vvo-1\",\"from\":\"Москва\",\"to\":\"Владивосток\",\"toCountry\":\"Россия\",\"startDate\":\"2026-07-01\",\"endDate\":\"2026-07-04\",\"budget\":92000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"nature\",\"food\"],\"travelStyle\":\"comfort\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1601462904263-f2fa0c851cb9?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Токаревский маяк\",\"category\":\"Природа\",\"emoji\":\"🗼\",\"description\":\"Символ Владивостока у Японского моря.\",\"duration\":\"1.5 часа\",\"time\":\"10:30\",\"rating\":4.8,\"address\":\"Токаревская кошка\",\"price\":\"Бесплатно\"},{\"id\":\"p2\",\"name\":\"Русский мост\",\"category\":\"Архитектура\",\"emoji\":\"🌉\",\"description\":\"Видовые точки на остров Русский.\",\"duration\":\"2.5 часа\",\"time\":\"15:30\",\"rating\":4.7,\"address\":\"Русский мост\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-vvo-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Владивосток\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":10120,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-vvo-1-t2\",\"type\":\"train\",\"from\":\"Владивосток\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":8280,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-vvo-1-h1\",\"name\":\"Azimut Vladivostok\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":7600,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Владивосток, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":18400,\"totalHotel\":22800,\"totalActivities\":18400,\"totalFood\":16560}",
       "status": "upcoming",
       "start_date": "2026-07-01",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     },
     {
@@ -226,7 +592,7 @@
       "payload": "{\"id\":\"api-seed-baikal-1\",\"from\":\"Москва\",\"to\":\"Байкал\",\"toCountry\":\"Россия\",\"startDate\":\"2026-07-20\",\"endDate\":\"2026-07-23\",\"budget\":104000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"nature\",\"hiking\"],\"travelStyle\":\"comfort\",\"status\":\"upcoming\",\"coverImage\":\"https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Листвянка\",\"category\":\"Природа\",\"emoji\":\"🏞️\",\"description\":\"Берег Байкала и рынок сувениров.\",\"duration\":\"4 часа\",\"time\":\"10:00\",\"rating\":4.9,\"address\":\"Листвянка\",\"price\":\"1 000 ₽\"},{\"id\":\"p2\",\"name\":\"Кругобайкальская прогулка\",\"category\":\"Активности\",\"emoji\":\"🥾\",\"description\":\"Треккинг вдоль берега.\",\"duration\":\"3 часа\",\"time\":\"16:00\",\"rating\":4.8,\"address\":\"Южный Байкал\",\"price\":\"1 500 ₽\"}]}],\"transport\":[{\"id\":\"api-seed-baikal-1-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Байкал\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":11440,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-baikal-1-t2\",\"type\":\"train\",\"from\":\"Байкал\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":9360,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-baikal-1-h1\",\"name\":\"Baikal View Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":9400,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Байкал, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":20800,\"totalHotel\":28200,\"totalActivities\":20800,\"totalFood\":18720}",
       "status": "upcoming",
       "start_date": "2026-07-20",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     },
     {
@@ -234,7 +600,7 @@
       "payload": "{\"id\":\"api-seed-msk-past\",\"from\":\"Казань\",\"to\":\"Москва\",\"toCountry\":\"Россия\",\"startDate\":\"2025-04-10\",\"endDate\":\"2025-04-13\",\"budget\":42000,\"currency\":\"₽\",\"travelers\":1,\"interests\":[\"history\"],\"travelStyle\":\"standard\",\"status\":\"past\",\"coverImage\":\"https://images.unsplash.com/photo-1513326738677-b964603b136d?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Красная площадь\",\"category\":\"История\",\"emoji\":\"🧱\",\"description\":\"Сердце столицы.\",\"duration\":\"2 часа\",\"time\":\"10:00\",\"rating\":4.9,\"address\":\"Красная площадь\",\"price\":\"Бесплатно\"},{\"id\":\"p2\",\"name\":\"Москва-Сити\",\"category\":\"Архитектура\",\"emoji\":\"🏙️\",\"description\":\"Смотровая площадка с панорамой города.\",\"duration\":\"2 часа\",\"time\":\"18:00\",\"rating\":4.7,\"address\":\"Пресненская набережная\",\"price\":\"1 200 ₽\"}]}],\"transport\":[{\"id\":\"api-seed-msk-past-t1\",\"type\":\"flight\",\"from\":\"Казань\",\"to\":\"Москва\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":4620,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-msk-past-t2\",\"type\":\"train\",\"from\":\"Москва\",\"to\":\"Казань\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":3780,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-msk-past-h1\",\"name\":\"Marriott Moscow\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":12500,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Москва, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":8400,\"totalHotel\":37500,\"totalActivities\":8400,\"totalFood\":7560}",
       "status": "past",
       "start_date": "2025-04-10",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     },
     {
@@ -242,7 +608,7 @@
       "payload": "{\"id\":\"api-seed-spb-past\",\"from\":\"Москва\",\"to\":\"Санкт-Петербург\",\"toCountry\":\"Россия\",\"startDate\":\"2025-08-14\",\"endDate\":\"2025-08-17\",\"budget\":46000,\"currency\":\"₽\",\"travelers\":2,\"interests\":[\"museums\"],\"travelStyle\":\"standard\",\"status\":\"past\",\"coverImage\":\"https://images.unsplash.com/photo-1548834925-e48f8a27d7b2?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Эрмитаж\",\"category\":\"Музей\",\"emoji\":\"🏛️\",\"description\":\"Крупнейший музейный комплекс России.\",\"duration\":\"3-4 часа\",\"time\":\"10:00\",\"rating\":4.9,\"address\":\"Дворцовая площадь, 2\",\"price\":\"500 ₽\"},{\"id\":\"p2\",\"name\":\"Разводные мосты\",\"category\":\"Вечерняя программа\",\"emoji\":\"🌉\",\"description\":\"Ночная прогулка по Неве.\",\"duration\":\"2 часа\",\"time\":\"21:00\",\"rating\":4.8,\"address\":\"Дворцовая набережная\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-spb-past-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Санкт-Петербург\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":5060,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-spb-past-t2\",\"type\":\"train\",\"from\":\"Санкт-Петербург\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":4140,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-spb-past-h1\",\"name\":\"Nevsky Grand Hotel\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":7200,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Санкт-Петербург, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":9200,\"totalHotel\":21600,\"totalActivities\":9200,\"totalFood\":8280}",
       "status": "past",
       "start_date": "2025-08-14",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     },
     {
@@ -250,7 +616,7 @@
       "payload": "{\"id\":\"api-seed-kzn-draft\",\"from\":\"Москва\",\"to\":\"Казань\",\"toCountry\":\"Россия\",\"startDate\":\"2026-08-12\",\"endDate\":\"2026-08-15\",\"budget\":36000,\"currency\":\"₽\",\"travelers\":1,\"interests\":[\"food\"],\"travelStyle\":\"budget\",\"status\":\"draft\",\"coverImage\":\"https://images.unsplash.com/photo-1595218699680-e9c3acba6e91?w=1200\",\"days\":[{\"day\":1,\"date\":\"День 1\",\"places\":[{\"id\":\"p1\",\"name\":\"Казанский Кремль\",\"category\":\"История\",\"emoji\":\"🏰\",\"description\":\"Исторический центр Казани.\",\"duration\":\"2-3 часа\",\"time\":\"10:30\",\"rating\":4.8,\"address\":\"Кремль\",\"price\":\"200 ₽\"},{\"id\":\"p2\",\"name\":\"Улица Баумана\",\"category\":\"Прогулка\",\"emoji\":\"🛍️\",\"description\":\"Пешеходная улица с кафе и сувенирами.\",\"duration\":\"2 часа\",\"time\":\"15:00\",\"rating\":4.6,\"address\":\"ул. Баумана\",\"price\":\"Бесплатно\"}]}],\"transport\":[{\"id\":\"api-seed-kzn-draft-t1\",\"type\":\"flight\",\"from\":\"Москва\",\"to\":\"Казань\",\"departure\":\"08:40\",\"arrival\":\"11:20\",\"duration\":\"2 ч 40 мин\",\"price\":3960,\"carrier\":\"Аэрофлот\",\"class\":\"Эконом\"},{\"id\":\"api-seed-kzn-draft-t2\",\"type\":\"train\",\"from\":\"Казань\",\"to\":\"Москва\",\"departure\":\"18:30\",\"arrival\":\"07:10\",\"duration\":\"12 ч 40 мин\",\"price\":3240,\"carrier\":\"РЖД\",\"class\":\"Купе\"}],\"hotels\":[{\"id\":\"api-seed-kzn-draft-h1\",\"name\":\"Korston Kazan\",\"stars\":4,\"rating\":4.6,\"reviews\":1300,\"pricePerNight\":6800,\"distanceFromCenter\":\"0.8 км\",\"address\":\"Казань, центр\",\"amenities\":[\"WiFi\",\"Завтрак\",\"Фитнес\"],\"image\":\"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900\"}],\"totalTransport\":7200,\"totalHotel\":20400,\"totalActivities\":7200,\"totalFood\":6480}",
       "status": "draft",
       "start_date": "2026-08-12",
-      "updated_at": "2026-04-20T09:10:32.114Z",
+      "updated_at": "2026-04-23T08:56:16.396Z",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa"
     }
   ],
@@ -576,7 +942,7 @@
       "status": 200,
       "ip": "127.0.0.1",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
-      "email": "demo@travelai.app",
+      "email": "demo@shturman.app",
       "event": "login_success",
       "meta": {}
     },
@@ -831,7 +1197,7 @@
       "status": 200,
       "ip": "127.0.0.1",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
-      "email": "demo@travelai.app",
+      "email": "demo@shturman.app",
       "event": "login_success",
       "meta": {}
     },
@@ -914,7 +1280,7 @@
       "status": 200,
       "ip": "127.0.0.1",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
-      "email": "demo@travelai.app",
+      "email": "demo@shturman.app",
       "event": "login_success",
       "meta": {}
     },
@@ -925,7 +1291,7 @@
       "status": 200,
       "ip": "127.0.0.1",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
-      "email": "demo@travelai.app",
+      "email": "demo@shturman.app",
       "event": "trips_reseed_success",
       "meta": {
         "count": 9
@@ -938,7 +1304,1622 @@
       "status": 200,
       "ip": "127.0.0.1",
       "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
-      "email": "demo@travelai.app",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-21T15:51:19.853Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T07:06:29.318Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T08:00:44.439Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "152f0d0c-2da7-4806-b4d3-dab6f4726955",
+      "email": "smoke_1776844844276_61683@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T08:00:44.533Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "152f0d0c-2da7-4806-b4d3-dab6f4726955",
+      "email": "smoke_1776844844276_61683@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T08:00:44.544Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "152f0d0c-2da7-4806-b4d3-dab6f4726955",
+      "email": "smoke_1776844844276_61683@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776844844534"
+      }
+    },
+    {
+      "ts": "2026-04-22T08:00:44.548Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "152f0d0c-2da7-4806-b4d3-dab6f4726955",
+      "email": "smoke_1776844844276_61683@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-22T08:00:44.558Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "152f0d0c-2da7-4806-b4d3-dab6f4726955",
+      "email": "smoke_1776844844276_61683@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776844844534"
+      }
+    },
+    {
+      "ts": "2026-04-22T08:00:44.645Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T08:00:44.657Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-22T08:00:44.696Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-22T11:12:56.106Z",
+      "path": "/auth/oauth",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "674e8d79-11cb-4bb3-b565-4a19a4389d24",
+      "email": "test.google@gmail.com",
+      "event": "oauth_success",
+      "meta": {
+        "provider": "google"
+      }
+    },
+    {
+      "ts": "2026-04-22T11:13:24.651Z",
+      "path": "/auth/oauth",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "47a0d9a4-012b-48fc-922b-bbf6e17391f8",
+      "email": "user@yandex.ru",
+      "event": "oauth_success",
+      "meta": {
+        "provider": "yandex"
+      }
+    },
+    {
+      "ts": "2026-04-22T11:13:41.530Z",
+      "path": "/auth/delete-account",
+      "method": "DELETE",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "47a0d9a4-012b-48fc-922b-bbf6e17391f8",
+      "email": "user@yandex.ru",
+      "event": "delete_account_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T11:14:00.157Z",
+      "path": "/auth/oauth",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "e3cd9005-1630-40f6-8fbe-ebb4b51bb764",
+      "email": "user@yandex.ru",
+      "event": "oauth_success",
+      "meta": {
+        "provider": "google"
+      }
+    },
+    {
+      "ts": "2026-04-22T11:23:26.526Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T12:15:02.411Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "e43bf143-c087-49f8-b506-b70754b19109",
+      "email": "smoke_1776860102256_53177@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T12:15:02.462Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "e43bf143-c087-49f8-b506-b70754b19109",
+      "email": "smoke_1776860102256_53177@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T12:15:02.470Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "e43bf143-c087-49f8-b506-b70754b19109",
+      "email": "smoke_1776860102256_53177@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776860102465"
+      }
+    },
+    {
+      "ts": "2026-04-22T12:15:02.476Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "e43bf143-c087-49f8-b506-b70754b19109",
+      "email": "smoke_1776860102256_53177@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-22T12:15:02.481Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "e43bf143-c087-49f8-b506-b70754b19109",
+      "email": "smoke_1776860102256_53177@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776860102465"
+      }
+    },
+    {
+      "ts": "2026-04-22T12:15:02.553Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T12:15:02.566Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-22T12:15:02.590Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-22T13:48:18.467Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T13:50:02.840Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "trip-gen-1776865752591"
+      }
+    },
+    {
+      "ts": "2026-04-22T17:14:54.036Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T17:23:56.855Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-22T17:25:39.647Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "trip-gen-1776878700576"
+      }
+    },
+    {
+      "ts": "2026-04-23T02:20:23.198Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T02:23:16.710Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T02:23:23.330Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "07feca16-337c-4678-a401-f4ef83aa8748",
+      "email": "smoke_1776911003189_19584@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T02:23:23.443Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "07feca16-337c-4678-a401-f4ef83aa8748",
+      "email": "smoke_1776911003189_19584@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T02:23:23.460Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "07feca16-337c-4678-a401-f4ef83aa8748",
+      "email": "smoke_1776911003189_19584@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776911003446"
+      }
+    },
+    {
+      "ts": "2026-04-23T02:23:23.473Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "07feca16-337c-4678-a401-f4ef83aa8748",
+      "email": "smoke_1776911003189_19584@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T02:23:23.490Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "07feca16-337c-4678-a401-f4ef83aa8748",
+      "email": "smoke_1776911003189_19584@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776911003446"
+      }
+    },
+    {
+      "ts": "2026-04-23T02:23:23.545Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T02:23:23.556Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T02:23:23.562Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T02:24:02.277Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "trip-gen-1776911026928"
+      }
+    },
+    {
+      "ts": "2026-04-23T02:25:08.774Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T02:25:08.837Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T02:25:08.881Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T02:26:43.474Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T03:10:12.551Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T06:47:03.757Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T06:54:12.003Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "ddd31f4a-047d-4b73-a17c-90625654c61b",
+      "email": "smoke_1776927251889_85702@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T06:54:12.065Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "ddd31f4a-047d-4b73-a17c-90625654c61b",
+      "email": "smoke_1776927251889_85702@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T06:54:12.077Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "ddd31f4a-047d-4b73-a17c-90625654c61b",
+      "email": "smoke_1776927251889_85702@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776927252068"
+      }
+    },
+    {
+      "ts": "2026-04-23T06:54:12.088Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "ddd31f4a-047d-4b73-a17c-90625654c61b",
+      "email": "smoke_1776927251889_85702@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T06:54:12.104Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "ddd31f4a-047d-4b73-a17c-90625654c61b",
+      "email": "smoke_1776927251889_85702@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776927252068"
+      }
+    },
+    {
+      "ts": "2026-04-23T06:54:12.192Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T06:54:12.215Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T06:54:12.258Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:09:35.995Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "5b9991b3-f5aa-4720-a687-46f298c96974",
+      "email": "smoke_1776928175888_46495@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:09:36.042Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "5b9991b3-f5aa-4720-a687-46f298c96974",
+      "email": "smoke_1776928175888_46495@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:09:36.048Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "5b9991b3-f5aa-4720-a687-46f298c96974",
+      "email": "smoke_1776928175888_46495@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776928176043"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:09:36.053Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "5b9991b3-f5aa-4720-a687-46f298c96974",
+      "email": "smoke_1776928175888_46495@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T07:09:36.059Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "5b9991b3-f5aa-4720-a687-46f298c96974",
+      "email": "smoke_1776928175888_46495@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776928176043"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:09:36.099Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:09:36.122Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:09:36.128Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:18.127Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "0c1223da-52c8-4785-8236-91065cc6cdc9",
+      "email": "smoke_1776928878023_19820@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:21:18.173Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "0c1223da-52c8-4785-8236-91065cc6cdc9",
+      "email": "smoke_1776928878023_19820@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:21:18.179Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "0c1223da-52c8-4785-8236-91065cc6cdc9",
+      "email": "smoke_1776928878023_19820@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776928878175"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:18.184Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "0c1223da-52c8-4785-8236-91065cc6cdc9",
+      "email": "smoke_1776928878023_19820@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:18.190Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "0c1223da-52c8-4785-8236-91065cc6cdc9",
+      "email": "smoke_1776928878023_19820@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776928878175"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:18.227Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:21:18.233Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:18.238Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:58.580Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "1566904f-3ab3-4b10-9770-df6dcdbc4347",
+      "email": "smoke_1776928918474_35286@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:21:58.636Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "1566904f-3ab3-4b10-9770-df6dcdbc4347",
+      "email": "smoke_1776928918474_35286@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:21:58.643Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "1566904f-3ab3-4b10-9770-df6dcdbc4347",
+      "email": "smoke_1776928918474_35286@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776928918638"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:58.648Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "1566904f-3ab3-4b10-9770-df6dcdbc4347",
+      "email": "smoke_1776928918474_35286@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:58.655Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "1566904f-3ab3-4b10-9770-df6dcdbc4347",
+      "email": "smoke_1776928918474_35286@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776928918638"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:58.694Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:21:58.700Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:21:58.706Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:27:07.067Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "711f5bf7-0fd7-4e18-96b6-94ce80aed8d5",
+      "email": "smoke_1776929226956_31009@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:27:07.115Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "711f5bf7-0fd7-4e18-96b6-94ce80aed8d5",
+      "email": "smoke_1776929226956_31009@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:27:07.122Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "711f5bf7-0fd7-4e18-96b6-94ce80aed8d5",
+      "email": "smoke_1776929226956_31009@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776929227117"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:27:07.128Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "711f5bf7-0fd7-4e18-96b6-94ce80aed8d5",
+      "email": "smoke_1776929226956_31009@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T07:27:07.135Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "711f5bf7-0fd7-4e18-96b6-94ce80aed8d5",
+      "email": "smoke_1776929226956_31009@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776929227117"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:27:07.178Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:27:07.193Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:27:07.200Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:37:06.267Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "50aa54db-737b-49e0-8396-f4c0d3535dfd",
+      "email": "smoke_1776929826128_38538@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:37:06.325Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "50aa54db-737b-49e0-8396-f4c0d3535dfd",
+      "email": "smoke_1776929826128_38538@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:37:06.338Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "50aa54db-737b-49e0-8396-f4c0d3535dfd",
+      "email": "smoke_1776929826128_38538@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776929826330"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:37:06.346Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "50aa54db-737b-49e0-8396-f4c0d3535dfd",
+      "email": "smoke_1776929826128_38538@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T07:37:06.356Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "50aa54db-737b-49e0-8396-f4c0d3535dfd",
+      "email": "smoke_1776929826128_38538@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776929826330"
+      }
+    },
+    {
+      "ts": "2026-04-23T07:37:06.413Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T07:37:06.425Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T07:37:06.432Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:11:04.708Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "257d6dd5-5794-4136-9416-b1c122dc3172",
+      "email": "smoke_1776931864543_33844@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:11:04.761Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "257d6dd5-5794-4136-9416-b1c122dc3172",
+      "email": "smoke_1776931864543_33844@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:11:04.771Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "257d6dd5-5794-4136-9416-b1c122dc3172",
+      "email": "smoke_1776931864543_33844@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776931864763"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:11:04.778Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "257d6dd5-5794-4136-9416-b1c122dc3172",
+      "email": "smoke_1776931864543_33844@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T08:11:04.787Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "257d6dd5-5794-4136-9416-b1c122dc3172",
+      "email": "smoke_1776931864543_33844@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776931864763"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:11:04.845Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:11:04.856Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:11:04.865Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:23:11.050Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "23dcba0c-1005-40a8-8b8f-987919640c0b",
+      "email": "smoke_1776932590932_52581@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:23:11.102Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "23dcba0c-1005-40a8-8b8f-987919640c0b",
+      "email": "smoke_1776932590932_52581@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:23:11.112Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "23dcba0c-1005-40a8-8b8f-987919640c0b",
+      "email": "smoke_1776932590932_52581@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776932591104"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:23:11.118Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "23dcba0c-1005-40a8-8b8f-987919640c0b",
+      "email": "smoke_1776932590932_52581@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T08:23:11.128Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "23dcba0c-1005-40a8-8b8f-987919640c0b",
+      "email": "smoke_1776932590932_52581@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776932591104"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:23:11.196Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:23:11.209Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:23:11.220Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:30:34.575Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "a369e8ca-bc9c-4a91-9a99-cd12be00267a",
+      "email": "smoke_1776933034443_44373@travelai.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:30:34.627Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "a369e8ca-bc9c-4a91-9a99-cd12be00267a",
+      "email": "smoke_1776933034443_44373@travelai.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:30:34.638Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "a369e8ca-bc9c-4a91-9a99-cd12be00267a",
+      "email": "smoke_1776933034443_44373@travelai.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776933034630"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:30:34.647Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "a369e8ca-bc9c-4a91-9a99-cd12be00267a",
+      "email": "smoke_1776933034443_44373@travelai.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T08:30:34.658Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "a369e8ca-bc9c-4a91-9a99-cd12be00267a",
+      "email": "smoke_1776933034443_44373@travelai.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776933034630"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:30:34.710Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:30:34.720Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:30:34.726Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:43:58.862Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "b75dc64b-a5f3-4d99-95ec-bc69bcc7ccba",
+      "email": "smoke_1776933838717_35458@shturman.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:43:58.929Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "b75dc64b-a5f3-4d99-95ec-bc69bcc7ccba",
+      "email": "smoke_1776933838717_35458@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:43:58.944Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "b75dc64b-a5f3-4d99-95ec-bc69bcc7ccba",
+      "email": "smoke_1776933838717_35458@shturman.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776933838931"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:43:58.960Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "b75dc64b-a5f3-4d99-95ec-bc69bcc7ccba",
+      "email": "smoke_1776933838717_35458@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T08:43:58.974Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "b75dc64b-a5f3-4d99-95ec-bc69bcc7ccba",
+      "email": "smoke_1776933838717_35458@shturman.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776933838931"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:43:59.046Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:43:59.057Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:43:59.085Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:56:16.205Z",
+      "path": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "ip": "127.0.0.1",
+      "userId": "fa851b43-5695-416b-80d4-627bd41f4283",
+      "email": "smoke_1776934576042_58304@shturman.app",
+      "event": "register_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:56:16.292Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "fa851b43-5695-416b-80d4-627bd41f4283",
+      "email": "smoke_1776934576042_58304@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:56:16.301Z",
+      "path": "/trips/upsert",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "fa851b43-5695-416b-80d4-627bd41f4283",
+      "email": "smoke_1776934576042_58304@shturman.app",
+      "event": "trips_upsert_success",
+      "meta": {
+        "tripId": "smoke-trip-1776934576294"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:56:16.308Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "fa851b43-5695-416b-80d4-627bd41f4283",
+      "email": "smoke_1776934576042_58304@shturman.app",
+      "event": "trips_list_success",
+      "meta": {
+        "count": 1
+      }
+    },
+    {
+      "ts": "2026-04-23T08:56:16.316Z",
+      "path": "/trips/delete",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "fa851b43-5695-416b-80d4-627bd41f4283",
+      "email": "smoke_1776934576042_58304@shturman.app",
+      "event": "trips_delete_success",
+      "meta": {
+        "tripId": "smoke-trip-1776934576294"
+      }
+    },
+    {
+      "ts": "2026-04-23T08:56:16.382Z",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "login_success",
+      "meta": {}
+    },
+    {
+      "ts": "2026-04-23T08:56:16.405Z",
+      "path": "/trips/reseed-demo",
+      "method": "POST",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
+      "event": "trips_reseed_success",
+      "meta": {
+        "count": 9
+      }
+    },
+    {
+      "ts": "2026-04-23T08:56:16.416Z",
+      "path": "/trips",
+      "method": "GET",
+      "status": 200,
+      "ip": "127.0.0.1",
+      "userId": "aa734971-319a-48ae-a0f9-5b0f124d86fa",
+      "email": "demo@shturman.app",
       "event": "trips_list_success",
       "meta": {
         "count": 9

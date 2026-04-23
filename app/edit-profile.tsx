@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import Colors from '@/constants/colors';
@@ -19,6 +21,11 @@ import { useStore } from '@/store/useStore';
 import { TRAVEL_STYLES, INTERESTS, TravelStyle } from '@/constants/data';
 
 export default function EditProfileScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+
   const user = useStore((s) => s.user);
   const setUser = useStore((s) => s.setUser);
 
@@ -60,7 +67,16 @@ export default function EditProfileScreen() {
       <StatusBar style="light" />
 
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: Colors.primary }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: Colors.primary,
+            paddingTop: insets.top + 12,
+            paddingHorizontal: horizontalPadding,
+          },
+        ]}
+      >
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color="#fff" />
         </TouchableOpacity>
@@ -72,7 +88,13 @@ export default function EditProfileScreen() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: 24 + insets.bottom + 92,
+          },
+        ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -102,6 +124,7 @@ export default function EditProfileScreen() {
                   onPress={() => setSelectedStyle(item.id as TravelStyle)}
                   style={[
                     styles.styleCard,
+                    isCompact && styles.oneColCard,
                     isSelected && {
                       borderColor: item.color,
                       borderWidth: 2,
@@ -152,7 +175,15 @@ export default function EditProfileScreen() {
         <View style={{ height: 16 }} />
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View
+        style={[
+          styles.footer,
+          {
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: Spacing.lg + Math.max(insets.bottom, 8),
+          },
+        ]}
+      >
         {saved ? (
           <View style={styles.savedBanner}>
             <Ionicons name="checkmark-circle" size={20} color={Colors.success} />
@@ -315,5 +346,8 @@ const styles = StyleSheet.create({
     fontSize: Typography.sizes.base,
     fontWeight: Typography.weights.bold,
     color: Colors.success,
+  },
+  oneColCard: {
+    width: '100%',
   },
 });

@@ -2,6 +2,7 @@ import { Trip } from '@/constants/data';
 import { ensureAccessToken } from '@/store/authStorage';
 
 const API_BASE = process.env.EXPO_PUBLIC_AUTH_API_URL || 'http://localhost:8787';
+const API_TIMEOUT_MS = 7000;
 
 interface TripRow {
   id: string;
@@ -13,6 +14,8 @@ interface TripRow {
 async function authRequest<T>(path: string, init?: RequestInit): Promise<{ ok: true; data: T } | { ok: false; message: string; status?: number }> {
   const accessToken = await ensureAccessToken();
   if (!accessToken) return { ok: false, message: 'No active session' };
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
   try {
     const res = await fetch(`${API_BASE}${path}`, {
@@ -21,13 +24,19 @@ async function authRequest<T>(path: string, init?: RequestInit): Promise<{ ok: t
         Authorization: `Bearer ${accessToken}`,
         ...(init?.headers || {}),
       },
+      signal: controller.signal,
       ...init,
     });
     const body = (await res.json()) as T & { message?: string };
     if (!res.ok) return { ok: false, message: body?.message || `HTTP ${res.status}`, status: res.status };
     return { ok: true, data: body };
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      return { ok: false, message: 'API timeout' };
+    }
     return { ok: false, message: error instanceof Error ? error.message : 'Network error' };
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 

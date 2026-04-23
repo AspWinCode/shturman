@@ -9,6 +9,10 @@
   TravelStyle,
   POPULAR_CITIES,
 } from '@/constants/data';
+import {
+  CITY_PLACES as CITY_PLACES_EXT,
+  DEFAULT_PLACES as DEFAULT_PLACES_EXT,
+} from '@/constants/cityPlacesOsm';
 
 interface TripFormInput {
   from: string;
@@ -19,6 +23,13 @@ interface TripFormInput {
   travelers: number;
   interests: string[];
   travelStyle: TravelStyle;
+  preferredHotel?: string;
+  preferredHotelPricePerNight?: number;
+  preferredHotelRoomCapacity?: number;
+  preferredTransportType?: 'flight' | 'train' | 'bus' | '';
+  preferredTransportCarrier?: string;
+  preferredTransportTotalPrice?: number;
+  needsAccessibility?: boolean;
 }
 
 type TimeSlot = 'morning' | 'afternoon' | 'evening';
@@ -33,7 +44,24 @@ interface PlaceTemplate {
   rating: number;
   interests: string[];
   timeSlot: TimeSlot;
+  address?: string;
+  lat?: number;
+  lng?: number;
+  accessible?: Place['accessible'];
 }
+
+type PlaceType =
+  | 'museum'
+  | 'architecture'
+  | 'history'
+  | 'nature'
+  | 'food'
+  | 'shopping'
+  | 'nightlife'
+  | 'sport'
+  | 'beach'
+  | 'art'
+  | 'other';
 
 interface HotelTemplate {
   name: string;
@@ -610,6 +638,25 @@ function normalizeCity(value: string): string {
     sochi: 'сочи',
     kaliningrad: 'калининград',
     irkutsk: 'иркутск',
+    новосиб: 'новосибирск',
+    новосибирск: 'новосибирск',
+    novosibirsk: 'новосибирск',
+    екб: 'екатеринбург',
+    'нижний новгород': 'нижний новгород',
+    нижний: 'нижний новгород',
+    нновгород: 'нижний новгород',
+    'nizhny novgorod': 'нижний новгород',
+    ярославль: 'ярославль',
+    yaroslavl: 'ярославль',
+    самара: 'самара',
+    samara: 'самара',
+    уфа: 'уфа',
+    ufa: 'уфа',
+    геленджик: 'геленджик',
+    кисловодск: 'кисловодск',
+    суздаль: 'суздаль',
+    псков: 'псков',
+    pskov: 'псков',
   };
 
   if (aliases[city]) return aliases[city];
@@ -621,6 +668,12 @@ function normalizeCity(value: string): string {
   if (city.includes('иркут')) return 'иркутск';
   if (city.includes('петербург')) return 'санкт-петербург';
   if (city.includes('байкал')) return 'иркутск';
+  if (city.includes('новосиб')) return 'новосибирск';
+  if (city.includes('екатеринб') || city.includes('yekater') || city.includes('sverdl')) return 'екатеринбург';
+  if (city.includes('нижн')) return 'нижний новгород';
+  if (city.includes('ярослав')) return 'ярославль';
+  if (city.includes('геленд')) return 'геленджик';
+  if (city.includes('кисловод')) return 'кисловодск';
 
   return city.replace(/\s+/g, '-');
 }
@@ -646,6 +699,79 @@ function interestScore(place: PlaceTemplate, interests: string[]): number {
   return place.interests.filter((item) => interests.includes(item)).length;
 }
 
+function isLikelyMojibake(text: string): boolean {
+  if (!text) return false;
+  const sample = text.slice(0, 120);
+  const suspiciousPairs = (sample.match(/Р[А-Яа-яЁё]|С[А-Яа-яЁё]/g) ?? []).length;
+  return suspiciousPairs >= Math.max(3, Math.floor(sample.length / 8));
+}
+
+function classifyPlaceType(place: PlaceTemplate): PlaceType {
+  const text = `${place.category} ${place.name} ${place.description}`.toLowerCase();
+  if (/муз|галер|экспоз|выставк|театр/.test(text)) return 'museum';
+  if (/архитект|кремл|дворц|собор|храм|башн|мост/.test(text)) return 'architecture';
+  if (/истор|крепост|усадьб|памят/.test(text)) return 'history';
+  if (/парк|набереж|озер|гора|лес|природ|пляж|водопад/.test(text)) return 'nature';
+  if (/ресторан|еда|кухн|гастр|бар|кафе/.test(text)) return 'food';
+  if (/шоп|рынок|маркет|магазин/.test(text)) return 'shopping';
+  if (/ночн|клуб|вечер/.test(text)) return 'nightlife';
+  if (/спорт|лыж|каток|вел|аквапарк/.test(text)) return 'sport';
+  if (/пляж|море/.test(text)) return 'beach';
+  if (/арт|искусств/.test(text)) return 'art';
+  return 'other';
+}
+
+function buildInternalTags(place: PlaceTemplate): string[] {
+  const tags = new Set<string>();
+  tags.add(`type:${classifyPlaceType(place)}`);
+  for (const interest of place.interests) {
+    tags.add(`interest:${interest}`);
+  }
+  return [...tags];
+}
+
+function shouldExcludeByInterests(place: PlaceTemplate, interests: string[]): boolean {
+  if (!interests.length) return false;
+  const selected = new Set(interests);
+  const placeType = classifyPlaceType(place);
+  const isMuseumLike = placeType === 'museum' || /муз/i.test(place.category);
+  if (!selected.has('museums') && isMuseumLike) return true;
+  return false;
+}
+
+function buildInterestAwarePool(pool: PlaceTemplate[], interests: string[]): PlaceTemplate[] {
+  if (!interests.length) return pool;
+  const filtered = pool.filter((place) => !shouldExcludeByInterests(place, interests));
+  const matched = filtered.filter((place) => interestScore(place, interests) > 0);
+  return matched.length > 0 ? matched : filtered;
+}
+
+function inferAccessibility(place: PlaceTemplate): NonNullable<Place['accessible']> {
+  if (place.accessible) {
+    return {
+      wheelchair: Boolean(place.accessible.wheelchair),
+      audioGuide: Boolean(place.accessible.audioGuide),
+      braille: Boolean(place.accessible.braille),
+      parkingNearby: Boolean(place.accessible.parkingNearby),
+      notes: place.accessible.notes,
+    };
+  }
+
+  const text = `${place.category} ${place.description} ${place.name}`.toLowerCase();
+  const museumLike = /муз|галер|театр|кремл|дворец|собор|истор|центр|площад/.test(text);
+  const outdoorLike = /парк|гора|набереж|поход|троп|пляж|природ/.test(text);
+
+  return {
+    wheelchair: museumLike || !outdoorLike,
+    audioGuide: museumLike,
+    braille: museumLike && /муз|галер|театр/.test(text),
+    parkingNearby: museumLike || /центр|площад/.test(text),
+    notes: museumLike
+      ? 'Проверьте доступность пандуса и лифта перед посещением.'
+      : 'Часть маршрута может проходить по неровному покрытию.',
+  };
+}
+
 function pickPlace(
   pool: PlaceTemplate[],
   used: Set<string>,
@@ -669,10 +795,33 @@ function pickPlace(
   return available[rotateOffset % available.length];
 }
 
-function buildDayPlans(city: string, startDate: string, daysCount: number, interests: string[]): DayPlan[] {
+function buildDayPlans(
+  city: string,
+  startDate: string,
+  daysCount: number,
+  interests: string[],
+  needsAccessibility = false
+): DayPlan[] {
   const cityKey = normalizeCity(city);
-  const cityPool = CITY_PLACES[cityKey] ?? [];
-  const pool = cityPool.length > 0 ? cityPool : DEFAULT_PLACES.map((p) => ({ ...p, name: `${p.name} (${city})` }));
+  // Сначала ищем в расширенной базе (cityPlaces.ts), потом в старой
+  const extPool = CITY_PLACES_EXT[cityKey];
+  const legacyPool = CITY_PLACES[cityKey] ?? [];
+  const extPoolSafe = (extPool ?? []).filter(
+    (place) => !isLikelyMojibake(`${place.name} ${place.category} ${place.description}`)
+  );
+  const combinedPool = extPool
+    ? [...extPoolSafe, ...legacyPool]
+    : legacyPool.length > 0
+      ? legacyPool
+      : null;
+
+  const defaultPool: PlaceTemplate[] = DEFAULT_PLACES_EXT.map((p) => ({ ...p, name: `${p.name} (${city})` }));
+  const basePool: PlaceTemplate[] = combinedPool ?? defaultPool;
+  const byInterests = buildInterestAwarePool(basePool, interests);
+  const pool = needsAccessibility
+    ? byInterests.filter((place) => inferAccessibility(place).wheelchair)
+    : byInterests;
+  const safePool = pool.length > 0 ? pool : byInterests.length > 0 ? byInterests : basePool;
   const slots: TimeSlot[] = ['morning', 'afternoon', 'evening'];
   const times = ['10:00', '14:30', '19:00'];
 
@@ -685,7 +834,7 @@ function buildDayPlans(city: string, startDate: string, daysCount: number, inter
     for (let slot = 0; slot < 3; slot += 1) {
       if (day === daysCount - 1 && slot === 2) break;
 
-      const picked = pickPlace(pool, usedInDay, interests, slots[slot], day + slot);
+      const picked = pickPlace(safePool, usedInDay, interests, slots[slot], day + slot);
       if (!picked) continue;
 
       usedInDay.add(picked.name);
@@ -697,9 +846,14 @@ function buildDayPlans(city: string, startDate: string, daysCount: number, inter
         duration: picked.duration,
         time: times[slot],
         rating: picked.rating,
-        address: `${city}, центр`,
+        address: picked.address ?? `${city}, центр`,
         emoji: picked.emoji,
         price: picked.price,
+        lat: picked.lat,
+        lng: picked.lng,
+        accessible: inferAccessibility(picked),
+        placeType: classifyPlaceType(picked),
+        internalTags: buildInternalTags(picked),
       });
     }
 
@@ -713,7 +867,15 @@ function buildDayPlans(city: string, startDate: string, daysCount: number, inter
   return days;
 }
 
-function buildTransport(from: string, to: string, transportBudget: number, style: TravelStyle): Transport[] {
+function buildTransport(
+  from: string,
+  to: string,
+  transportBudget: number,
+  style: TravelStyle,
+  preferredTransportType?: 'flight' | 'train' | 'bus' | '',
+  preferredTransportCarrier?: string,
+  preferredTransportTotalPrice?: number
+): Transport[] {
   const fromKey = normalizeCity(from);
   const toKey = normalizeCity(to);
   const directKey = `${fromKey}>${toKey}`;
@@ -722,6 +884,42 @@ function buildTransport(from: string, to: string, transportBudget: number, style
   const templates = TRANSPORT_ROUTES[directKey] ?? TRANSPORT_ROUTES[reverseKey] ?? null;
 
   const multiplier = style === 'luxury' ? 1.4 : style === 'comfort' ? 1.15 : style === 'budget' ? 0.85 : 1;
+  const preferredTotal = Math.max(0, Math.round(preferredTransportTotalPrice || 0));
+
+  if (preferredTotal > 0) {
+    const type = preferredTransportType || 'flight';
+    const carrier = preferredTransportCarrier?.trim() || (type === 'flight' ? 'Аэрофлот' : type === 'train' ? 'РЖД' : 'Межгород');
+    const outboundPrice = Math.max(0, Math.round(preferredTotal / 2));
+    const returnPrice = Math.max(0, preferredTotal - outboundPrice);
+    const duration = type === 'flight' ? '2 ч 20 мин' : type === 'train' ? '10 ч 10 мин' : '12 ч 30 мин';
+
+    return [
+      {
+        id: `gen-t1-${Date.now()}`,
+        type,
+        from,
+        to,
+        departure: '08:10',
+        arrival: type === 'flight' ? '10:30' : type === 'train' ? '18:20' : '20:40',
+        duration,
+        price: outboundPrice,
+        carrier,
+        class: type === 'flight' ? (style === 'luxury' ? 'Бизнес' : 'Эконом') : type === 'train' ? 'Купе' : 'Стандарт',
+      },
+      {
+        id: `gen-t2-${Date.now()}`,
+        type,
+        from: to,
+        to: from,
+        departure: '19:10',
+        arrival: type === 'flight' ? '21:30' : type === 'train' ? '05:20+1' : '07:40+1',
+        duration,
+        price: returnPrice,
+        carrier,
+        class: type === 'flight' ? (style === 'luxury' ? 'Бизнес' : 'Эконом') : type === 'train' ? 'Купе' : 'Стандарт',
+      },
+    ];
+  }
 
   if (templates) {
     return templates.map((t, index) => ({
@@ -913,7 +1111,14 @@ function buildMultimodalRoute(from: string, to: string, style: TravelStyle): Mul
   };
 }
 
-function buildHotels(city: string, hotelBudget: number, nights: number, style: TravelStyle): Hotel[] {
+function buildHotels(
+  city: string,
+  hotelBudget: number,
+  nights: number,
+  style: TravelStyle,
+  preferredHotel?: string,
+  preferredHotelPricePerNight?: number
+): Hotel[] {
   const cityKey = normalizeCity(city);
   const cityHotels = CITY_HOTELS[cityKey] ?? [];
   const minStars = MIN_HOTEL_STARS[style];
@@ -921,6 +1126,37 @@ function buildHotels(city: string, hotelBudget: number, nights: number, style: T
 
   let candidates = cityHotels.filter((h) => h.styles.includes(style) && h.stars >= minStars);
   if (!candidates.length) candidates = cityHotels.length ? cityHotels : DEFAULT_HOTELS;
+
+  const preferred = (preferredHotel || '').trim().toLowerCase();
+  if (preferred) {
+    const preferredMatch = candidates.find((h) => h.name.toLowerCase().includes(preferred));
+    if (preferredMatch) {
+      candidates = [preferredMatch, ...candidates.filter((h) => h.name !== preferredMatch.name)];
+    } else {
+      const customPricePerNight = Math.max(2500, Math.floor(maxNightly));
+      const customHotel: HotelTemplate = {
+        name: preferredHotel!.trim(),
+        stars: Math.max(minStars, style === 'budget' ? 3 : style === 'standard' ? 4 : 5),
+        rating: 4.6,
+        reviews: 900,
+        pricePerNight: customPricePerNight,
+        distanceFromCenter: '0.9 км',
+        address: `${city}, центр`,
+        amenities: ['WiFi', 'Завтрак', 'Трансфер'],
+        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400',
+        styles: ['budget', 'standard', 'comfort', 'luxury'],
+      };
+      candidates = [customHotel, ...candidates];
+    }
+  }
+
+  if (preferredHotelPricePerNight && preferredHotelPricePerNight > 0) {
+    candidates = candidates.map((hotel, index) =>
+      index === 0
+        ? { ...hotel, pricePerNight: Math.round(preferredHotelPricePerNight) }
+        : hotel
+    );
+  }
 
   candidates.sort((a, b) => Math.abs(a.pricePerNight - maxNightly) - Math.abs(b.pricePerNight - maxNightly));
 
@@ -983,10 +1219,27 @@ export function generateTripFromForm(form: TripFormInput): Trip {
 
   const coverImage = matchedCity?.image ?? 'https://images.unsplash.com/photo-1548834925-e48f8a27d7b2?w=800';
 
-  const days = buildDayPlans(to, startDate, daysCount, interests);
+  const days = buildDayPlans(to, startDate, daysCount, interests, Boolean(form.needsAccessibility));
   const multimodalRoute = buildMultimodalRoute(from, to, travelStyle);
-  const transport = buildTransport(from, to, transportBudget, travelStyle);
-  const hotels = buildHotels(to, hotelBudget, nights, travelStyle);
+  const transport = buildTransport(
+    from,
+    to,
+    transportBudget,
+    travelStyle,
+    form.preferredTransportType,
+    form.preferredTransportCarrier,
+    form.preferredTransportTotalPrice
+  );
+  const hotels = buildHotels(
+    to,
+    hotelBudget,
+    nights,
+    travelStyle,
+    form.preferredHotel,
+    form.preferredHotelPricePerNight
+  );
+
+  const selectedTransportTotal = Math.max(0, Math.round(form.preferredTransportTotalPrice || 0));
 
   return {
     id: `trip-gen-${Date.now()}`,
@@ -1006,14 +1259,13 @@ export function generateTripFromForm(form: TripFormInput): Trip {
     transport,
     multimodalRoute,
     hotels,
-    totalTransport: multimodalRoute.totalPrice > 0 ? multimodalRoute.totalPrice : (transport.length > 0 ? Math.min(...transport.map((item) => item.price)) : transportBudget),
+    totalTransport: selectedTransportTotal > 0
+      ? selectedTransportTotal
+      : multimodalRoute.totalPrice > 0
+        ? multimodalRoute.totalPrice
+        : (transport.length > 0 ? Math.min(...transport.map((item) => item.price)) : transportBudget),
     totalHotel: hotels[0].pricePerNight * nights,
     totalActivities: activitiesBudget,
     totalFood: foodBudget,
   };
 }
-
-
-
-
-

@@ -168,13 +168,24 @@ class Storage {
       await this.pool.query(
         `INSERT INTO users (id, name, email, password_hash, password_salt, created_at, updated_at)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [user.id, user.name, user.email, user.passwordHash, user.passwordSalt, user.createdAt, user.updatedAt]
+        [user.id, user.name, user.email, user.passwordHash || '', user.passwordSalt || '', user.createdAt, user.updatedAt]
       );
       return;
     }
 
     const db = readJsonDb();
     db.users.push(user);
+    writeJsonDb(db);
+  }
+
+  async deleteUser(userId) {
+    if (this.mode === 'postgres') {
+      await this.pool.query('DELETE FROM users WHERE id = $1', [userId]);
+      return;
+    }
+
+    const db = readJsonDb();
+    db.users = db.users.filter((u) => u.id !== userId);
     writeJsonDb(db);
   }
 

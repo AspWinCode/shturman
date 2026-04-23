@@ -5,10 +5,12 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import Colors from '@/constants/colors';
 import { BorderRadius, Spacing, Typography, Shadows } from '@/constants/theme';
@@ -16,6 +18,11 @@ import { TRAVEL_STYLES, TRAVELER_TYPES, TravelStyle, TravelerType } from '@/cons
 import { useStore } from '@/store/useStore';
 
 export default function TravelStyleScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+
   const [selectedStyle, setSelectedStyle] = useState<TravelStyle>('standard');
   const [selectedType, setSelectedType] = useState<TravelerType>('solo');
   const completeOnboarding = useStore((s) => s.completeOnboarding);
@@ -34,7 +41,7 @@ export default function TravelStyleScreen() {
     <View style={styles.container}>
       <StatusBar style="dark" />
 
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 10, paddingHorizontal: isCompact ? Spacing.sm : Spacing.base }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
@@ -47,7 +54,7 @@ export default function TravelStyleScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingHorizontal: horizontalPadding, paddingBottom: Spacing.lg + 96 + insets.bottom }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.section}>
@@ -65,7 +72,7 @@ export default function TravelStyleScreen() {
                   key={item.id}
                   onPress={() => setSelectedStyle(item.id as TravelStyle)}
                   activeOpacity={0.8}
-                  style={[styles.styleCard, isSelected && { borderColor: item.color, borderWidth: 2 }]}
+                  style={[styles.styleCard, isCompact && styles.oneColCard, isSelected && { borderColor: item.color, borderWidth: 2 }]}
                 >
                   {isSelected && (
                     <View style={[styles.selectedDot, { backgroundColor: item.color }]} />
@@ -92,7 +99,7 @@ export default function TravelStyleScreen() {
                   key={item.id}
                   onPress={() => setSelectedType(item.id as TravelerType)}
                   activeOpacity={0.8}
-                  style={[styles.typeCard, isSelected && styles.typeCardSelected]}
+                  style={[styles.typeCard, isCompact && styles.oneColCard, isSelected && styles.typeCardSelected]}
                 >
                   {isSelected && (
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: Colors.primary }]} />
@@ -111,7 +118,7 @@ export default function TravelStyleScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingHorizontal: horizontalPadding, paddingBottom: Spacing.lg + Math.max(insets.bottom, 8) }]}>
         <Button
           title="Готово — перейти к входу"
           onPress={handleFinish}
@@ -276,5 +283,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     borderTopWidth: 1,
     borderTopColor: Colors.border,
+  },
+  oneColCard: {
+    width: '100%',
   },
 });

@@ -28,6 +28,7 @@ interface InputProps {
   style?: ViewStyle;
   editable?: boolean;
   onPress?: () => void;
+  testID?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -47,12 +48,13 @@ export const Input: React.FC<InputProps> = ({
   style,
   editable = true,
   onPress,
+  testID,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isSecure, setIsSecure] = useState(secureTextEntry);
 
   const container = onPress ? (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7} testID={testID}>
       <View
         style={[
           styles.inputContainer,
@@ -91,6 +93,7 @@ export const Input: React.FC<InputProps> = ({
         />
       )}
       <TextInput
+        testID={testID}
         style={[styles.input, multiline && styles.multiline]}
         placeholder={placeholder}
         placeholderTextColor={Colors.textTertiary}

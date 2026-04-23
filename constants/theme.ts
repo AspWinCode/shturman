@@ -40,9 +40,9 @@ export const Spacing = {
 export const BorderRadius = {
   sm: 8,
   md: 12,
-  lg: 16,
-  xl: 20,
-  '2xl': 24,
+  lg: 18,
+  xl: 22,
+  '2xl': 28,
   full: 9999,
 };
 
@@ -62,10 +62,10 @@ export const Shadows = {
     elevation: 4,
   },
   lg: {
-    shadowColor: '#6366F1',
+    shadowColor: '#0B1220',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
+    shadowOpacity: 0.18,
+    shadowRadius: 26,
     elevation: 8,
   },
   card: {

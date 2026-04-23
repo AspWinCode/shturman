@@ -1,18 +1,30 @@
 ﻿const crypto = require('crypto');
 const http = require('http');
+const https = require('https');
 const { Storage } = require('./storage');
 const { buildDemoTrips } = require('./demoSeed');
+const { SYSTEM_PROMPT, buildUserPrompt } = require('./tripPromptBuilder');
+const {
+  searchTrainTickets,
+  createTrainBooking,
+  payTrainBooking,
+  getTrainBooking,
+} = require('./trainTicketsProvider');
+const { fetchYandexRaspOffers } = require('./yandexRaspProvider');
+const { searchOstrovokHotels } = require('./ostrovokProvider');
+const { sendWelcomeEmail, sendPasswordRecoveryEmail } = require('./emailService');
 
 const PORT = Number(process.env.AUTH_API_PORT || 8787);
 const HOST = process.env.AUTH_API_HOST || '0.0.0.0';
 const ACCESS_TOKEN_TTL_SEC = 15 * 60;
 const REFRESH_TOKEN_TTL_SEC = 30 * 24 * 60 * 60;
-const JWT_SECRET = process.env.AUTH_JWT_SECRET || 'travel-ai-local-dev-secret-change-me';
+const JWT_SECRET = process.env.AUTH_JWT_SECRET || 'shturman-local-dev-secret-change-me';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const IS_PROD = NODE_ENV === 'production';
 const ENABLE_DEMO_USER = process.env.AUTH_ENABLE_DEMO_USER === 'true' || !IS_PROD;
 const ENABLE_TRIPS_RESET = process.env.AUTH_ENABLE_TRIPS_RESET === 'true' || !IS_PROD;
 const ENABLE_TRIPS_RESEED = process.env.AUTH_ENABLE_TRIPS_RESEED === 'true' || !IS_PROD;
+const OPENAI_API_KEY = String(process.env.OPENAI_API_KEY || '').trim();
 
 const storage = new Storage();
 
@@ -49,7 +61,7 @@ function isStrongPassword(password) {
 
 function requireStrongSecret() {
   if (!IS_PROD) return;
-  if (!JWT_SECRET || JWT_SECRET === 'travel-ai-local-dev-secret-change-me' || JWT_SECRET.length < 32) {
+  if (!JWT_SECRET || JWT_SECRET === 'shturman-local-dev-secret-change-me' || JWT_SECRET.length < 32) {
     throw new Error('AUTH_JWT_SECRET must be set to a strong value in production');
   }
 }
@@ -231,6 +243,66 @@ function parseUrl(req) {
   return new URL(req.url, `http://${req.headers.host || 'localhost'}`);
 }
 
+function callOpenAiJson({ systemPrompt, userPrompt }) {
+  return new Promise((resolve, reject) => {
+    const requestBody = JSON.stringify({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      response_format: { type: 'json_object' },
+      max_tokens: 4000,
+      temperature: 0.7,
+    });
+
+    const reqHttp = https.request(
+      {
+        hostname: 'api.openai.com',
+        path: '/v1/chat/completions',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          'Content-Length': Buffer.byteLength(requestBody),
+        },
+        timeout: 30000,
+      },
+      (response) => {
+        let data = '';
+        response.on('data', (chunk) => {
+          data += chunk.toString('utf8');
+        });
+        response.on('end', () => {
+          try {
+            const parsed = JSON.parse(data || '{}');
+            if (response.statusCode && response.statusCode >= 400) {
+              const message = parsed?.error?.message || `OpenAI HTTP ${response.statusCode}`;
+              reject(new Error(message));
+              return;
+            }
+            const content = parsed?.choices?.[0]?.message?.content;
+            if (!content || typeof content !== 'string') {
+              reject(new Error('Пустой ответ от OpenAI'));
+              return;
+            }
+            resolve(JSON.parse(content));
+          } catch (error) {
+            reject(error);
+          }
+        });
+      }
+    );
+
+    reqHttp.on('timeout', () => {
+      reqHttp.destroy(new Error('OpenAI timeout'));
+    });
+    reqHttp.on('error', reject);
+    reqHttp.write(requestBody);
+    reqHttp.end();
+  });
+}
+
 function getClientIp(req) {
   const fwd = req.headers['x-forwarded-for'];
   if (typeof fwd === 'string' && fwd.length > 0) {
@@ -246,6 +318,8 @@ function rateRuleForPath(pathname) {
     '/auth/recover',
     '/auth/change-password',
     '/auth/refresh',
+    '/auth/oauth',
+    '/auth/delete-account',
   ]);
 
   if (strictPaths.has(pathname)) {
@@ -279,6 +353,16 @@ async function requireAccessUser(req) {
   const user = await storage.findUserById(payload.sub);
   if (!user) return { error: 'USER_NOT_FOUND' };
   return { user, payload };
+}
+
+function hasAiPremiumAccess(user) {
+  if (!IS_PROD) return true;
+  const premiumEmails = String(process.env.AI_PREMIUM_EMAILS || '')
+    .split(',')
+    .map((item) => normalizeEmail(item))
+    .filter(Boolean);
+  if (!premiumEmails.length) return false;
+  return premiumEmails.includes(normalizeEmail(user?.email));
 }
 
 async function audit(req, status, context) {
@@ -358,6 +442,9 @@ const server = http.createServer(async (req, res) => {
 
       const user = createUser(name, email, password);
       await storage.createUser(user);
+      sendWelcomeEmail({ to: user.email, name: user.name }).catch((error) => {
+        console.warn('[Email] Welcome email failed:', error?.message || error);
+      });
       return respond(req, res, 201, { ok: true, user: sanitizeUser(user) }, { event: 'register_success', userId: user.id, email: user.email });
     }
 
@@ -472,6 +559,9 @@ const server = http.createServer(async (req, res) => {
       };
       await storage.updateUser(updated);
       await storage.revokeUserRefreshTokens(updated.id);
+      sendPasswordRecoveryEmail({ to: updated.email, name: updated.name, newPassword }).catch((error) => {
+        console.warn('[Email] Recovery email failed:', error?.message || error);
+      });
       return respond(req, res, 200, { ok: true }, { event: 'recover_success', userId: updated.id, email: updated.email });
     }
 
@@ -508,6 +598,148 @@ const server = http.createServer(async (req, res) => {
       await storage.updateUser(updated);
       await storage.revokeUserRefreshTokens(updated.id);
       return respond(req, res, 200, { ok: true }, { event: 'change_password_success', userId: updated.id, email: updated.email });
+    }
+
+    // ── OAuth login / register ────────────────────────────────────────────────
+    if (url.pathname === '/auth/oauth' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const provider = String(body.provider || '').toLowerCase();
+      const idToken  = String(body.idToken  || '');
+      const oauthUser = body.user || {};
+      const email = normalizeEmail(oauthUser.email);
+      const name  = String(oauthUser.name || '').trim() || 'Пользователь';
+
+      const VALID_PROVIDERS = new Set(['yandex', 'google', 'apple']);
+      if (!VALID_PROVIDERS.has(provider)) {
+        return respond(req, res, 400, { ok: false, message: 'provider must be yandex, google or apple' }, { event: 'oauth_invalid_provider' });
+      }
+      if (!email || !isValidEmail(email)) {
+        return respond(req, res, 400, { ok: false, message: 'valid email is required' }, { event: 'oauth_invalid_email' });
+      }
+      if (!idToken) {
+        return respond(req, res, 400, { ok: false, message: 'idToken is required' }, { event: 'oauth_missing_token' });
+      }
+
+      // In development / demo mode we accept any token.
+      // In production this is where you'd verify the idToken with the provider's API.
+      // e.g. Google: https://oauth2.googleapis.com/tokeninfo?id_token=…
+      //       Yandex: https://login.yandex.ru/info?format=json (Authorization: OAuth …)
+      if (IS_PROD) {
+        // Production stub — real verification would go here.
+        // For now we still allow it so the front-end can work without real app IDs.
+      }
+
+      let user = await storage.findUserByEmail(email);
+      if (!user) {
+        // Create a password-less OAuth user
+        user = {
+          id: crypto.randomUUID(),
+          name,
+          email,
+          passwordHash: null,
+          passwordSalt: null,
+          oauthProvider: provider,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        await storage.createUser(user);
+      }
+
+      const { accessToken, refreshToken } = issueTokens(user);
+      const refreshPayload = verifyJwt(refreshToken);
+      await storage.addRefreshToken(user.id, hashToken(refreshToken), refreshPayload.exp);
+
+      return respond(
+        req, res, 200,
+        { ok: true, user: sanitizeUser(user), accessToken, refreshToken, provider },
+        { event: 'oauth_success', userId: user.id, email: user.email, meta: { provider } }
+      );
+    }
+
+    // ── Delete account ────────────────────────────────────────────────────────
+    if (url.pathname === '/auth/delete-account' && req.method === 'DELETE') {
+      const auth = await requireAccessUser(req);
+      if (auth.error === 'UNAUTHORIZED') {
+        return respond(req, res, 401, { ok: false, message: 'Unauthorized' }, { event: 'delete_account_unauthorized' });
+      }
+      if (auth.error === 'USER_NOT_FOUND') {
+        return respond(req, res, 404, { ok: false, message: 'User not found' }, { event: 'delete_account_missing_user' });
+      }
+
+      // Revoke all tokens, delete all trips, delete user
+      await storage.revokeUserRefreshTokens(auth.user.id);
+      await storage.resetTrips(auth.user.id);
+      await storage.deleteUser(auth.user.id);
+
+      return respond(
+        req, res, 200,
+        { ok: true, message: 'Account deleted' },
+        { event: 'delete_account_success', userId: auth.user.id, email: auth.user.email }
+      );
+    }
+
+    if (url.pathname === '/api/generate-trip' && req.method === 'POST') {
+      const auth = await requireAccessUser(req);
+      if (auth.error === 'UNAUTHORIZED') {
+        return respond(req, res, 401, { ok: false, message: 'Unauthorized' }, { event: 'ai_generate_unauthorized' });
+      }
+      if (auth.error === 'USER_NOT_FOUND') {
+        return respond(req, res, 404, { ok: false, message: 'User not found' }, { event: 'ai_generate_user_missing' });
+      }
+
+      const body = await parseBody(req);
+      const from = String(body.from || '').trim();
+      const to = String(body.to || '').trim();
+      const startDate = String(body.startDate || '').trim();
+      if (!from || !to || !startDate) {
+        return respond(
+          req,
+          res,
+          400,
+          { ok: false, message: 'Не хватает полей: from, to, startDate' },
+          { event: 'ai_generate_invalid', userId: auth.user.id, email: auth.user.email }
+        );
+      }
+
+      if (!hasAiPremiumAccess(auth.user)) {
+        return respond(
+          req,
+          res,
+          403,
+          { ok: false, message: 'Функция доступна только для Premium' },
+          { event: 'ai_generate_premium_required', userId: auth.user.id, email: auth.user.email }
+        );
+      }
+
+      if (!OPENAI_API_KEY) {
+        return respond(
+          req,
+          res,
+          200,
+          { ok: false, message: 'OPENAI_API_KEY не задан' },
+          { event: 'ai_generate_no_key', userId: auth.user.id, email: auth.user.email }
+        );
+      }
+
+      try {
+        const userPrompt = buildUserPrompt(body);
+        const data = await callOpenAiJson({ systemPrompt: SYSTEM_PROMPT, userPrompt });
+        return respond(
+          req,
+          res,
+          200,
+          { ok: true, data },
+          { event: 'ai_generate_success', userId: auth.user.id, email: auth.user.email }
+        );
+      } catch (error) {
+        return respond(
+          req,
+          res,
+          200,
+          { ok: false, message: String(error?.message || 'Ошибка AI') },
+          { event: 'ai_generate_error', userId: auth.user.id, email: auth.user.email, meta: { message: String(error?.message || '') } }
+        );
+      }
     }
 
     if (url.pathname === '/trips' && req.method === 'GET') {
@@ -598,7 +830,7 @@ const server = http.createServer(async (req, res) => {
         return respond(req, res, 404, { ok: false, message: 'User not found' }, { event: 'trips_reseed_missing_user' });
       }
 
-      const demoEmail = 'demo@travelai.app';
+      const demoEmail = 'demo@shturman.app';
       if (normalizeEmail(auth.user.email) !== demoEmail) {
         return respond(req, res, 403, { ok: false, message: 'Demo reseed is allowed only for demo account' }, { event: 'trips_reseed_forbidden', userId: auth.user.id, email: auth.user.email });
       }
@@ -606,6 +838,141 @@ const server = http.createServer(async (req, res) => {
       const demoTrips = buildDemoTrips();
       await storage.replaceTrips(auth.user.id, buildTripRows(demoTrips));
       return respond(req, res, 200, { ok: true, count: demoTrips.length }, { event: 'trips_reseed_success', userId: auth.user.id, email: auth.user.email, meta: { count: demoTrips.length } });
+    }
+
+    if (url.pathname === '/subscription/validate' && req.method === 'POST') {
+      const auth = await requireAccessUser(req);
+      if (auth.error === 'UNAUTHORIZED') {
+        return respond(req, res, 401, { ok: false, message: 'Unauthorized' }, { event: 'subscription_validate_unauthorized' });
+      }
+      if (auth.error === 'USER_NOT_FOUND') {
+        return respond(req, res, 404, { ok: false, message: 'User not found' }, { event: 'subscription_validate_user_missing' });
+      }
+
+      const body = await parseBody(req);
+      const platform = String(body.platform || '').trim();
+      const receiptData = String(body.receiptData || '').trim();
+      const productId = String(body.productId || '').trim();
+
+      if (!platform || !receiptData || !productId) {
+        return respond(
+          req,
+          res,
+          400,
+          { ok: false, message: 'platform, receiptData and productId are required' },
+          { event: 'subscription_validate_invalid', userId: auth.user.id, email: auth.user.email }
+        );
+      }
+
+      if (!IS_PROD) {
+        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+        const plan = productId.includes('year') ? 'yearly' : 'monthly';
+        return respond(
+          req,
+          res,
+          200,
+          { ok: true, active: true, expiresAt, plan },
+          { event: 'subscription_validate_dev_success', userId: auth.user.id, email: auth.user.email, meta: { platform, productId } }
+        );
+      }
+
+      return respond(
+        req,
+        res,
+        501,
+        { ok: false, message: 'Receipt validation for production is not implemented yet' },
+        { event: 'subscription_validate_prod_not_implemented', userId: auth.user.id, email: auth.user.email, meta: { platform, productId } }
+      );
+    }
+
+    if (url.pathname === '/transport/trains/search' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const result = searchTrainTickets(body);
+      if (!result.ok) {
+        return respond(req, res, 400, { ok: false, message: result.message }, { event: 'train_search_invalid' });
+      }
+      return respond(req, res, 200, result, { event: 'train_search_success', meta: { count: result.offers.length } });
+    }
+
+    if (url.pathname === '/transport/trains/book' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const result = createTrainBooking(body);
+      if (!result.ok) {
+        return respond(req, res, 400, { ok: false, message: result.message }, { event: 'train_book_invalid' });
+      }
+      return respond(req, res, 200, result, { event: 'train_book_success', meta: { bookingId: result.booking.id } });
+    }
+
+    if (url.pathname === '/transport/trains/pay' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const result = payTrainBooking(body);
+      if (!result.ok) {
+        const status = result.message === 'booking not found' ? 404 : 400;
+        return respond(req, res, status, { ok: false, message: result.message }, { event: 'train_pay_failed' });
+      }
+      return respond(req, res, 200, result, { event: 'train_pay_success', meta: { bookingId: result.booking.id } });
+    }
+
+    if (url.pathname === '/transport/trains/booking' && req.method === 'GET') {
+      const bookingId = String(url.searchParams.get('bookingId') || '');
+      const result = getTrainBooking(bookingId);
+      if (!result.ok) {
+        const status = result.message === 'booking not found' ? 404 : 400;
+        return respond(req, res, status, { ok: false, message: result.message }, { event: 'train_booking_get_failed' });
+      }
+      return respond(req, res, 200, result, { event: 'train_booking_get_success', meta: { bookingId } });
+    }
+
+    if (url.pathname === '/transport/yandex-rasp/search' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const from = String(body.from || '').trim();
+      const to = String(body.to || '').trim();
+      const date = String(body.date || '').trim();
+      const travelers = Math.max(1, Math.min(8, Number(body.travelers) || 1));
+      if (!from || !to || !date) {
+        return respond(req, res, 400, { ok: false, message: 'from, to and date are required' }, { event: 'yandex_rasp_invalid' });
+      }
+      const result = await fetchYandexRaspOffers({ from, to, date, travelers });
+      if (!result.ok) {
+        return respond(req, res, 200, { ok: false, message: result.message, offers: [] }, { event: 'yandex_rasp_empty' });
+      }
+      return respond(req, res, 200, { ok: true, offers: result.offers }, { event: 'yandex_rasp_success', meta: { count: result.offers.length } });
+    }
+
+    if (url.pathname === '/hotels/ostrovok/search' && req.method === 'POST') {
+      const body = await parseBody(req);
+      const city = String(body.city || '').trim();
+      const checkin = String(body.checkin || '').trim();
+      const checkout = String(body.checkout || '').trim();
+      const adults = Math.max(1, Math.min(8, Number(body.adults) || 1));
+      if (!city || !checkin || !checkout) {
+        return respond(
+          req,
+          res,
+          400,
+          { ok: false, message: 'city, checkin and checkout are required', offers: [] },
+          { event: 'ostrovok_invalid' }
+        );
+      }
+
+      const result = await searchOstrovokHotels({ city, checkin, checkout, adults });
+      if (!result.ok) {
+        return respond(
+          req,
+          res,
+          200,
+          { ok: false, message: result.message || 'Ostrovok unavailable', offers: [] },
+          { event: 'ostrovok_empty' }
+        );
+      }
+
+      return respond(
+        req,
+        res,
+        200,
+        { ok: true, offers: result.offers },
+        { event: 'ostrovok_success', meta: { count: result.offers.length } }
+      );
     }
 
     return respond(req, res, 404, { ok: false, message: 'Route not found' }, { event: 'route_not_found' });
@@ -619,7 +986,7 @@ async function bootstrap() {
   await storage.init();
 
   if (ENABLE_DEMO_USER) {
-    const demoEmail = 'demo@travelai.app';
+    const demoEmail = 'demo@shturman.app';
     const existing = await storage.findUserByEmail(demoEmail);
     if (!existing) {
       const demoUser = createUser('Demo', demoEmail, 'Travel123!');
@@ -637,4 +1004,3 @@ bootstrap().catch((error) => {
   console.error('Failed to start API:', error);
   process.exit(1);
 });
-

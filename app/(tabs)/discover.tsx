@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -7,28 +7,63 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
-  FlatList,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Colors from '@/constants/colors';
 import { BorderRadius, Shadows, Spacing, Typography } from '@/constants/theme';
 import { MOCK_ROUTES, Route } from '@/constants/data';
 import { useStore } from '@/store/useStore';
 import { Badge } from '@/components/ui/Badge';
+import { generateTripFromForm } from '@/store/tripGenerator';
+import { t } from '@/store/i18n';
 
-const { width } = Dimensions.get('window');
-
-const FILTERS = ['Все', 'История', 'Природа', 'Еда', 'Море', 'Архитектура'];
-const DURATION_FILTERS = ['Любая', '3-4 дня', '5-7 дней', '8+ дней'];
+const FILTERS = ['Все', 'История', 'Природа', 'Еда', 'Море', 'Архитектура', '♿ Доступные'];
 
 export default function DiscoverScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+  const cardWidth = (width - horizontalPadding * 2 - Spacing.md) / 2;
+
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('Все');
   const favorites = useStore((s) => s.favorites);
   const toggleFavorite = useStore((s) => s.toggleFavorite);
+  const accessibilityCoverageByRoute = useMemo(() => {
+    const baseStart = new Date().toISOString().slice(0, 10);
+    return new Map(
+      MOCK_ROUTES.map((route) => {
+        const daysMatch = route.duration.match(/\d+/);
+        const daysCount = Math.max(1, Number(daysMatch?.[0] ?? 3));
+        const end = new Date(baseStart);
+        end.setDate(end.getDate() + Math.max(0, daysCount - 1));
+        const endDate = end.toISOString().slice(0, 10);
+
+        const generated = generateTripFromForm({
+          from: 'Москва',
+          to: route.city,
+          startDate: baseStart,
+          endDate,
+          budget: 45000,
+          travelers: 1,
+          interests: [],
+          travelStyle: 'standard',
+          needsAccessibility: true,
+        });
+
+        const ok = generated.days.every((day) =>
+          day.places.some((place) => place.accessible?.wheelchair === true)
+        );
+
+        return [route.id, ok];
+      })
+    );
+  }, []);
 
   const openRouteInBuilder = (route: Route) => {
     router.push({
@@ -45,7 +80,12 @@ export default function DiscoverScreen() {
   const filteredRoutes = MOCK_ROUTES.filter((r) => {
     if (search && !r.city.toLowerCase().includes(search.toLowerCase()) &&
       !r.title.toLowerCase().includes(search.toLowerCase())) return false;
-    if (activeFilter !== 'Все' && !r.tags.includes(activeFilter)) return false;
+    if (activeFilter === '♿ Доступные' && !accessibilityCoverageByRoute.get(r.id)) return false;
+    if (
+      activeFilter !== 'Все' &&
+      activeFilter !== '♿ Доступные' &&
+      !r.tags.some((tag) => tag.toLowerCase() === activeFilter.toLowerCase())
+    ) return false;
     return true;
   });
 
@@ -54,8 +94,16 @@ export default function DiscoverScreen() {
       <StatusBar style="light" />
 
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Исследуйте</Text>
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: insets.top + 12,
+            paddingHorizontal: horizontalPadding,
+          },
+        ]}
+      >
+        <Text style={styles.headerTitle}>{t('trip.route')}</Text>
         <Text style={styles.headerSubtitle}>
           {MOCK_ROUTES.length} готовых маршрутов для вас
         </Text>
@@ -65,7 +113,7 @@ export default function DiscoverScreen() {
           <Ionicons name="search" size={18} color={Colors.textTertiary} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Поиск по городу или маршруту..."
+            placeholder="Поиск"
             placeholderTextColor={Colors.textTertiary}
             value={search}
             onChangeText={setSearch}
@@ -78,12 +126,12 @@ export default function DiscoverScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 32 + insets.bottom }}>
         {/* Filters */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filtersScroll}
+          contentContainerStyle={[styles.filtersScroll, { paddingHorizontal: horizontalPadding }]}
         >
           {FILTERS.map((f) => (
             <TouchableOpacity
@@ -103,8 +151,8 @@ export default function DiscoverScreen() {
 
         {/* Featured route (large card) */}
         {filteredRoutes.length > 0 && (
-          <View style={styles.featuredSection}>
-            <Text style={styles.sectionTitle}>Исследуйте</Text>
+          <View style={[styles.featuredSection, { paddingHorizontal: horizontalPadding }]}>
+            <Text style={styles.sectionTitle}>{t('trip.route')}</Text>
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.featuredCard}
@@ -149,8 +197,8 @@ export default function DiscoverScreen() {
         )}
 
         {/* All routes grid */}
-        <View style={styles.gridSection}>
-          <Text style={styles.sectionTitle}>Все маршруты</Text>
+        <View style={[styles.gridSection, { paddingHorizontal: horizontalPadding }]}>
+          <Text style={styles.sectionTitle}>{t('trip.myTrips')}</Text>
           <View style={styles.routesGrid}>
             {filteredRoutes.slice(1).map((route) => (
               <RouteCard
@@ -159,31 +207,32 @@ export default function DiscoverScreen() {
                 isFavorite={favorites.includes(route.id)}
                 onFavorite={() => toggleFavorite(route.id)}
                 onOpen={() => openRouteInBuilder(route)}
+                cardWidth={cardWidth}
               />
             ))}
           </View>
         </View>
-
-        <View style={{ height: 100 }} />
       </ScrollView>
     </View>
   );
 }
 
-function RouteCard({
+const RouteCard = React.memo(function RouteCard({
   route,
   isFavorite,
   onFavorite,
   onOpen,
+  cardWidth,
 }: {
   route: Route;
   isFavorite: boolean;
   onFavorite: () => void;
   onOpen: () => void;
+  cardWidth: number;
 }) {
   return (
     <TouchableOpacity
-      style={styles.routeCard}
+      style={[styles.routeCard, { width: cardWidth }]}
       activeOpacity={0.88}
       onPress={onOpen}
     >
@@ -221,9 +270,7 @@ function RouteCard({
       </View>
     </TouchableOpacity>
   );
-}
-
-const CARD_WIDTH = (width - Spacing.xl * 2 - Spacing.md) / 2;
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -365,7 +412,7 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   routeCard: {
-    width: CARD_WIDTH,
+    width: 160,
     backgroundColor: Colors.surface,
     borderRadius: BorderRadius.xl,
     overflow: 'hidden',
@@ -444,4 +491,6 @@ const styles = StyleSheet.create({
     fontWeight: Typography.weights.semibold,
   },
 });
+
+
 

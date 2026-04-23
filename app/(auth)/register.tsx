@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PasswordStrengthIndicator } from '@/components/ui/PasswordStrengthIndicator';
@@ -18,8 +20,14 @@ import { isStrongPassword, PASSWORD_POLICY_HINT } from '@/constants/passwordPoli
 import Colors from '@/constants/colors';
 import { BorderRadius, Spacing, Typography, Shadows } from '@/constants/theme';
 import { useStore } from '@/store/useStore';
+import { OAuthButtons } from '@/components/auth/OAuthButtons';
 
 export default function RegisterScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -69,7 +77,16 @@ export default function RegisterScreen() {
     >
       <StatusBar style="light" />
 
-      <View style={[styles.gradientHeader, { backgroundColor: Colors.primary }]}>
+      <View
+        style={[
+          styles.gradientHeader,
+          {
+            backgroundColor: Colors.primary,
+            paddingTop: insets.top + 12,
+            paddingHorizontal: horizontalPadding,
+          },
+        ]}
+      >
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
@@ -82,7 +99,13 @@ export default function RegisterScreen() {
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: Spacing.lg + Math.max(insets.bottom, 12),
+          },
+        ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -138,6 +161,8 @@ export default function RegisterScreen() {
           loading={loading}
           style={{ marginTop: Spacing.sm }}
         />
+
+        <OAuthButtons onSuccess={() => router.replace('/(tabs)')} />
 
         <View style={styles.loginRow}>
           <Text style={styles.loginText}>Уже есть аккаунт? </Text>

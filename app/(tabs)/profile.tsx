@@ -8,14 +8,17 @@ import {
   Image,
   Alert,
   Linking,
+  useWindowDimensions,
 } from 'react-native';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Colors from '@/constants/colors';
 import { BorderRadius, Shadows, Spacing, Typography } from '@/constants/theme';
 import { useStore } from '@/store/useStore';
 import { TRAVEL_STYLES, INTERESTS } from '@/constants/data';
+import { useTheme } from '@/hooks/useTheme';
 
 const RUSTORE_URL = 'https://www.rustore.ru/catalog/app/com.travelai.app';
 const SUPPORT_EMAIL = 'support@shturman.app';
@@ -31,13 +34,24 @@ interface MenuItem {
 }
 
 export default function ProfileScreen() {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 370;
+  const horizontalPadding = isCompact ? Spacing.lg : Spacing.xl;
+
   const user = useStore((s) => s.user);
   const trips = useStore((s) => s.trips);
   const logout = useStore((s) => s.logout);
+  const deleteAccount = useStore((s) => s.deleteAccount);
   const resetDemoData = useStore((s) => s.resetDemoData);
   const favorites = useStore((s) => s.favorites);
+  const subscription = useStore((s) => s.subscription);
   const isGuest = !user.isLoggedIn;
+  const isPremium = subscription.plan !== 'none'
+    && Boolean(subscription.expiresAt)
+    && new Date(subscription.expiresAt as string).getTime() > Date.now();
   const canResetDemo = __DEV__ || process.env.EXPO_PUBLIC_ENABLE_DEMO_RESET === 'true';
+  const { mode, setMode } = useTheme();
 
   const travelStyle = TRAVEL_STYLES.find((s) => s.id === user.travelStyle);
   const userInterests = INTERESTS.filter((i) => user.interests.includes(i.id));
@@ -83,13 +97,8 @@ export default function ProfileScreen() {
         {
           icon: 'wallet-outline',
           label: 'Travel Wallet',
-          subtitle: 'Скоро — билеты и бронирования',
-          onPress: () =>
-            Alert.alert(
-              'Travel Wallet',
-              'Раздел для хранения билетов и бронирований появится в следующем обновлении.',
-              [{ text: 'Понятно' }],
-            ),
+          subtitle: 'Билеты, брони и страховки',
+          onPress: () => router.push('/(wallet)' as never),
         },
       ],
     },
@@ -103,15 +112,37 @@ export default function ProfileScreen() {
           onPress: () => router.push('/edit-profile' as never),
         },
         {
+          icon: 'contrast-outline',
+          label: 'Тема оформления',
+          subtitle: mode === 'system' ? 'Системная' : mode === 'dark' ? 'Тёмная' : 'Светлая',
+          onPress: () =>
+            Alert.alert('Тема оформления', 'Выберите тему', [
+              {
+                text: 'Светлая',
+                onPress: () => {
+                  void setMode('light');
+                },
+              },
+              {
+                text: 'Тёмная',
+                onPress: () => {
+                  void setMode('dark');
+                },
+              },
+              {
+                text: 'Системная',
+                onPress: () => {
+                  void setMode('system');
+                },
+              },
+              { text: 'Отмена', style: 'cancel' },
+            ]),
+        },
+        {
           icon: 'notifications-outline',
           label: 'Уведомления',
           subtitle: 'Напоминания, изменения цен',
-          onPress: () =>
-            Alert.alert(
-              'Уведомления',
-              'Push-уведомления появятся в следующем обновлении приложения.',
-              [{ text: 'Понятно' }],
-            ),
+          onPress: () => router.push('/(profile)/notifications' as never),
         },
         {
           icon: 'language-outline',
@@ -136,6 +167,25 @@ export default function ProfileScreen() {
             ),
         },
         {
+          icon: 'call-outline',
+          label: 'Экстренные контакты',
+          subtitle: '112, скорая, полиция',
+          onPress: () =>
+            Alert.alert(
+              '🚨 Экстренные контакты',
+              '112 — Единый экстренный\n103 — Скорая помощь\n102 — Полиция\n101 — Пожарная служба\n+7 (499) 921-78-00 — МИД РФ (за рубежом)',
+              [
+                {
+                  text: 'Позвонить 112',
+                  onPress: () => {
+                    void Linking.openURL('tel:112');
+                  },
+                },
+                { text: 'Закрыть', style: 'cancel' },
+              ]
+            ),
+        },
+        {
           icon: 'chatbubble-outline',
           label: 'Написать в поддержку',
           subtitle: SUPPORT_EMAIL,
@@ -143,6 +193,12 @@ export default function ProfileScreen() {
             Linking.openURL(
               `mailto:${SUPPORT_EMAIL}?subject=Обращение в поддержку Штурман`,
             ),
+        },
+        {
+          icon: 'chatbubbles-outline',
+          label: 'Мои отзывы',
+          subtitle: 'История отзывов на места',
+          onPress: () => router.push('/(profile)/my-reviews' as never),
         },
         {
           icon: 'star-outline',
@@ -193,24 +249,53 @@ export default function ProfileScreen() {
         ...(
           isGuest
             ? []
-            : [{
-                icon: 'log-out-outline' as const,
-                label: 'Выйти',
-                danger: true,
-                onPress: () => {
-                  Alert.alert('Выход', 'Вы уверены, что хотите выйти?', [
-                    { text: 'Отмена', style: 'cancel' },
-                    {
-                      text: 'Выйти',
-                      style: 'destructive',
-                      onPress: () => {
-                        void logout();
-                        router.replace('/(auth)/login');
+            : [
+                {
+                  icon: 'log-out-outline' as const,
+                  label: 'Выйти',
+                  danger: true,
+                  onPress: () => {
+                    Alert.alert('Выход', 'Вы уверены, что хотите выйти?', [
+                      { text: 'Отмена', style: 'cancel' },
+                      {
+                        text: 'Выйти',
+                        style: 'destructive',
+                        onPress: () => {
+                          void logout();
+                          router.replace('/(auth)/login');
+                        },
                       },
-                    },
-                  ]);
+                    ]);
+                  },
                 },
-              }]
+                {
+                  icon: 'trash-outline' as const,
+                  label: 'Удалить аккаунт',
+                  subtitle: 'Все данные будут уничтожены',
+                  danger: true,
+                  onPress: () => {
+                    Alert.alert(
+                      '⚠️ Удалить аккаунт',
+                      'Это действие необратимо. Будут удалены:\n• Ваш аккаунт\n• Все поездки\n• История и данные\n\nПродолжить?',
+                      [
+                        { text: 'Отмена', style: 'cancel' },
+                        {
+                          text: 'Удалить навсегда',
+                          style: 'destructive',
+                          onPress: async () => {
+                            const result = await deleteAccount();
+                            if (!result.ok) {
+                              Alert.alert('Ошибка', result.message || 'Не удалось удалить аккаунт. Попробуйте ещё раз.');
+                              return;
+                            }
+                            router.replace('/(auth)/login');
+                          },
+                        },
+                      ]
+                    );
+                  },
+                },
+              ]
         ),
       ],
     },
@@ -221,7 +306,15 @@ export default function ProfileScreen() {
       <StatusBar style="light" />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Profile header */}
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            {
+              paddingTop: insets.top + 14,
+              paddingHorizontal: horizontalPadding,
+            },
+          ]}
+        >
           <View style={styles.avatarContainer}>
             <Image
               source={{
@@ -234,6 +327,11 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
           <Text style={styles.userName}>{user.name || 'Путешественник'}</Text>
+          {isPremium && (
+            <View style={styles.userPremiumBadge}>
+              <Text style={styles.userPremiumBadgeText}>✨ Premium</Text>
+            </View>
+          )}
           <Text style={styles.userEmail}>{user.email || 'Войдите в аккаунт, чтобы синхронизировать данные'}</Text>
 
           {/* Premium badge */}
@@ -247,10 +345,10 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity style={styles.premiumBadge}>
+            <TouchableOpacity style={styles.premiumBadge} onPress={() => router.push('/(premium)' as never)}>
               <View style={styles.premiumGradient}>
                 <Text style={styles.premiumIcon}>✨</Text>
-                <Text style={styles.premiumText}>Перейти на Premium</Text>
+                <Text style={styles.premiumText}>{isPremium ? 'Управление Premium' : 'Перейти на Premium'}</Text>
                 <Ionicons name="chevron-forward" size={14} color="#fff" />
               </View>
             </TouchableOpacity>
@@ -258,7 +356,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Stats */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, { marginHorizontal: horizontalPadding }]}>
           {stats.map((stat) => (
             <View key={stat.label} style={styles.statItem}>
               <Text style={styles.statEmoji}>{stat.emoji}</Text>
@@ -270,7 +368,7 @@ export default function ProfileScreen() {
 
         {/* Interests */}
         {userInterests.length > 0 && (
-          <View style={styles.section}>
+          <View style={[styles.section, { paddingHorizontal: horizontalPadding }]}>
             <Text style={styles.sectionTitle}>Интересы</Text>
             <View style={styles.interestsRow}>
               {userInterests.slice(0, 5).map((interest) => (
@@ -290,7 +388,7 @@ export default function ProfileScreen() {
 
         {/* Menu */}
         {menuGroups.map((group, gi) => (
-          <View key={gi} style={styles.menuGroup}>
+          <View key={gi} style={[styles.menuGroup, { paddingHorizontal: horizontalPadding }]}>
             {group.title ? (
               <Text style={styles.menuGroupTitle}>{group.title}</Text>
             ) : null}
@@ -345,7 +443,7 @@ export default function ProfileScreen() {
           </View>
         ))}
 
-        <View style={{ height: 100 }} />
+        <View style={{ height: 40 + insets.bottom }} />
       </ScrollView>
     </View>
   );
@@ -400,6 +498,18 @@ const styles = StyleSheet.create({
     fontSize: Typography.sizes.base,
     color: 'rgba(255,255,255,0.8)',
     marginBottom: Spacing.base,
+  },
+  userPremiumBadge: {
+    marginBottom: 8,
+    borderRadius: BorderRadius.full,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  userPremiumBadgeText: {
+    color: '#fff',
+    fontWeight: Typography.weights.bold,
+    fontSize: Typography.sizes.xs,
   },
   premiumBadge: {
     borderRadius: BorderRadius.full,
@@ -579,6 +689,3 @@ const styles = StyleSheet.create({
     marginLeft: Spacing.base + 40 + Spacing.md,
   },
 });
-
-
-
