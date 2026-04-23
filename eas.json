@@ -34,6 +34,7 @@
         "buildType": "app-bundle"
       },
       "env": {
+        "EXPO_PUBLIC_AUTH_API_URL": "https://api.shturman.app",
         "EXPO_PUBLIC_SHOW_DEMO_CREDENTIALS": "false",
         "EXPO_PUBLIC_ENABLE_DEMO_RESET": "false"
       }
@@ -45,6 +46,7 @@
         "buildType": "apk"
       },
       "env": {
+        "EXPO_PUBLIC_AUTH_API_URL": "https://api.shturman.app",
         "EXPO_PUBLIC_SHOW_DEMO_CREDENTIALS": "false",
         "EXPO_PUBLIC_ENABLE_DEMO_RESET": "false"
       }
