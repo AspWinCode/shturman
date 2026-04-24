@@ -16,6 +16,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { useStore } from '@/store/useStore';
 import {
   PRODUCT_IDS,
+  ProductSubscription,
   activateSubscriptionFromPurchase,
   destroyIAP,
   getSubscriptionProducts,
@@ -26,7 +27,6 @@ import {
 import { ensureAccessToken } from '@/store/authStorage';
 import { apiValidateSubscription } from '@/store/authApi';
 import { BorderRadius, Spacing, Typography } from '@/constants/theme';
-import type { ProductSubscription } from 'react-native-iap';
 import { track } from '@/store/analyticsService';
 import { t } from '@/store/i18n';
 

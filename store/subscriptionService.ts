@@ -1,6 +1,4 @@
 ﻿import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
-import * as RNIap from 'react-native-iap';
 
 export const PRODUCT_IDS = {
   monthly: 'com.shturman.app.premium_monthly',
@@ -8,6 +6,20 @@ export const PRODUCT_IDS = {
 } as const;
 
 export type SubscriptionPlan = 'none' | 'monthly' | 'yearly';
+
+export type ProductSubscription = {
+  id: string;
+  displayPrice?: string;
+};
+
+export type Purchase = {
+  productId?: string;
+  ids?: string[];
+  purchaseToken?: string;
+  transactionId?: string;
+  id?: string;
+  expirationDateIOS?: number;
+};
 
 export interface SubscriptionState {
   plan: SubscriptionPlan;
@@ -19,104 +31,37 @@ const SUBSCRIPTION_KEY = 'app.subscription.v1';
 const EMPTY_SUBSCRIPTION: SubscriptionState = { plan: 'none', expiresAt: null, originalOrderId: null };
 export const FREE_TRIP_LIMIT = 3;
 
-function resolvePurchaseProductId(purchase: RNIap.Purchase): string | null {
+function resolvePurchaseProductId(purchase: Purchase): string | null {
   if (purchase.productId) return purchase.productId;
   if (Array.isArray(purchase.ids) && purchase.ids.length > 0) return purchase.ids[0] ?? null;
   return null;
 }
 
 export async function initIAP(): Promise<void> {
-  if (Platform.OS === 'web') return;
-  try {
-    await RNIap.initConnection();
-  } catch (err) {
-    console.warn('[IAP] initConnection failed', err);
-  }
+  // Mobile IAP SDK is temporarily disabled in this build.
 }
 
 export async function destroyIAP(): Promise<void> {
-  if (Platform.OS === 'web') return;
-  try {
-    await RNIap.endConnection();
-  } catch {
-    // no-op
-  }
+  // no-op
 }
 
-export async function getSubscriptionProducts(): Promise<RNIap.ProductSubscription[]> {
-  if (Platform.OS === 'web') return [];
-  try {
-    const products = await RNIap.fetchProducts({
-      skus: [PRODUCT_IDS.monthly, PRODUCT_IDS.yearly],
-      type: 'subs',
-    });
-    return (products ?? []).filter((item): item is RNIap.ProductSubscription => {
-      if (!item) return false;
-      const id = item.id;
-      return id === PRODUCT_IDS.monthly || id === PRODUCT_IDS.yearly;
-    });
-  } catch (err) {
-    console.warn('[IAP] fetchProducts failed', err);
-    return [];
-  }
+export async function getSubscriptionProducts(): Promise<ProductSubscription[]> {
+  return [
+    { id: PRODUCT_IDS.monthly, displayPrice: '299 ₽' },
+    { id: PRODUCT_IDS.yearly, displayPrice: '1 990 ₽' },
+  ];
 }
 
 export async function purchaseSubscription(
   productId: string
-): Promise<{ ok: boolean; purchase?: RNIap.Purchase; message?: string }> {
-  if (Platform.OS === 'web') {
-    return { ok: false, message: 'IAP недоступен в браузере' };
-  }
-
-  try {
-    const purchase = await RNIap.requestPurchase({
-      type: 'subs',
-      request: Platform.select({
-        ios: { ios: { sku: productId } },
-        android: { android: { skus: [productId] } },
-        default: { ios: { sku: productId } },
-      })!,
-    });
-
-    const normalized = Array.isArray(purchase) ? purchase[0] : purchase;
-    if (!normalized) return { ok: false, message: 'Покупка не завершена' };
-
-    return { ok: true, purchase: normalized };
-  } catch (err: unknown) {
-    const e = err as { code?: string; message?: string };
-    if (e?.code === 'user-cancelled' || e?.code === 'E_USER_CANCELLED') {
-      return { ok: false, message: 'Отменено пользователем' };
-    }
-    console.warn('[IAP] requestPurchase failed', err);
-    return { ok: false, message: 'Ошибка покупки. Попробуйте позже.' };
-  }
+): Promise<{ ok: boolean; purchase?: Purchase; message?: string }> {
+  void productId;
+  return { ok: false, message: 'Покупки временно недоступны в этой сборке.' };
 }
 
 export async function restorePurchases(): Promise<{ ok: boolean; active: boolean }> {
-  if (Platform.OS === 'web') return { ok: true, active: false };
-
-  try {
-    const purchases = await RNIap.getAvailablePurchases();
-    const validIds = new Set<string>(Object.values(PRODUCT_IDS));
-    const activePurchase = purchases.find((purchase) => {
-      const productId = resolvePurchaseProductId(purchase);
-      if (!productId || !validIds.has(productId)) return false;
-      const expiration =
-        'expirationDateIOS' in purchase && typeof purchase.expirationDateIOS === 'number'
-          ? purchase.expirationDateIOS
-          : null;
-      if (!expiration) return true;
-      return expiration > Date.now();
-    });
-
-    if (!activePurchase) return { ok: true, active: false };
-
-    await activateSubscriptionFromPurchase(activePurchase);
-    return { ok: true, active: true };
-  } catch (err) {
-    console.warn('[IAP] restorePurchases failed', err);
-    return { ok: false, active: false };
-  }
+  const state = await loadSubscriptionState();
+  return { ok: true, active: isPremiumActive(state) };
 }
 
 export async function saveSubscriptionState(state: SubscriptionState): Promise<void> {
@@ -146,7 +91,7 @@ export function isPremiumActive(state: SubscriptionState): boolean {
 }
 
 export async function activateSubscriptionFromPurchase(
-  purchase: RNIap.Purchase
+  purchase: Purchase
 ): Promise<void> {
   const productId = resolvePurchaseProductId(purchase) ?? '';
   const isMonthly = productId === PRODUCT_IDS.monthly;
@@ -156,7 +101,7 @@ export async function activateSubscriptionFromPurchase(
   if (plan === 'none') return;
 
   const expirationDateMs =
-    'expirationDateIOS' in purchase && typeof purchase.expirationDateIOS === 'number'
+    typeof purchase.expirationDateIOS === 'number'
       ? purchase.expirationDateIOS
       : Date.now() + (isMonthly ? 30 : 365) * 24 * 60 * 60 * 1000;
 
